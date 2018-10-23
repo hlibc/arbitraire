@@ -1,0 +1,12 @@
+you can logically shift a decimal base 10 number. right shift is divide by ten (990 becomes 099) and  left shift is 
+multiply by ten (990 becomes 9900). in binary 0000 0110 right shifted becomes 0000 0011 and both are equivalent to 
+dividing by the base. as 0000 0110 / 0000 0010 is 0000 0011
+
+the base, incidently is always "10", even in binary base 2. 0, 1, 10. and in octal 0, 1, 2, 3, 4, 5, 6, 7, 10 ... 11, 
+12, 13, 14, 15
+or i guess to be specific the base within base N is represented as "10" regardless of the base.
+
+so a logical shift is divide or multiply by base^i where i is the number of shifts. so >> 2 is / base^2 or / 2^2
+and >> 3 == / base^3
+which for binary is 8
+

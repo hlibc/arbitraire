@@ -1,0 +1,111 @@
+Arbitraire
+
+	An arbitrary precision mathematics library. 
+	
+	Arbitraire support a pure mathematics number system of continuous and
+	arbitrarily sized fractional datum.
+
+
+BUILDING:
+---------
+
+	git clone https://github.com/hlibc/arbitraire
+	cd arbitraire
+	make
+
+
+TESTING:
+--------
+
+	Test the square root implementation with a series of pseduo-random 10-
+	10000 digit numbers.
+
+		make test
+
+	Run the test wrappers and binaries:
+	
+		./tests/pseudo-random-wrapper.sh function
+		./tests/prand-a-a-a-wrapper.sh ag-function
+
+	Automatic testing with valgrind:
+
+		./tests/pseudo-random-wrapper.sh function valgrind
+		./tests/prand-a-a-a-wrapper.sh function valgrind
+
+		for instance, test sqrt:
+
+			./tests/prand-a-a-a-wrapper.sh sqrt valgrind
+
+
+USING THE API:
+--------------
+
+	An example for adding two numbers is provided below:
+
+	#include <arbitraire/arbitraire.h>
+
+	int main(int argc, char *argv[])
+	{
+		if (argc < 4 )
+			arb_error("Needs 3 args, such as: 123.456 123.456 base");
+
+		int base = atoll(argv[3]);
+		fxdpnt *a, *b, *c = NULL;
+		a = arb_str2fxdpnt(argv[1]);
+		b = arb_str2fxdpnt(argv[2]);
+		c = arb_add(a, b, c, base);
+		arb_print(c);
+		arb_free(a);
+		arb_free(b);
+		arb_free(c);
+		return 0;
+	}
+
+
+REFERENCES:
+-----------
+
+	https://gmplib.org/manual/Division-Algorithms.html#Division-Algorithms
+
+	https://gmplib.org/manual/Karatsuba-Multiplication.html#Karatsuba-Multiplication
+
+	https://gmplib.org/manual/Multiplication-Algorithms.html#Multiplication-Algorithms
+
+	http://www.cs.utsa.edu/~wagner/CS3343/newton/division.html
+
+	http://mathworld.wolfram.com/NewtonsIteration.html
+
+	http://www.cs.utsa.edu/~wagner/CS3343/newton/division.html
+
+	https://en.wikipedia.org/wiki/Division_algorithm#Newton.E2.80.93Raphson_division
+
+	http://www.jamesbrennan.org/algebra/numbers/real_number_system.htm
+
+	pubs.opengroup.org/onlinepubs/9699919799/utilities/bc.html
+
+	https://en.wikipedia.org/wiki/Karatsuba_algorithm
+
+	https://math.stackexchange.com/questions/92631/convert-numbers-from-one-base-to-another-using-repeated-divisions
+
+	conversion of fractions between bases
+	http://mathforum.org/library/drmath/view/55744.html
+
+	A small web interface to manipulate floats using mouse clicks
+	http://evanw.github.io/float-toy
+
+	https://blogs.sas.com/content/iml/2015/06/24/sensitivity-newtons-method.html
+
+	
+INSPIRATIONS:
+-------------
+
+	Fabrice Bellard's libBF library
+
+	https://bellard.org/libbf/
+
+
+CONTACTS:
+---------
+
+	CM Graff   cm0graff@gmail.com
+

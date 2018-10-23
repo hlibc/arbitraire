@@ -1,0 +1,64 @@
+15:01 < graff> my team and I are trying to figure out this exponentation algorithm. sorry to link C code, but I don't know quite how to put it into math
+15:01 < graff> https://github.com/cmgraff/bc-1.03/blob/master/number.c#L1011
+15:01 < aphirst> https://a.pomf.cat/rqidmy.png what would be the "correct" succinct way to express here that lambda is also bound between lambda0 and lambda1 ?
+15:02 < graff> basically for every other iteration instead of 1 multiply there are two
+15:02 < aphirst> or more accurately, that this process occurs for the entire continuous set of lambda between lambda0 and lambda1
+15:02 < graff> any idea what type of exponentation formula / algorithm this is, if I could get the name I could try to look it up
+15:02 < aphirst> again, because i'm about to appeal to discretisation and take a finite set of lambda
+15:03 -!- skweek [~skweek@75.102.140.69] has joined ##math
+15:03 < graff> we can ofc just copy the ideas, but we don't want that. we want to research it
+15:03 -!- cbot [~FS@ool-4351bb76.dyn.optonline.net] has joined ##math
+15:03 -!- mandeep [~mandeep@2600:1700:c030:26f0:3297:4437:e98a:7fef] has quit [Quit: Leaving]
+15:03 < meingtsla> waterdrop: Can you elaborate on what you're not seeing?
+15:04 < graff> obviously the naive algorithm for exponentation of non-integers is just x * x * x * x ...., but this appears to have an extra multiplication intermitently to spped that up
+15:04 < waterdrop> meingtsla: The first two use cases in the application section are obvious to me; I'm not quite sure about the a = bcos(y) +- sqrt(c^2 - b^2sin^2(y)) case
+15:05 -!- orbyt_ [~orbyt@172.92.5.20] has joined ##math
+15:05 -!- cuso4 [~cuso4@31-208-71-173.cust.bredband2.com] has quit [Ping timeout: 276 seconds]
+15:06 < meingtsla> waterdrop: Scroll down to where it says "The third formula shown is the result of solving for a in the quadratic equation ..."
+15:07 < waterdrop> ah I see, ok
+15:07 < graff> it seems like there is a logical shift in there. that would make 12345678 iterations into just 8 i guess
+15:08 < dila> what is this
+15:08 < graff> 12345678 -> 01234567 -> 00123456 -> 00012345 ...
+15:08 < dila> you can do it in powers of two
+15:08  * graff feels shame at having said "this :(
+15:09 < graff> "this" *
+15:09 < dila> x^n, factor the exponent and compute as x^(a + b2 + c4 + d8 + e16 + ...)
+15:10 < dila> for example, if n=7, compute: n * n^2 * n^4
+15:10 -!- dhaller [~dhaller@108.177.134.75] has joined ##math
+15:10 < dila> x * x^2 * x^4
+15:10 < dila> i mean
+15:11 -!- energizer [~energizer@unaffiliated/energizer] has joined ##math
+15:11 < graff> dila: ok. i don't quite see what you mean, but trying to get a grasp
+15:12 -!- nimitz [~ztimin@24.157.180.57] has joined ##math
+15:12 < dila> its a decomposition into a sum of powers of two
+15:12 < graff> i guess that logical shift is of a binary number too, so it's not really decreasing quite like what I said
+15:12 < graff> dila: alright. let me write that into my notes for further study. thank you extremely
+15:12 < dila> i didn't use a shift
+15:12 < dila> you can accumulate inverse powers of two by halving each iteration
+15:12 -!- codygo [~codygo@108-213-3-91.lightspeed.chrlnc.sbcglobal.net] has quit [Quit: leaving]
+15:13 < dila> https://pastebin.com/PBJfePKF
+15:13 < dila> here is a reference for you frgau
+15:13 -!- TorkMattar [~Thunderbi@81-66-219-248.rev.numericable.fr] has joined ##math
+15:13 < dila> graff, my mistake
+15:13 -!- efm [~efm@vpn.tummy.com] has quit [Remote host closed the connection]
+15:14 < graff> i'd like to understand it without a shift too if possible. the congintive overhead of logical shifting in binary doesn't help my developers or me that much
+15:15 < graff> some are better with it that others obviously
+15:15 < graff> thank you dila 
+15:16 < dila> well shifting corresponds to multiplication by a power of two
+15:16 < dila> a << b is the same as a * 2&b
+15:16 < graff> codevelopers *
+15:16 < dila> a << b is the same as a * 2^b
+
+
+/* exponentiation by squaring */
+int element_exp(const int x, const int y) {
+  int r = 1;
+  int z = x;
+  for (int i = 0; i < 32; ++i) {
+    if ((y >> i) & 1) {
+      r = (r * z) % field_size;
+    }
+    z = (z * z) % field_size;
+  }
+  return r;
+}
