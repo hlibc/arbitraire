@@ -81,6 +81,14 @@ void *arb_realloc(void *ptr, size_t len)
 fxdpnt *arb_expand(fxdpnt *flt, size_t request)
 {
 	static int lever = 0;
+
+	// FIXME:  This should be replaced with a better method
+	
+	size_t i = 16;
+	while (i <= request) {
+		i += 128;
+	}
+	request = i;
 	
 	if (flt == NULL) {
 		flt = arb_alloc(request);
