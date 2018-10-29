@@ -30,7 +30,6 @@ void arb_destroy(fxdpnt *flt)
 
 void arb_init(fxdpnt *flt)
 {
-	assert(flt);
 	flt->sign = '+';
 	flt->len = 0;
 }
@@ -82,13 +81,11 @@ fxdpnt *arb_expand(fxdpnt *flt, size_t request)
 {
 	static int lever = 0;
 
-	// FIXME:  This should be replaced with a better method
-	
-	size_t i = 16;
-	while (i <= request) {
-		i += 128;
-	}
-	request = i;
+	/* align on a multiple of 2 */
+	if (request > 2)
+		request = (((request / 2) + 1) * 2);
+	else
+		request = 2;
 	
 	if (flt == NULL) {
 		flt = arb_alloc(request);
