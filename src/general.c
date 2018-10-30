@@ -81,7 +81,7 @@ fxdpnt *arb_expand(fxdpnt *flt, size_t request)
 {
 	static int lever = 0;
 
-	/* align on a multiple of 2 */
+	/* align on a multiple of 16 */
 	if (request > 16)
 		request = (((request / 16) + 1) * 16);
 	else
