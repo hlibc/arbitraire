@@ -96,9 +96,5 @@ size_t rr(fxdpnt*);
 int iszero(fxdpnt*);
 /* exp */
 fxdpnt *arb_exp(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-fxdpnt *arb_exp2(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-fxdpnt *arb_exp3(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-/* hardware optimization */
-long hrdware_div_rem(long, long);
 #endif
 
