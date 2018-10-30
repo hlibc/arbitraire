@@ -82,10 +82,10 @@ fxdpnt *arb_expand(fxdpnt *flt, size_t request)
 	static int lever = 0;
 
 	/* align on a multiple of 2 */
-	if (request > 2)
-		request = (((request / 2) + 1) * 2);
+	if (request > 16)
+		request = (((request / 16) + 1) * 16);
 	else
-		request = 2;
+		request = 16;
 	
 	if (flt == NULL) {
 		flt = arb_alloc(request);
