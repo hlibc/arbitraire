@@ -20,10 +20,7 @@ void arb_copyreverse(fxdpnt *b, fxdpnt *a)
 
 void _arb_copy_core(ARBT *b, ARBT *a, size_t len)
 {
-	//memcpy(b, a, len * sizeof(ARBT));
-	size_t i = 0;
-	for (i=0;i < len;++i)
-		b[i] = a[i];
+	memcpy(b, a, len * sizeof(ARBT));
 }
 
 void arb_copy(fxdpnt *b, fxdpnt *a)

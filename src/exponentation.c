@@ -3,7 +3,7 @@
 	Copyright 2018  Christopher M. Graff
 */
 
-fxdpnt *arb_exp3(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+fxdpnt *arb_exp(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
 	fxdpnt *t;
 	fxdpnt *o;
