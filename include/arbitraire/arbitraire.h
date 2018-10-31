@@ -25,6 +25,12 @@ typedef struct {		// fxdpnt fixed point type
 	size_t allocated;	// Length of allocated memory
 } fxdpnt;
 
+typedef struct {
+	char sign;
+	fxdpnt *w;		// whole number part
+	fxdpnt *e;		// exponent
+} ieeeflt;
+
 /* globals */
 fxdpnt *zero;
 fxdpnt *p5;
