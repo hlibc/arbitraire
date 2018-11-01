@@ -51,6 +51,20 @@ void *arb_realloc(void *ptr, size_t len)
 	return ret;
 }
 
+void arb_cleanup(void)
+{
+	if (zero)
+		arb_free(zero);
+	if (p5)
+		arb_free(p5);
+	if (one)
+		arb_free(one);
+	if (two)
+		arb_free(two);
+	if (ten)
+		arb_free(ten);
+}
+
 fxdpnt *arb_expand(fxdpnt *o, size_t request)
 {
 	static int lever = 0;
@@ -81,6 +95,7 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 		one = arb_str2fxdpnt("1");
 		two = arb_str2fxdpnt("2");
 		ten = arb_str2fxdpnt("10");
+		atexit(arb_cleanup);
 	}
 	return o;
 }
