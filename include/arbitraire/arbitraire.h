@@ -2,7 +2,6 @@
 #define ARBSH_ARBPREC_H
 
 #include <stdio.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
@@ -10,6 +9,7 @@
 #include <limits.h>
 #include <assert.h>
 #include <stdint.h>
+#include <math.h>
 
 /* defines */
 #define ARBT unsigned char	// designed to be any type

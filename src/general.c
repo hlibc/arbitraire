@@ -1,5 +1,3 @@
-#include <assert.h>
-#include <string.h>
 #include <arbitraire/arbitraire.h>
 
 void arb_error(char *message)
