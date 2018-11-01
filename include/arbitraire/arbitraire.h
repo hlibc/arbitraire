@@ -47,8 +47,6 @@ fxdpnt *arb_add_inter(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_sub_inter(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_sub(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_add(fxdpnt *, fxdpnt *, fxdpnt *, int);
-fxdpnt *arb_sub2(fxdpnt *, fxdpnt *, fxdpnt *, int);
-fxdpnt *arb_add2(fxdpnt *, fxdpnt *, fxdpnt *, int);
 ARBT arb_place(fxdpnt *, fxdpnt *, size_t *, size_t);
 fxdpnt *arb_newtonian_div(fxdpnt *, fxdpnt *, fxdpnt *, int, int);
 fxdpnt *arb_div(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
@@ -80,7 +78,6 @@ void arb_copyreverse(fxdpnt *, fxdpnt *);
 fxdpnt *nsqrt(fxdpnt *, int, size_t);
 /* general */
 void arb_init(fxdpnt *);
-fxdpnt *arb_create(fxdpnt *, size_t);
 void arb_error(char *);
 /* allocation */
 fxdpnt *arb_alloc(size_t);
@@ -89,7 +86,6 @@ void *arb_malloc(size_t);
 void *arb_realloc(void *, size_t);
 void *arb_calloc(size_t, size_t);
 void arb_free(fxdpnt *);
-void arb_destroy(fxdpnt *);
 void arb_freeglobals(void);
 /* base conversion */
 fxdpnt *convscaled(fxdpnt *, fxdpnt *, int, int);

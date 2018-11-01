@@ -15,37 +15,18 @@ size_t rr(fxdpnt *a)
 
 void arb_free(fxdpnt *flt)
 {
-	arb_destroy(flt);
-	free(flt);
-}
-
-void arb_destroy(fxdpnt *flt)
-{
 	if (flt->number) {
 		free(flt->number);
 		flt->number = NULL;
 		flt->allocated = 0;
 	}
+	free(flt);
 }
 
 void arb_init(fxdpnt *flt)
 {
 	flt->sign = '+';
 	flt->len = 0;
-}
-
-fxdpnt *arb_create(fxdpnt *flt, size_t len)
-{
-	if (!flt) {
-		flt = arb_malloc(sizeof(fxdpnt));
-	}
-
-	arb_init(flt);
-	flt->number = arb_calloc(1, sizeof(ARBT) * len);
-	flt->allocated = len;
-	flt->len = len;
-	flt->lp = 0;
-	return flt;
 }
 
 void *arb_malloc(size_t len)
@@ -66,7 +47,13 @@ void *arb_calloc(size_t nmemb, size_t len)
 
 fxdpnt *arb_alloc(size_t len)
 {
-	return arb_create(NULL, len);
+	fxdpnt *o = arb_malloc(sizeof(fxdpnt));
+	arb_init(o);
+	o->number = arb_calloc(1, sizeof(ARBT) * len);
+	o->allocated = len;
+	o->len = len;
+	o->lp = 0;
+	return o;
 }
 
 void *arb_realloc(void *ptr, size_t len)

@@ -59,7 +59,7 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	size_t z = 0, y = 0; // dummy variables for the mirror
 	ARBT *array;
 
-	array = arb_malloc((MAX(a->len, b->len) * 2) * sizeof(ARBT)); // fixme: this is way oversized
+	array = arb_malloc((MAX(a->len, b->len) * 2) * sizeof(ARBT));
 
 	for (; i < a->len || j < b->len;c->len++, ++r){
 		mir = arb_place(a, b, &y, r) - arb_place(b, a, &z, r) + mborrow; // mirror
@@ -138,45 +138,3 @@ fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	return c2;
 }
 
-fxdpnt *arb_add2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
-{
-	fxdpnt *c2 = arb_expand(NULL, (a->len + b->len) * 2);
-	c2->lp = MAX(a->lp, b->lp);
-	arb_init(c2);
-	if (a->sign == '-' && b->sign == '-') {
-		arb_flipsign(c2);
-		c2 = arb_add_inter(a, b, c2, base);
-	}
-	else if (a->sign == '-')
-		c2 = arb_sub_inter(b, a, c2, base);
-	else if (b->sign == '-')
-		c2 = arb_sub_inter(a, b, c2, base);
-	else
-		c2 = arb_add_inter(a, b, c2, base);
-	if (c)
-		arb_free(c);
-	return c2;
-}
-
-fxdpnt *arb_sub2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
-{
-	fxdpnt *c2 = arb_expand(NULL, (a->len + b->len) * 2);
-	c2->lp = MAX(a->lp, b->lp);
-	arb_init(c2);
-	if (a->sign == '-' && b->sign == '-')
-	{
-		arb_flipsign(c2);
-		c2 = arb_sub_inter(a, b, c2, base);
-	}
-	else if (a->sign == '-'){
-		arb_flipsign(c2);
-		c2 = arb_add_inter(a, b, c2, base);
-	}
-	else if (b->sign == '-' || a->sign == '-')
-		c2 = arb_add_inter(a, b, c2, base);
-	else
-		c2 = arb_sub_inter(a, b, c2, base);
-	if (c)
-		arb_free(c);
-	return c2;
-}
