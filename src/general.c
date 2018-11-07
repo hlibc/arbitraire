@@ -1,3 +1,5 @@
+#include <assert.h>
+#include <string.h>
 #include <arbitraire/arbitraire.h>
 
 void arb_error(char *message)
@@ -43,6 +45,17 @@ void *arb_calloc(size_t nmemb, size_t len)
 	return ret;
 }
 
+fxdpnt *arb_alloc(size_t len)
+{
+	fxdpnt *o = arb_malloc(sizeof(fxdpnt));
+	arb_init(o);
+	o->number = arb_calloc(1, sizeof(ARBT) * len);
+	o->allocated = len;
+	o->len = len;
+	o->lp = 0;
+	return o;
+}
+
 void *arb_realloc(void *ptr, size_t len)
 {
 	void *ret;
@@ -51,21 +64,7 @@ void *arb_realloc(void *ptr, size_t len)
 	return ret;
 }
 
-void arb_cleanup(void)
-{
-	if (zero)
-		arb_free(zero);
-	if (p5)
-		arb_free(p5);
-	if (one)
-		arb_free(one);
-	if (two)
-		arb_free(two);
-	if (ten)
-		arb_free(ten);
-}
-
-fxdpnt *arb_expand(fxdpnt *o, size_t request)
+fxdpnt *arb_expand(fxdpnt *flt, size_t request)
 {
 	static int lever = 0;
 
@@ -75,17 +74,12 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 	else
 		request = 16;
 	
-	if (o == NULL) { 
-		o = arb_malloc(sizeof(fxdpnt));
-		arb_init(o);
-		o->number = arb_calloc(1, sizeof(ARBT) * request);
-		o->allocated = request;
-		o->len = request;
-		o->lp = 0;
-	} else if (request > o->allocated) {
-		o->allocated = request;
-		o->number = arb_realloc(o->number, o->allocated * sizeof(ARBT));
-		memset(o->number + o->len, 0, (o->allocated - o->len) * sizeof(ARBT));
+	if (flt == NULL) {
+		flt = arb_alloc(request);
+	} else if (request > flt->allocated) {
+		flt->allocated = request;
+		flt->number = arb_realloc(flt->number, flt->allocated * sizeof(ARBT));
+		memset(flt->number + flt->len, 0, (flt->allocated - flt->len) * sizeof(ARBT));
 	}
 	if (lever == 0)
 	{
@@ -95,8 +89,6 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 		one = arb_str2fxdpnt("1");
 		two = arb_str2fxdpnt("2");
 		ten = arb_str2fxdpnt("10");
-		atexit(arb_cleanup);
 	}
-	return o;
+	return flt;
 }
-
