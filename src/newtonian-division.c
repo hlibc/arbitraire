@@ -11,9 +11,9 @@ fxdpnt *arb_newtonian_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, int scale)
 
 	for (;;)
 	{ 
-		hold = arb_mul(b, g, hold, base, g->len);
+		hold = arb_mul(b, g, hold, base, scale);
 		hold = arb_sub(two, hold, hold, base);
-		g1 = arb_mul(g, hold, g1, base, g1->len);
+		g1 = arb_mul(g, hold, g1, base, scale);
 	
 		if (arb_compare(g, g1, base) == 0) 
 		{
