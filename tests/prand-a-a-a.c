@@ -61,7 +61,6 @@ int main(int argc, char *argv[])
 	
 	arb_print(a);
 	arb_free(a);
-	arb_freeglobals();
 	free(string1);
 	fclose(fp);
 	return 0;

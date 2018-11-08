@@ -2,7 +2,6 @@
 #define ARBSH_ARBPREC_H
 
 #include <stdio.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
@@ -10,6 +9,7 @@
 #include <limits.h>
 #include <assert.h>
 #include <stdint.h>
+#include <math.h>
 
 /* defines */
 #define ARBT unsigned char	// designed to be any type
@@ -86,7 +86,6 @@ void *arb_malloc(size_t);
 void *arb_realloc(void *, size_t);
 void *arb_calloc(size_t, size_t);
 void arb_free(fxdpnt *);
-void arb_freeglobals(void);
 /* base conversion */
 fxdpnt *convscaled(fxdpnt *, fxdpnt *, int, int);
 /* to hardware and back */

@@ -79,7 +79,6 @@ int main(int argc, char *argv[])
 	arb_free(b);
 	arb_free(c);
 	fclose(fp);
-	arb_freeglobals();
 
 	return 0;
 }

@@ -26,8 +26,6 @@ fxdpnt *arb_str2fxdpnt(const char *str)
 
 fxdpnt *arb_parse_str(fxdpnt *flt, const char *str)
 {
-	assert(str);
-
 	if (!flt) {
 		flt = arb_expand(NULL, 1);
 	}
