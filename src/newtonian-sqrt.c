@@ -1,5 +1,17 @@
 #include <arbitraire/arbitraire.h>
 
+/*
+	Newton's swuare root is a typical algorithm which is more or less
+	identical to the Babylonian Method. We deploy a variation which tests
+	the scales of the two guesses and allows the formula to break out of
+	the loop, ergo avoiding oscillation and other pitfalls.
+
+	This method always produces correct answers as it is scaled past the
+	needed precision and it never sizes up in an infinite loop as it has
+	a mechanism for breaking out of the loop based on the scale of the
+	converging "guesses".
+*/
+
 fxdpnt *nsqrt(fxdpnt *a, int base, size_t scale)
 {
 	size_t s1 = 0;

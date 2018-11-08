@@ -1,5 +1,36 @@
 #include <arbitraire/arbitraire.h>
 
+/*
+	These addition and subtraction routines are based on a type of
+	imaginary array of zeros. This imaginary array is called upon
+	to make up for the difference needed in order to perform the
+	operations on arrays of different lengths.
+
+	While many subtraction routines require that the numbers first
+	be compared and the rearranged in the case that the zero threshold
+	is crossed, I have mitigated this by using a special property of
+	subtraction that takes advantage of a left over carry. When a
+	left over carry is detected, the inverse of the solution is used.
+	Therefore is the solution was 999 we would perform the operation:
+
+		answer = 1000 - 999
+
+	Instead of performing this operation in its entirety however, the
+	inverse solution is calculated along side the normative one and
+	simply discarded in the case it is not needed (there is no left
+	over carry).
+
+	There are a number of tradeoffs involved in with using these methods.
+	I have decided to stay with this technique as I innovated it myself
+	for arbitraire and find it interesting for comparison against other
+	more common techniques.
+
+	It would be prudent to also implement the more traditional approach
+	of first comparing the numbers and then rearranging them, increasing
+	the magnitude to match the places and other typical algorithm so as
+	to compare them with arbitraire's techniques.
+*/
+
 void arb_reverse(fxdpnt *x)
 {
 	size_t i = 0, half = x->len / 2;

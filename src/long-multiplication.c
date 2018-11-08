@@ -1,4 +1,16 @@
 #include <arbitraire/arbitraire.h>
+/*
+	A "partial carry" variation on the traditional "school book" long
+	multiplication algorithm. Arrays are accessed via n-1 to allow unsigned
+	types to be used therefore obtaining the maximum possible indexable 
+	variation.
+
+	I've devised what appears to be a somewhat novel method for making the
+	partial carry long multiplication algorithm zelf zeroing. Many of these
+	algorithms depend on the arrays being zeroed out first, but this
+	extra step alleviates the need for this. 
+
+*/
 
 size_t arb_mul_core(ARBT *a, size_t alen, ARBT *b, size_t blen, ARBT *c, int base)
 {

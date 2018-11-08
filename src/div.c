@@ -1,5 +1,40 @@
 #include <arbitraire/arbitraire.h>
 
+/*
+	This is an implementation of Algorithm D by Donald Knuth
+
+	Algorithm D is based on long division however it is quite a bit
+	different than the typical school-book algorithm method.
+
+	One of the things that makes Algorithm D unique is that it makes
+	use of arrays that start at the first element instead of the zeroth.
+	In this way carries are actually put into the zeroth element instead
+	of any need for the arrays to be expanded leading to very concise 
+	code.
+
+	Algorithm D has a few other steps that separate it from typical 
+	school-book long division. 
+		* A normalization step is provided
+		* 2 guesses are made early in the guessing stategem
+		* Finally the answer is derived from a long multiplication
+		  followed by a "long" subtraction and a "long" addition.
+		  
+	Care was taken to reproduce Knuth's original algorithm which was
+	written in MIX theoretical assembly. Wherever possible, I tried to
+	use Knuth's variable naming convention and duplicate his usage of
+	goto statements in order to produce an educationally oriented
+	interpretation that emphasizes his methods.
+
+	I have omitted the final step of calculating the modulus operation
+	for the sake of efficiency, though it should probably be added in
+	at some future point. This would likely produce a speedup over
+	arbitraire's current method which implements modulus in terms of
+
+		modulus(a) = a - (b * (a / b))
+	
+	see src/modulo.c for this operation.
+*/
+
 void shmul(ARBT *num, int size, int digit, ARBT *result, int base)
 {
 	int carry, value;
