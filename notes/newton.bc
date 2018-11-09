@@ -1,0 +1,16 @@
+x = 123;
+y = 10;
+guess = .005;
+new_guess = 0;
+i=0;
+while (i<100)
+{
+	new_guess = guess * (2 - y * guess);
+	if (guess == new_guess)
+		break;
+	guess = new_guess;
+	i = i + 1;
+}
+
+x * guess;
+quit
