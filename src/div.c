@@ -1,7 +1,7 @@
 #include <arbitraire/arbitraire.h>
 
 /*
-	This is an implementation of Algorithm D by Donald Knuth
+	This is an implementation of Donald Knuth's Algorithm D
 
 	Algorithm D is based on long division however it is quite a bit
 	different than the typical school-book algorithm method.
@@ -21,7 +21,7 @@
 		  
 	Care was taken to reproduce Knuth's original algorithm which was
 	written in MIX theoretical assembly. Wherever possible, I tried to
-	use Knuth's variable naming convention and duplicate his usage of
+	use Knuth's variable naming conventios nand duplicate his usage of
 	goto statements in order to produce an educationally oriented
 	interpretation that emphasizes his methods.
 
