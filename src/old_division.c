@@ -1,45 +1,43 @@
 #include <arbitraire/arbitraire.h>
 
-fxdpnt *old_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 {
 	size_t i = 0;
 	size_t j = 0;
 	size_t z = 0;
-	size_t width = a->len + b->len;
-	size_t diff = 0;
-	size_t off = 0;
+	size_t width = num->len + den->len;
 	char *mir = arb_malloc(width);
 	char *tmir = arb_malloc(width);
 	int sum = 0;
 	int rec = 0;
-	c->lp = 0;
-	c->len = 0;
+	q->lp = 0;
+	q->len = 0;
 	
-	arb_init(c);
+	arb_init(q);
 	
 	memset(mir, 0, width);
-	memcpy(mir, a->number, a->len);
-	memset(c->number, 0, a->len);
-	c->number[z] = 0;
+	memcpy(mir, num->number, num->len);
+	memset(q->number, 0, num->len);
+	q->number[z] = 0;
 
-	for (; z < a->len;)
+	for (; z < num->len;)
 	{ 
-		for (rec = 0, i = 0, j = z ; i < b->len ; j++ ,i++)
+		for (rec = 0, i = 0, j = z ; i < den->len ; j++ ,i++)
 		{ 
-			sum = (mir[j]) - (b->number[i]);
+			sum = (mir[j]) - (den->number[i]);
 			if (sum < 0)
 			{
 				if (j == z)
 				{ 
-					mir[j + 1] += ((mir[j]) * base);
+					mir[j + 1] += ((mir[j]) * b);
 					z++;
-					c->len++;
-					c->number[z] = 0;
+					q->len++;
+					q->number[z] = 0;
 				}
 			 	else
 				{
 					mir[j - 1] -= 1;
-					mir[j] += base;
+					mir[j] += b;
 				}
 				rec = 1;
 				break;
@@ -49,12 +47,12 @@ fxdpnt *old_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 		if (rec == 0)
 		{
 			memcpy(mir, tmir, j);
-			c->number[z] += 1;
+			q->number[z] += 1;
 		}
 	} 
 	free(mir);
 	free(tmir);
-	return c;
+	return q;
 }
 
 

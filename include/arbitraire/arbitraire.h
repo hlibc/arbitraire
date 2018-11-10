@@ -26,6 +26,17 @@ typedef struct {		// fxdpnt fixed point type
 } fxdpnt;
 
 typedef struct {
+        int *number;
+        int *mirror;
+        int sign; /* immutable sign (programmer) */
+        int ngis; /* mutable sign (impl) */
+        size_t float_pos;
+        size_t len;
+        size_t allocated;
+        size_t chunk;
+} bigflt;
+
+typedef struct {
 	char sign;
 	fxdpnt *w;		// whole number part
 	fxdpnt *e;		// exponent
@@ -97,5 +108,7 @@ size_t rr(fxdpnt*);
 int iszero(fxdpnt*);
 /* exp */
 fxdpnt *arb_exp(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
+/* novelties */
+fxdpnt *old_div(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 #endif
 

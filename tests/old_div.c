@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
 	fxdpnt *a, *b, *c = NULL;
 	a = arb_str2fxdpnt(argv[1]);
 	b = arb_str2fxdpnt(argv[2]);
-	c = arb_expand(NULL, 1);
-	c = old_div(a, b, c, base);
+	c = arb_expand(NULL, a->len + b->len);
+	c = old_div(a, b, c, base, scale);
 	arb_print(c);
 	arb_free(a);
 	arb_free(b);
