@@ -101,8 +101,8 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	size_t offset = 0;
 	size_t lea = 0;
 	size_t leb = 0;
+	size_t i = 0;
 	size_t j = 0;
-	size_t k = 0;
 	ARBT qg = 0;
 
 	if (iszero(den) == 0)
@@ -145,30 +145,30 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	}
 
 	if (leb > lea)
-		k=(leb-lea);
+		j=(leb-lea);
 	
-	for ( qg = b-1;j <= lea+scale-leb;++j, ++k, qg = b-1)
+	for ( qg = b-1;i <= lea+scale-leb;++i, ++j, qg = b-1)
 	{
-		if (v[0] != u[j])
-			qg = (u[j]*b + u[j+1]) / v[0];
+		if (v[0] != u[i])
+			qg = (u[i]*b + u[i+1]) / v[0];
 		
-		if (v[1]*qg > (u[j]*b + u[j+1] - v[0]*qg)*b + u[j+2])
+		if (v[1]*qg > (u[i]*b + u[i+1] - v[0]*qg)*b + u[i+2])
 		{
 			qg = qg - 1;
-			if (v[1]*qg > (u[j]*b + u[j+1] - v[0]*qg)*b + u[j+2])
+			if (v[1]*qg > (u[i]*b + u[i+1] - v[0]*qg)*b + u[i+2])
 				qg = qg - 1;
 		} 
 		// D4. [Multiply and Subtract]
 		if (qg != 0){
 			arb_mul_core(v, leb, &qg, 1, temp, b);
-			if (!(_long_sub(u+leb, j, temp, leb, b)))
+			if (!(_long_sub(u+leb, i, temp, leb, b)))
 				goto D7;
 			qg = qg - 1;
-			if (_long_add(u+leb, j, v, leb-1, b))
+			if (_long_add(u+leb, i, v, leb-1, b))
 				u[0] = 0; 
 		}
 		D7: // D7.
-		q->number[k] = qg;
+		q->number[j] = qg;
 	}
 	end:
 	q = remove_leading_zeros(q);
