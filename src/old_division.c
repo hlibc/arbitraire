@@ -6,8 +6,8 @@ fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	size_t j = 0;
 	size_t z = 0;
 	size_t width = num->len + den->len;
-	char *mir = arb_malloc(width);
-	char *tmir = arb_malloc(width);
+	ARBT *u = arb_malloc(width);
+	ARBT *v = arb_malloc(width);
 	int sum = 0;
 	int rec = 0;
 	q->lp = 0;
@@ -15,8 +15,8 @@ fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	
 	arb_init(q);
 	
-	memset(mir, 0, width);
-	memcpy(mir, num->number, num->len);
+	memset(u, 0, width);
+	memcpy(u, num->number, num->len);
 	memset(q->number, 0, num->len);
 	q->number[z] = 0;
 
@@ -24,34 +24,34 @@ fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	{ 
 		for (rec = 0, i = 0, j = z ; i < den->len ; j++ ,i++)
 		{ 
-			sum = (mir[j]) - (den->number[i]);
+			sum = (u[j]) - (den->number[i]);
 			if (sum < 0)
 			{
 				if (j == z)
 				{ 
-					mir[j + 1] += ((mir[j]) * b);
+					u[j + 1] += ((u[j]) * b);
 					z++;
 					q->len++;
 					q->number[z] = 0;
 				}
 			 	else
 				{
-					mir[j - 1] -= 1;
-					mir[j] += b;
+					u[j - 1] -= 1;
+					u[j] += b;
 				}
 				rec = 1;
 				break;
 			}
-			tmir[j] = sum;
+			v[j] = sum;
 		}
 		if (rec == 0)
 		{
-			memcpy(mir, tmir, j);
+			memcpy(u, v, j);
 			q->number[z] += 1;
 		}
 	} 
-	free(mir);
-	free(tmir);
+	free(u);
+	free(v);
 	return q;
 }
 
