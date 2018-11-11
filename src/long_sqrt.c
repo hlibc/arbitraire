@@ -35,12 +35,18 @@
         * multiply the answer by 20 and put into temp
         * find how many times temp can go into the carried down sub and its two digits
 
+
+	* if the number has an even length you can get two digits but if the length
+	 *  is odd then you'll need to start with the first three
+
 */
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
 	a = a;
 	base = base;
 	scale = scale;
+
+	
 	fxdpnt *ret = NULL;
 	return ret;
 }
