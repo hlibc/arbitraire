@@ -1,5 +1,5 @@
-#ifndef ARBSH_ARBPREC_H
-#define ARBSH_ARBPREC_H
+#ifndef ARBITRAIRE_INTERNAL_H
+#define ARBITRAIRE_INTERNAL_H
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -15,9 +15,9 @@ fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	
 	arb_init(q);
 	
-	memset(u, 0, width);
-	memcpy(u, num->number, num->len);
-	memset(q->number, 0, num->len);
+	memset(u, 0, width * sizeof(ARBT));
+	memcpy(u, num->number, num->len * sizeof(ARBT));
+	memset(q->number, 0, num->len * sizeof(ARBT));
 	q->number[z] = 0;
 
 	for (; z < num->len;)
@@ -46,7 +46,7 @@ fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 		}
 		if (rec == 0)
 		{
-			memcpy(u, v, j);
+			memcpy(u, v, j * sizeof(ARBT));
 			q->number[z] += 1;
 		}
 	} 
