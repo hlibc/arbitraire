@@ -3,13 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-	int num1 = strtol(argv[1], NULL, 10);
-
-	if (num1 / 9 > -1)
-	{
-		printf("divide by nine was greater than -1\n");
-	}
-	else printf ("nines were too big\n");
+	int num1 = strtol(argv[1], NULL, 10); 
 
 	int base = 10;
 
@@ -17,19 +11,15 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-		if ( num * num <= num1 )
-		{
-			printf("%d * %d was <= %d\n", num, num, num1);
-			if ( num * num >= num1 -base -1)
-			{
-				printf("%d * %d was >= %d -base-1\n", num, num, num1);
-				break;
-			}
-			else
-				printf("but it wasn't >=  %d -base-1\n", num1);
+		if ( num * num == num1 )
+		{ 
+			break;
+		} else if (num * num > num1 ) {
+			--num;
+			break;
 		}
 		++num;
-		if (num == base)
+		if (num == base + 1)
 			break;
 	}
 	printf("final result was %d\n", num);
