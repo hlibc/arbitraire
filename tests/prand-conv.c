@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #define MAXIMA 10000
-#include "make_bignum.h"
 
 int main(void)
 { 

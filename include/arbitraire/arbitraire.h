@@ -3,11 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <unistd.h>
 #include <string.h>
 #include <limits.h>
-#include <assert.h>
 #include <stdint.h>
 #include <math.h>
 
@@ -39,8 +37,6 @@ void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);
 /* io */
 void arb_print(fxdpnt *);
 fxdpnt *arb_str2fxdpnt(const char *);
-fxdpnt *arb_parse_str(fxdpnt *, const char *);
-int arb_highbase(int);
 /* comparison */
 int arb_compare(fxdpnt *, fxdpnt *, int);
 /* copying */
@@ -65,7 +61,6 @@ fxdpnt *hrdware2arb(size_t);
 size_t fxd2sizet(fxdpnt *, int);
 /* general */
 fxdpnt *remove_leading_zeros(fxdpnt *);
-size_t rr(fxdpnt*);
 int iszero(fxdpnt*);
 /* exp */
 fxdpnt *arb_exp(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
@@ -77,5 +72,6 @@ size_t arb_allocated(fxdpnt *);
 char arb_sign(fxdpnt *);
 size_t arb_left(fxdpnt *);
 
+char *make_bignum(size_t, int, int);
 #endif
 

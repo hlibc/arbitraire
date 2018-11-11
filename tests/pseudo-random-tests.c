@@ -3,7 +3,6 @@
 #include <time.h>
 #define MAXIMA 10000
 #define BASE_MAX 10
-#include "make_bignum.h"
 
 int main(int argc, char *argv[])
 {

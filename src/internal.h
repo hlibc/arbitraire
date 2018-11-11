@@ -3,13 +3,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <unistd.h>
 #include <string.h>
 #include <limits.h>
-#include <assert.h>
 #include <stdint.h>
 #include <math.h>
+#include <time.h>
 
 /* defines */
 #define ARBT unsigned char	// designed to be any type
@@ -99,5 +98,7 @@ size_t arb_allocated(fxdpnt *);
 char arb_sign(fxdpnt *);
 size_t arb_left(fxdpnt *);
 
+
+char *make_bignum(size_t, int, int);
 #endif
 
