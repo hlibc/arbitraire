@@ -69,6 +69,7 @@ void arb_copy(fxdpnt *, fxdpnt *);
 void arb_copyreverse(fxdpnt *, fxdpnt *);
 /* sqrt */
 fxdpnt *nsqrt(fxdpnt *, int, size_t);
+fxdpnt *long_sqrt(fxdpnt *, int, size_t);
 /* general */
 void arb_init(fxdpnt *);
 void arb_error(char *);
