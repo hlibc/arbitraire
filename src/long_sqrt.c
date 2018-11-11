@@ -42,6 +42,22 @@
 	* if the number has an even length you can get two digits but if the length
 	 *  is odd then you'll need to start with the first three
 
+        while (1)
+        {
+                if ( num * num == num1 )
+                {
+                        break;
+                } else if (num * num > num1 ) {
+                        --num;
+                        break;
+                }
+                ++num;
+
+
+        }
+
+	this style of loop should work for figuring out the squares
+
 */
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
