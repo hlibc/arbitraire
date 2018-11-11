@@ -1,5 +1,5 @@
-#ifndef INTERNAL_ARBPREC_H
-#define INTERNAL_ARBPREC_H
+#ifndef ARBITRAIRE_H
+#define ARBITRAIRE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,13 +10,6 @@
 #include <math.h>
 
 typedef struct fxdpnt fxdpnt;
-
-/* globals */
-extern fxdpnt *zero;
-extern fxdpnt *p5;
-extern fxdpnt *one;
-extern fxdpnt *two;
-extern fxdpnt *ten;
 
 /* function prototypes */
 /* arithmetic */
@@ -71,7 +64,7 @@ size_t arb_size(fxdpnt *);
 size_t arb_allocated(fxdpnt *);
 char arb_sign(fxdpnt *);
 size_t arb_left(fxdpnt *);
-
+/* this functions generates bignums as char strings */
 char *make_bignum(size_t, int, int);
 #endif
 
