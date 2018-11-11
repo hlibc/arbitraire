@@ -3,10 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-	int num1 = strtol(argv[1], NULL, 10); 
-
-	int base = 10;
-
+	int num1 = strtol(argv[1], NULL, 10);
 	int num = 2;
 
 	while (1)
@@ -19,8 +16,8 @@ int main(int argc, char *argv[])
 			break;
 		}
 		++num;
-		if (num == base + 1)
-			break;
+
+
 	}
 	printf("final result was %d\n", num);
 	
