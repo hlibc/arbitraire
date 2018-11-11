@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 fxdpnt *hrdware2arb(size_t a)
 {

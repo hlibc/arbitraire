@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 void arb_error(char *message)
 {
@@ -100,3 +100,22 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 	return o;
 }
 
+size_t arb_size(fxdpnt *a)
+{
+        return a->len;
+}
+
+size_t arb_allocated(fxdpnt *a)
+{
+        return a->allocated;
+}
+
+char arb_sign(fxdpnt *a)
+{
+        return a->sign;
+}
+
+size_t arb_left(fxdpnt *a)
+{
+	return a->lp;
+}

@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 size_t fxd2sizet(fxdpnt *a, int base)
 {

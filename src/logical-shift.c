@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 fxdpnt *arb_leftshift(fxdpnt *a, size_t n, int faux)
 {

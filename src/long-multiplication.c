@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 /*
 	A "partial carry" variation on the traditional "school book" long
 	multiplication algorithm. Arrays are accessed via n-1 to allow unsigned

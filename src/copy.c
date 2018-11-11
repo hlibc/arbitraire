@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 void _arb_copyreverse_core(ARBT *b, ARBT *a, size_t len)
 {

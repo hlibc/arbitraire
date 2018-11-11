@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 /*
 	These addition and subtraction routines are based on a type of

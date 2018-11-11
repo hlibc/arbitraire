@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 /*
 	Newton's swuare root is a typical algorithm which is more or less

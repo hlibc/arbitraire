@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 /* 
 	Copyright 2018  Christopher M. Graff
 */

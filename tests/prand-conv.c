@@ -9,7 +9,7 @@ int main(void)
 	char *string1 = make_bignum(MAXIMA, 10, 1);
 	fxdpnt *a;
 	a = arb_str2fxdpnt(string1);
-	fxdpnt *b = arb_expand(NULL, a->len);
+	fxdpnt *b = arb_expand(NULL, arb_size(a));
 
 	int base = 0;
 	while ( base <2 || (base > 10 && base < 16))

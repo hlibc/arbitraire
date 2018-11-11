@@ -11,10 +11,10 @@ int main(int argc, char *argv[])
 
 	printf("%s\n", argv[1]);
 	arb_print(a);
-	printf("->len = %zu\n", a->len);
-	printf("->lp = %zu\n", a->lp);
-	printf("->allocated = %zu\n", a->allocated);
-	printf("->sign = %c\n", a->sign);
+	printf("->len = %zu\n", arb_size(a));
+	printf("->lp = %zu\n", arb_left(a));
+	printf("->allocated = %zu\n", arb_allocated(a));
+	printf("->sign = %c\n", arb_sign(a));
 
 	arb_free(a);
 	return 0;

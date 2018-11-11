@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 /*
 	This is a basic modulus operation which naturally handles fractional

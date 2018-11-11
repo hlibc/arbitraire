@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 fxdpnt *convscaled(fxdpnt *a, fxdpnt *b, int ibase, int obase)
 {

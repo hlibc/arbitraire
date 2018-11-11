@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 fxdpnt *remove_leading_zeros(fxdpnt *c)
 {

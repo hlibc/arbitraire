@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 // check whether trailing digits from idx to a->len are 0s
 // return 1 if these digits are zeros, return 0 if not

@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 /*
 	This is an implementation of Donald Knuth's Algorithm D

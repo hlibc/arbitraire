@@ -1,4 +1,4 @@
-#include <arbitraire/arbitraire.h>
+#include "internal.h"
 
 void arb_flipsign(fxdpnt *flt)
 {
