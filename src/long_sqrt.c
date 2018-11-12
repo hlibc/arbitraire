@@ -58,13 +58,30 @@
 
 	this style of loop should work for figuring out the squares
 
+	
+	There is no position agnostic way to generalize long hand
+	square root
+
+	for instance if you started with sqrt(5555)
+	and tried to factor the first 5, you would get a "2"
+	and this is incorrect because the sqrt of 5555 is
+	74.531..., so you need to first start with the "55" in 
+	order to derive a "7" which is the first correct digit
+
 */
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
 	a = a;
 	base = base;
 	scale = scale;
+	int odd = 0;
+	if (a->lp % 2 == 1)
+		odd = 1;
 
+	if (odd)
+		printf("number was odd -- get 1 digit\n");
+	else
+		printf("number was even -- get 2 digits\n");
 	
 	fxdpnt *ret = NULL;
 	return ret;

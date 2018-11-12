@@ -63,11 +63,21 @@ void arb_fprint(FILE *fp, fxdpnt *flt)
 
 void arb_print(fxdpnt *flt)
 {
+	if (flt == NULL)
+	{
+		fprintf(stdout, "number was (null)\n");
+		return;
+	}
 	arb_fprint(stdout, flt);
 }
 
 void arb_printerr(fxdpnt *flt)
 {
+	if (flt == NULL)
+	{
+		fprintf(stdout, "number was (null)\n");
+		return;
+	}
 	arb_fprint(stderr, flt);
 }
 
