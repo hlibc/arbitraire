@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	int base = atoll(argv[3]);
-	int scale =  atoll(argv[4]);
+	int base = strtoll(argv[3], NULL, 10);
+	int scale =  strtoll(argv[4], NULL, 10);
 	fxdpnt *a = NULL;
 	fxdpnt *b = NULL;
 	fxdpnt *c = NULL;

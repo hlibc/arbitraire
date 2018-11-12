@@ -3,8 +3,8 @@
 
 int main(int argc, char *argv[])
 {
-	int num1 = strtol(argv[1], NULL, 10);
-	int num = 2;
+	long long num1 = strtoll(argv[1], NULL, 10);
+	long long num = 2;
 
 	while (1)
 	{

@@ -55,4 +55,12 @@ release:
 
 test:
 	$(MAKE) all
+	echo "sqrt tests"
 	./tests/prand-a-a-a-wrapper.sh sqrt
+	echo "div tests"
+	./tests/prand-a-a-a-wrapper.sh div
+	echo "add tests"
+	./tests/prand-a-a-a-wrapper.sh add
+	echo "sub tests"
+	./tests/prand-a-a-a-wrapper.sh sub
+

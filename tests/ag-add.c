@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 	if (argc < 4 )
 		arb_error("Needs 3 args, such as: 123 123 base");
 
-	int base = atol(argv[3]);
+	int base = strtoll(argv[3], NULL, 10);
 	fxdpnt *a;
 	a = arb_str2fxdpnt(argv[1]);
 	a = arb_add(a, a, a, base);

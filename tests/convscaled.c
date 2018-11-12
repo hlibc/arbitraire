@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	
-	int ibase = atoll(argv[2]);
-	int obase = atoll(argv[3]);
+	int ibase = strtoll(argv[2], NULL, 10);
+	int obase = strtoll(argv[3], NULL, 10);
 	fxdpnt *a = NULL;
 	fxdpnt *b = NULL;
 	a = arb_expand(a, 1);

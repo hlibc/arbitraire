@@ -6,8 +6,8 @@ int main(int argc, char *argv[])
 		arb_error("Needs 4 args, such as: 123 123 base scale");
 
 
-	int base = atoll(argv[3]);
-	int scale = atoll(argv[4]);
+	int base = strtoll(argv[3], NULL, 10);
+	int scale = strtoll(argv[4], NULL, 10);
 
 	fxdpnt *a, *b, *c = NULL;
 	a = arb_str2fxdpnt(argv[1]);
