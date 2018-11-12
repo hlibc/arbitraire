@@ -76,6 +76,7 @@ fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	{
 		a = arb_mul(a, a, a, base, scale);
 	}
+	
 	return a;
 }
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
@@ -84,6 +85,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	base = base;
 	scale = scale;
 	int odd = 0;
+	fxdpnt *start = arb_str2fxdpnt("2.0");
 	if (a->lp % 2 == 1)
 		odd = 1;
 
@@ -92,8 +94,8 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	else
 		printf("number was even -- get 2 digits\n");
 
+	start = factor(start, a, base, scale);
 	
 	
-	fxdpnt *ret = NULL;
-	return ret;
+	return start;
 }
