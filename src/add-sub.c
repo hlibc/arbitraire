@@ -169,3 +169,13 @@ fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	return c2;
 }
 
+void arb_sub2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base)
+{
+	*c = arb_sub(a, b, *c, base);
+}
+
+void arb_incr(fxdpnt **a, int base)
+{
+	*a = arb_add(*a, one, *a, base);
+}
+

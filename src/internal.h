@@ -101,5 +101,9 @@ size_t arb_left(fxdpnt *);
 
 
 char *make_bignum(size_t, int, int);
+
+
+void arb_incr(fxdpnt **, int);
+void arb_sub2(fxdpnt *, fxdpnt *, fxdpnt **, int);
 #endif
 

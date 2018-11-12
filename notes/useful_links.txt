@@ -1,67 +1,3 @@
-Arbitraire
-
-	An arbitrary precision mathematics library. 
-	
-	Arbitraire support a pure mathematics number system of continuous and
-	arbitrarily sized fractional datum.
-
-
-BUILDING:
----------
-
-	git clone https://github.com/hlibc/arbitraire
-	cd arbitraire
-	make
-
-
-TESTING:
---------
-
-	Test the square root implementation with a series of pseduo-random 10-
-	10000 digit numbers.
-
-		make test
-
-	Run the test wrappers and binaries:
-	
-		./tests/pseudo-random-wrapper.sh function
-		./tests/prand-a-a-a-wrapper.sh ag-function
-
-	Automatic testing with valgrind:
-
-		./tests/pseudo-random-wrapper.sh function valgrind
-		./tests/prand-a-a-a-wrapper.sh function valgrind
-
-		for instance, test sqrt:
-
-			./tests/prand-a-a-a-wrapper.sh sqrt valgrind
-
-
-USING THE API:
---------------
-
-	An example for adding two numbers is provided below:
-
-	#include <arbitraire/arbitraire.h>
-
-	int main(int argc, char *argv[])
-	{
-		if (argc < 4 )
-			arb_error("Needs 3 args, such as: 123.456 123.456 base");
-
-		int base = atoll(argv[3]);
-		fxdpnt *a, *b, *c = NULL;
-		a = arb_str2fxdpnt(argv[1]);
-		b = arb_str2fxdpnt(argv[2]);
-		c = arb_add(a, b, c, base);
-		arb_print(c);
-		arb_free(a);
-		arb_free(b);
-		arb_free(c);
-		return 0;
-	}
-
-
 REFERENCES:
 -----------
 
@@ -95,17 +31,5 @@ REFERENCES:
 
 	https://blogs.sas.com/content/iml/2015/06/24/sensitivity-newtons-method.html
 
-	
-INSPIRATIONS:
--------------
-
-	Fabrice Bellard's libBF library
-
-	https://bellard.org/libbf/
-
-
-CONTACTS:
----------
-
-	CM Graff   cm0graff@gmail.com
+	https://stackoverflow.com/questions/2267146/what-is-the-fastest-factorization-algorithm
 

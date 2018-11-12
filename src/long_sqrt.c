@@ -68,16 +68,58 @@
 	74.531..., so you need to first start with the "55" in 
 	order to derive a "7" which is the first correct digit
 
+	1> factor the leading set
+	2> square the initial factoziation and carry it down
+	3> subtract the new guess from the primary
+	4> multiply the entire estimated answer by 2 and put it to the side
+	5> factor the side new guess up the last guess by manipulating
+	   its final digit (this should be seamless with factor())
+	6> take the last digit of the side new guess and push it
+		onto the answer, then use that guessing factor and replace
+		the primary guess
+	7> carry down two digits
+	8> subtract the new guess from the old guess
+	9> repeat
+
 */
 
 fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 {
-	while (arb_compare(a, b, 10) < 0)
+	/* factorization can be massivly sped up by handling
+	   the number logically.
+		xxx*xxx is [10000, bbbbbb) and sigma_{n<bbbbbb}(y+1) 
+		where b is base-1 and y is 10000
+		
+		This method can be deployed with the following code:
+		a = arb_expand(a, b->len / 2);
+		a->number[0] = 1;
+		a->lp = a->len;
+	*/
+	fxdpnt *temp = arb_str2fxdpnt("+0.00");
+	arb_copy(temp, a);
+	int comp = -100;
+	size_t i = 0;
+	while (1)
 	{
-		a = arb_mul(a, a, a, base, scale);
+		temp = arb_mul(a, a, temp, base, scale);
+		comp = arb_compare(temp, b,  10);
+		if (comp == 0) {
+			break;
+		} else if (comp > 0)
+		{
+			arb_sub2(a, one, &a, base);
+			break;
+		}
+		arb_incr(&a, base);
+		++i;
 	}
-	
+	printf("iterations to factor %zu\n", i);
 	return a;
+}
+
+fxdpnt *endfactor(fxdpnt *a, int base, size_t scale)
+{
+	
 }
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
@@ -100,7 +142,13 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	digi->len = digits_to_get;
 	gotten += digits_to_get;
 	digits_to_get = 2;
+
+	printf("digi: ");
+	arb_print(digi);
 	/* now factorize up to those two digits */
+	
+
+	
 
 	if (odd)
 		printf("number was odd -- get 1 digit\n");
