@@ -11,7 +11,7 @@ do	COUNT=$((COUNT +1))
 	else	printf"%s\n"  "Test failed! look inside of 'some.bc' to reveal the failing numbers!"
 		exit 1
 	fi
-	cat some.bc >> tests_passed.txt
+	cat some.bc >> passed.txt
 	sleep 1
 done
 
