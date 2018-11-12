@@ -85,9 +85,20 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	base = base;
 	scale = scale;
 	int odd = 0;
+	int digits_to_get = 2;
 	fxdpnt *start = arb_str2fxdpnt("2.0");
+	fxdpnt *digi = arb_expand(NULL, a->len);
 	if (a->lp % 2 == 1)
+	{
 		odd = 1;
+		digits_to_get = 1;
+	}
+	/* get first set of digits */
+	memcpy(digi->number, a->number, digits_to_get);
+	digi->lp = 0;
+	digi->len = digits_to_get;
+	digits_to_get = 2;
+	/* now factorize up to those two digits */
 
 	if (odd)
 		printf("number was odd -- get 1 digit\n");
