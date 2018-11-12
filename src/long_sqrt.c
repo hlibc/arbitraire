@@ -87,7 +87,7 @@ fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 {
 	/* factorization can be massivly sped up by handling
 	   the number logically.
-		xxx*xxx is [10000, bbbbbb) and sigma_{n<bbbbbb}(y+1) 
+		xxx*xxx is [10000, bbbbbb] and sigma_{n<bbbbbb}(y+1) 
 		where b is base-1 and y is 10000
 		
 		This method can be deployed with the following code:
@@ -117,10 +117,8 @@ fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	return a;
 }
 
-fxdpnt *endfactor(fxdpnt *a, int base, size_t scale)
-{
 	
-}
+
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
 	a = a;
@@ -136,9 +134,15 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 		odd = 1;
 		digits_to_get = 1;
 	}
+	
+	if (odd)
+		printf("number was odd -- get 1 digit\n");
+	else
+		printf("number was even -- get 2 digits\n");
+
 	/* get first set of digits */
 	memcpy(digi->number, a->number + gotten, digits_to_get);
-	digi->lp = 0;
+	digi->lp = digits_to_get;
 	digi->len = digits_to_get;
 	gotten += digits_to_get;
 	digits_to_get = 2;
@@ -146,14 +150,14 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	printf("digi: ");
 	arb_print(digi);
 	/* now factorize up to those two digits */
-	
+	fxdpnt *g1 = arb_str2fxdpnt("1.0");
+	fxdpnt *g2 = arb_str2fxdpnt("1.0");
+	fxdpnt *fac = arb_str2fxdpnt("1.0");
 
-	
+	fac = factor(fac, digi, base, scale);
 
-	if (odd)
-		printf("number was odd -- get 1 digit\n");
-	else
-		printf("number was even -- get 2 digits\n");
+	arb_print(fac);
+	
 
 	start = factor(start, a, base, scale);
 	
