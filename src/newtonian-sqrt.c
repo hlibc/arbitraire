@@ -7,7 +7,7 @@
 	the loop, ergo avoiding oscillation and other pitfalls.
 
 	This method always produces correct answers as it is scaled past the
-	needed precision and it never sizes up in an infinite loop as it has
+	needed precision and it never siezes up in an infinite loop as it has
 	a mechanism for breaking out of the loop based on the scale of the
 	converging "guesses".
 */
