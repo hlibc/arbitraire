@@ -47,7 +47,6 @@ do	COUNT=$((COUNT + 1))
 	bc -lq testing.bc > log2
 	if diff log log2
 	then	printf "%s\n" "Giant pseudo-random number test passed."
-		printf "%s\n" "Giant pseudo-random number test passed." >> passed.txt
 	else	printf "%s\n"  "Test failed! look inside of '${machinename}' to reveal the failing numbers!" 
 		printf "%s\n"  "Test failed! look inside of '${machinename}' to reveal the failing numbers!" >> "${machinename}"
 		exit 1
