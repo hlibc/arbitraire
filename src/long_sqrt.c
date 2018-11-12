@@ -35,12 +35,12 @@
         * attempt to find the square of the number set using multiplication
         * push the discovered number onto the answer
         * perform a subtraction and carry down 2 digits from the number that is being squared
-        * multiply the answer by 20 and put into temp
+        * multiply the answer by 2 and put into temp
         * find how many times temp can go into the carried down sub and its two digits
 
 
 	* if the number has an even length you can get two digits but if the length
-	 *  is odd then you'll need to start with the first three
+	 *  is odd then you'll need to start with one (though 3 may work??)
 
         while (1)
         {
@@ -88,15 +88,17 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	int digits_to_get = 2;
 	fxdpnt *start = arb_str2fxdpnt("2.0");
 	fxdpnt *digi = arb_expand(NULL, a->len);
+	size_t gotten = 0;
 	if (a->lp % 2 == 1)
 	{
 		odd = 1;
 		digits_to_get = 1;
 	}
 	/* get first set of digits */
-	memcpy(digi->number, a->number, digits_to_get);
+	memcpy(digi->number, a->number + gotten, digits_to_get);
 	digi->lp = 0;
 	digi->len = digits_to_get;
+	gotten += digits_to_get;
 	digits_to_get = 2;
 	/* now factorize up to those two digits */
 
