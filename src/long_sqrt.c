@@ -69,6 +69,15 @@
 	order to derive a "7" which is the first correct digit
 
 */
+
+fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
+{
+	while (arb_compare(a, b, 10) < 0)
+	{
+		a = arb_mul(a, a, a, base, scale);
+	}
+	return a;
+}
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
 	a = a;
@@ -82,6 +91,8 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 		printf("number was odd -- get 1 digit\n");
 	else
 		printf("number was even -- get 2 digits\n");
+
+	
 	
 	fxdpnt *ret = NULL;
 	return ret;
