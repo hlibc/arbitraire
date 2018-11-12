@@ -117,6 +117,13 @@ fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	return a;
 }
 
+void pushon(fxdpnt *a, fxdpnt *b)
+{
+	arb_expand(a, a->len + b->len);
+	memcpy(a->number + a->len, b->number, b->len * sizeof(ARBT));
+	a->len += b->len;
+	a->lp = a->len;
+}
 	
 
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
@@ -150,14 +157,15 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	printf("digi: ");
 	arb_print(digi);
 	/* now factorize up to those two digits */
-	fxdpnt *g1 = arb_str2fxdpnt("1.0");
-	fxdpnt *g2 = arb_str2fxdpnt("1.0");
-	fxdpnt *fac = arb_str2fxdpnt("1.0");
+	fxdpnt *g1 = arb_str2fxdpnt("1");
+	fxdpnt *g2 = arb_str2fxdpnt("1");
+	fxdpnt *ans = arb_str2fxdpnt("");
+	fxdpnt *fac = arb_str2fxdpnt("1");
 
-	fac = factor(fac, digi, base, scale);
-
+	fac = factor(fac, digi, base, scale); 
 	arb_print(fac);
-	
+	pushon(ans, fac);
+	arb_print(ans);
 
 	start = factor(start, a, base, scale);
 	
