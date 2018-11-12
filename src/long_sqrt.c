@@ -85,16 +85,10 @@
 
 fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 {
-	/* factorization can be massivly sped up by handling
-	   the number logically.
-		xxx*xxx is [10000, bbbbbb] and sigma_{n<bbbbbb}(y+1) 
-		where b is base-1 and y is 10000
-		
-		This method can be deployed with the following code:
-		a = arb_expand(a, b->len / 2);
-		a->number[0] = 1;
-		a->lp = a->len;
+	/* Handle sqrt factorization guesses of the form
+		465n * n < guess. so the naive algorithm works fine
 	*/
+
 	fxdpnt *temp = arb_str2fxdpnt("+0.00");
 	arb_copy(temp, a);
 	int comp = -100;
@@ -117,6 +111,28 @@ fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	return a;
 }
 
+fxdpnt *factor_one(fxdpnt *a, fxdpnt *b, int base, size_t scale)
+{ 
+	fxdpnt *temp = arb_str2fxdpnt("+1");
+	arb_copy(temp, a);
+	int comp = -100;
+	size_t i = 0;
+	while (1)
+	{ 
+		a = arb_mul(a, temp, a, base, scale);
+		comp = arb_compare(a, b,  10);
+		if (comp == 0) {
+			break;
+		} else if (comp > 0)
+		{
+			arb_sub2(a, one, &a, base);
+			break;
+		}
+		arb_incr(&temp, base);
+		arb_incr(&a, base);
+		++i;
+	}
+}
 void pushon(fxdpnt *a, fxdpnt *b)
 {
 	arb_expand(a, a->len + b->len);
@@ -161,12 +177,19 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *g2 = arb_str2fxdpnt("1");
 	fxdpnt *ans = arb_str2fxdpnt("");
 	fxdpnt *fac = arb_str2fxdpnt("1");
+	fxdpnt *side = arb_str2fxdpnt("");
 
 	fac = factor(fac, digi, base, scale); 
 	arb_print(fac);
 	pushon(ans, fac);
 	arb_print(ans);
-
+	/* now square the digi to get guess 1 */
+	g1 = arb_mul(digi, digi, g1, base, scale);
+	/* now multiply the digi by two into the side */
+	side = arb_mul(digi, two, side, base, scale);
+	/* now push a zero onto the "side" */
+	pushon(side, zero);
+	/* now subtract the guess 1 from the original */
 	start = factor(start, a, base, scale);
 	
 	
