@@ -75,6 +75,27 @@
 	then adding the number. this will be an expensive procedure
 	but it can be optimized away at a later time
 
+	"a' can not be mutated. it needs to stay the same so
+	we can pull digits from it. However, when it runs out of
+	digits we need to populate the new guess using a fake array
+	of zeros
+
+	ergo we need (at least) the following variables
+		answer
+ 	    _________________
+	 \ /  a (input)
+side          guess1
+digit         sum
+              guess1
+              sum
+
+	side * digi is computed to get a "digi" to push onto
+	the "answer". but it is also computed in order to get the 
+	next "guess". thi snew guess must then be subtracted from
+	the "sum" to get a new "sum"
+
+	answer is squared to get "side"
+
 */
 
 static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
@@ -106,33 +127,35 @@ void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 	*a = factor(*a, b, base, scale);
 }
 
-static fxdpnt *guess(fxdpnt **a, fxdpnt *b, int base, size_t scale)
+static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 {
 	/* Handle sqrt factorization guesses of the form
 		465n * n < guess
 	*/
+	_internal_debug;
 	fxdpnt *side = arb_str2fxdpnt("1");
 	fxdpnt *tmul = arb_str2fxdpnt("1");
 	int comp = -100;
 	do
 	{ 
-		mul(*a, side, &tmul, base, scale, 0);
+		mul(*c, side, &tmul, base, scale, 0);
 		comp = arb_compare(tmul, b, 10);
 		if (comp == 0) {
 			break;
 		} else if (comp > 0)
 		{
-			decr(&*a, base, 0);
+			decr(&*c, base, 0);
 			decr(&side, base, 0);
 			break;
 		}
 		incr(&side, base, 0);
-		incr(&*a, base, 0);
+		incr(&*c, base, 0);
 	}while(1);
+	_internal_debug_end;
 	return side;
 }
 
-void pushon(fxdpnt *c, fxdpnt *b, char *m)
+void pushon(fxdpnt *c, fxdpnt *b)
 {
 	arb_expand(c, c->len + b->len);
 	memcpy(c->number + c->len, b->number, b->len * sizeof(ARBT));
@@ -143,7 +166,7 @@ void pushon(fxdpnt *c, fxdpnt *b, char *m)
 void push(fxdpnt **c, fxdpnt *b, char *m)
 {
 	_internal_debug;
-	pushon(*c, b, m);
+	pushon(*c, b);
 	_internal_debug_end;
 }
 void addfront(fxdpnt *a, fxdpnt *b)
@@ -152,13 +175,19 @@ void addfront(fxdpnt *a, fxdpnt *b)
 	memcpy(a->number, b->number, b->len * sizeof(ARBT));
 }
 
-void grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get)
+static void cap(fxdpnt **c, fxdpnt *b, char *m)
 {
+	_internal_debug;
+	addfront(*c, b);
+	_internal_debug_end;
+}
+
+void grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get)
+{ 
 	memcpy(digi->number, a->number + *gotten, digits_to_get);
         digi->lp += digits_to_get;
         digi->len += digits_to_get;
         *gotten += digits_to_get;
-
 }
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
@@ -167,6 +196,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	scale = scale;
 	int odd = 0;
 	int digits_to_get = 2;
+	size_t gotten = 0;
 	fxdpnt *digi = arb_str2fxdpnt("");  //arb_expand(NULL, a->len);
 	fxdpnt *g1 = arb_str2fxdpnt("");
 	fxdpnt *ans = arb_str2fxdpnt("");
@@ -176,37 +206,26 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	arb_copy(subtract, a);
 	memset(subtract->number, 0, subtract->len);
 	
-
-	size_t gotten = 0;
-	if (a->lp % 2 == 1)
-	{
+	if (a->lp % 2 == 1) {
 		odd = 1;
 		digits_to_get = 1;
 	}
-	
-	if (odd)
-		printf("number was odd -- get 1 digit\n");
-	else
-		printf("number was even -- get 2 digits\n");
 
 	/* get first set of digits */
 	grabdigits(digi, a, &gotten, digits_to_get);
 	digits_to_get = 2;
-	
-	
 
 	/* now factorize up to those one or two digits */
-	factor2(&fac, digi, base, scale); 
-
+	factor2(&fac, digi, base, scale);
 	push(&ans, fac, "ans = ");
 
-	/* we're done with the initial step. continue on to the real alg */
-
-	
 	/*  square the ans */
-	mul(ans, ans, &g1, base, scale, "ans = ");
+	mul(ans, ans, &g1, base, scale, "g1 = ");
+	int lever = 1;
+	printf("intialized vvvvvvvvv\n");
+	top:
 
-top:
+
 	/* mul the ans by two */
 	mul(ans, two, &side, base, scale, "side = "); 
 
@@ -214,11 +233,12 @@ top:
 	push(&side, one, "side = "); 
 
 	/* now subtract the guess 1 from the original */
-	addfront(subtract, g1); 
+	if (lever--)
+	cap(&subtract, g1, "subtract = "); 
 	sub(a, subtract, &a, base, "a = "); 
 
 	/* now try to factorize the side guess up to the new original */ 
-	digi = guess(&side, a, base, scale); 
+	digi = guess(&side, a, base, scale, "side = "); 
 
 	/* push the new digi onto the answer */
 	push(&ans, digi, "ans = ");
@@ -226,13 +246,16 @@ top:
 	/* mul side by digi to obtain the new "subtract" */
 	mul(side, digi, &subtract, base, scale, "subtract = ");
 
+	/* pull down two digits onto the new answer */
+	//if (gotten >= a->len) else
+		grabdigits(digi, a, &gotten, digits_to_get);
+	arb_print(a);
+
+
 	printf("============================\n");
-	static size_t i = 10;
+	static size_t i = 4;
 	if (i--)
 	goto top;
-
-
-
 
 	printf("bogus ans = ");
 
