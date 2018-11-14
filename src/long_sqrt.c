@@ -119,26 +119,26 @@ void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 	*a = factor(*a, b, base, scale);
 }
 
-fxdpnt *factor_one(fxdpnt *a, fxdpnt *b, int base, size_t scale)
+fxdpnt *factor_one(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 { 
-	fxdpnt *temp = arb_str2fxdpnt("+1");
-	arb_copy(temp, a);
+	fxdpnt *temp = arb_str2fxdpnt("0");
+	arb_copy(temp, *a);
 	int comp = -100;
 	while (1)
 	{ 
-		a = arb_mul(a, temp, a, base, scale);
-		comp = arb_compare(a, b,  10);
+		*a = arb_mul(*a, temp, *a, base, scale);
+		comp = arb_compare(*a, b,  10);
 		if (comp == 0) {
 			break;
 		} else if (comp > 0)
 		{
-			arb_sub2(a, one, &a, base);
+			arb_sub2(*a, one, &*a, base);
 			break;
 		}
 		arb_incr(&temp, base);
-		arb_incr(&a, base);
+		arb_incr(&*a, base);
 	}
-	return a;
+	return temp;
 }
 
 void pushon(fxdpnt *a, fxdpnt *b)
@@ -193,27 +193,31 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 
 	/* get first set of digits */
 	grabdigits(digi, a, &gotten, digits_to_get);
-	digits_to_get = 2; 
-
+	digits_to_get = 2;
 	printf("digi: ");
 	arb_print(digi);
-	/* now factorize up to those one or two digits */
 
+	/* now factorize up to those one or two digits */
 	factor2(&fac, digi, base, scale); 
 	arb_print(fac);
 	pushon(ans, fac);
 	arb_print(ans);
+
 	/* now square the ans to get guess 1 */
 	arb_mul2(ans, ans, &g1, base, scale); 
 	printf("g1 = ");
 	arb_print(g1);
+
 	/* now subtract guess 1 from the digi */
 
 
 	/* now multiply the ans by two into the side */
 	arb_mul2(ans, two, &side, base, scale);
+
 	/* now push a zero onto the "side" */
 	pushon(side, zero);
+	printf("side = ");
+	arb_print(side);
 	/* now subtract the guess 1 from the original */
 	addfront(subtract, g1);
 	printf("subtract = ");
@@ -224,7 +228,14 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	arb_print(g1);
 	printf("a = ");
 	arb_print(a);
+	/* now try to factorize the side guess up to the new original */
+	digi = factor_one(&side, a, base, scale);
 	
+	printf("digi: ");
+	arb_print(digi);
+	
+	printf("side = ");
+	arb_print(side);
 	printf("bogus ans = ");
 	return ans;
 }
