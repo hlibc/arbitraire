@@ -81,6 +81,12 @@
 	8> subtract the new guess from the old guess
 	9> repeat
 
+	notes:
+		instead of pushing the answer digits onto a stack we
+	can use a pure maths method of multiplying by 10 (base) and
+	then adding the number. this will be an expensive procedure
+	but it can be optimized away at a later time
+
 */
 
 fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
@@ -92,10 +98,9 @@ fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	fxdpnt *temp = arb_str2fxdpnt("+0.00");
 	arb_copy(temp, a);
 	int comp = -100;
-	size_t i = 0;
 	while (1)
 	{
-		temp = arb_mul(a, a, temp, base, scale);
+		arb_mul2(a, a, &temp, base, scale);
 		comp = arb_compare(temp, b,  10);
 		if (comp == 0) {
 			break;
@@ -105,10 +110,13 @@ fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 			break;
 		}
 		arb_incr(&a, base);
-		++i;
 	}
-	printf("iterations to factor %zu\n", i);
 	return a;
+}
+
+void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
+{
+	*a = factor(*a, b, base, scale);
 }
 
 fxdpnt *factor_one(fxdpnt *a, fxdpnt *b, int base, size_t scale)
@@ -116,7 +124,6 @@ fxdpnt *factor_one(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	fxdpnt *temp = arb_str2fxdpnt("+1");
 	arb_copy(temp, a);
 	int comp = -100;
-	size_t i = 0;
 	while (1)
 	{ 
 		a = arb_mul(a, temp, a, base, scale);
@@ -130,9 +137,10 @@ fxdpnt *factor_one(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 		}
 		arb_incr(&temp, base);
 		arb_incr(&a, base);
-		++i;
 	}
+	return a;
 }
+
 void pushon(fxdpnt *a, fxdpnt *b)
 {
 	arb_expand(a, a->len + b->len);
@@ -140,8 +148,20 @@ void pushon(fxdpnt *a, fxdpnt *b)
 	a->len += b->len;
 	a->lp = a->len;
 }
-	
+void addfront(fxdpnt *a, fxdpnt *b)
+{
+	arb_expand(a, b->len);
+	memcpy(a->number, b->number, b->len * sizeof(ARBT));
+}
 
+void grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get)
+{
+	memcpy(digi->number, a->number + *gotten, digits_to_get);
+        digi->lp += digits_to_get;
+        digi->len += digits_to_get;
+        *gotten += digits_to_get;
+
+}
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
 	a = a;
@@ -149,8 +169,16 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	scale = scale;
 	int odd = 0;
 	int digits_to_get = 2;
-	fxdpnt *start = arb_str2fxdpnt("2.0");
-	fxdpnt *digi = arb_expand(NULL, a->len);
+	fxdpnt *digi = arb_str2fxdpnt("");  //arb_expand(NULL, a->len);
+	fxdpnt *g1 = arb_str2fxdpnt("");
+	fxdpnt *ans = arb_str2fxdpnt("");
+	fxdpnt *fac = arb_str2fxdpnt("");
+	fxdpnt *side = arb_str2fxdpnt("");
+	fxdpnt *subtract = arb_str2fxdpnt("");
+	arb_copy(subtract, a);
+	memset(subtract->number, 0, subtract->len);
+	
+
 	size_t gotten = 0;
 	if (a->lp % 2 == 1)
 	{
@@ -164,34 +192,39 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 		printf("number was even -- get 2 digits\n");
 
 	/* get first set of digits */
-	memcpy(digi->number, a->number + gotten, digits_to_get);
-	digi->lp = digits_to_get;
-	digi->len = digits_to_get;
-	gotten += digits_to_get;
-	digits_to_get = 2;
+	grabdigits(digi, a, &gotten, digits_to_get);
+	digits_to_get = 2; 
 
 	printf("digi: ");
 	arb_print(digi);
-	/* now factorize up to those two digits */
-	fxdpnt *g1 = arb_str2fxdpnt("1");
-	fxdpnt *g2 = arb_str2fxdpnt("1");
-	fxdpnt *ans = arb_str2fxdpnt("");
-	fxdpnt *fac = arb_str2fxdpnt("1");
-	fxdpnt *side = arb_str2fxdpnt("");
+	/* now factorize up to those one or two digits */
 
-	fac = factor(fac, digi, base, scale); 
+	factor2(&fac, digi, base, scale); 
 	arb_print(fac);
 	pushon(ans, fac);
 	arb_print(ans);
-	/* now square the digi to get guess 1 */
-	g1 = arb_mul(digi, digi, g1, base, scale);
-	/* now multiply the digi by two into the side */
-	side = arb_mul(digi, two, side, base, scale);
+	/* now square the ans to get guess 1 */
+	arb_mul2(ans, ans, &g1, base, scale); 
+	printf("g1 = ");
+	arb_print(g1);
+	/* now subtract guess 1 from the digi */
+
+
+	/* now multiply the ans by two into the side */
+	arb_mul2(ans, two, &side, base, scale);
 	/* now push a zero onto the "side" */
 	pushon(side, zero);
 	/* now subtract the guess 1 from the original */
-	start = factor(start, a, base, scale);
+	addfront(subtract, g1);
+	printf("subtract = ");
+	arb_print(subtract);
+	arb_sub2(a, subtract, &a, base);
 	
+	printf("g1 = ");
+	arb_print(g1);
+	printf("a = ");
+	arb_print(a);
 	
-	return start;
+	printf("bogus ans = ");
+	return ans;
 }
