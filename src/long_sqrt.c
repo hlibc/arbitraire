@@ -31,9 +31,11 @@
          _______       44 * 4 = 176
      43 | 1 69         43 * 3 = 129
           1 29
-          ______       469 * 9 = 4221
-     468 |  40.00      468 * 8 = 3744
+          ______       469 * 9 = 4221   guessing backwards like this may offer
+     468 |  40.00      468 * 8 = 3744   an interesting speed up
             37.44
+
+	
 
         * Get the first number set
         * attempt to find the square of the number set using multiplication
@@ -184,10 +186,20 @@ static void cap(fxdpnt **c, fxdpnt *b, char *m)
 
 void grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get)
 { 
-	memcpy(digi->number, a->number + *gotten, digits_to_get);
-        digi->lp += digits_to_get;
-        digi->len += digits_to_get;
-        *gotten += digits_to_get;
+	if (*gotten + digits_to_get >= a->len)
+	{
+		arb_expand(digi, digi->len + *gotten + digits_to_get);
+		memset(digi->number + digi->len, 0, digits_to_get);
+		digi->len += digits_to_get;
+		digi->lp = digi->len;
+		
+		
+	} else {
+		memcpy(digi->number, a->number + *gotten, digits_to_get);
+	        digi->lp += digits_to_get;
+	        digi->len += digits_to_get;
+	        *gotten += digits_to_get;
+	}
 }
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
@@ -199,11 +211,13 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	size_t gotten = 0;
 	fxdpnt *digi = arb_str2fxdpnt("");  //arb_expand(NULL, a->len);
 	fxdpnt *g1 = arb_str2fxdpnt("");
+	fxdpnt *g2 = arb_str2fxdpnt("");
 	fxdpnt *ans = arb_str2fxdpnt("");
 	fxdpnt *fac = arb_str2fxdpnt("");
 	fxdpnt *side = arb_str2fxdpnt("");
 	fxdpnt *subtract = arb_str2fxdpnt("");
 	arb_copy(subtract, a);
+	arb_copy(g2, a);
 	memset(subtract->number, 0, subtract->len);
 	
 	if (a->lp % 2 == 1) {
@@ -235,10 +249,11 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	/* now subtract the guess 1 from the original */
 	if (lever--)
 	cap(&subtract, g1, "subtract = "); 
-	sub(a, subtract, &a, base, "a = "); 
+	//sub(a, subtract, &a, base, "a = "); 
+	sub(g2, subtract, &g2, base, "g2 = "); 
 
-	/* now try to factorize the side guess up to the new original */ 
-	digi = guess(&side, a, base, scale, "side = "); 
+	/* now factorize the side up to g2 */ 
+	digi = guess(&side, g2, base, scale, "side = "); 
 
 	/* push the new digi onto the answer */
 	push(&ans, digi, "ans = ");
@@ -247,9 +262,9 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	mul(side, digi, &subtract, base, scale, "subtract = ");
 
 	/* pull down two digits onto the new answer */
-	//if (gotten >= a->len) else
-		grabdigits(digi, a, &gotten, digits_to_get);
-	arb_print(a);
+	
+	grabdigits(g2, a, &gotten, digits_to_get);
+	arb_print(g2);
 
 
 	printf("============================\n");
