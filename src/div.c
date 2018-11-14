@@ -192,8 +192,10 @@ fxdpnt *arb_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	return q;
 }
 
-void divv(fxdpnt *num, fxdpnt *den, fxdpnt **q, int b, size_t scale)
+void divv(fxdpnt *num, fxdpnt *den, fxdpnt **c, int b, size_t scale, char *m)
 {
-	*q = arb_div(num, den, *q, b, scale);
+	_internal_debug;
+	*c = arb_div(num, den, *c, b, scale);
+	_internal_debug_end;
 }
 

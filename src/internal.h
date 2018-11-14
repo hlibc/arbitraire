@@ -1,6 +1,10 @@
 #ifndef ARBITRAIRE_INTERNAL_H
 #define ARBITRAIRE_INTERNAL_H
 
+#ifndef _ARB_DEBUG
+#define _ARB_DEBUG 0
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -59,6 +63,7 @@ void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);
 /* io */
 void arb_print(fxdpnt *);
 void arb_debug(fxdpnt *, char *);
+void arb_printtrue(fxdpnt *);
 void _print_core(FILE *, ARBT *, size_t, size_t, size_t, int);
 fxdpnt *arb_str2fxdpnt(const char *);
 fxdpnt *arb_parse_str(fxdpnt *, const char *);
@@ -105,11 +110,19 @@ size_t arb_left(fxdpnt *);
 char *make_bignum(size_t, int, int);
 
 /* function wrappers for simpler math handling */
-void incr(fxdpnt **, int);
-void decr(fxdpnt **, int);
-void sub(fxdpnt *, fxdpnt *, fxdpnt **, int);
-void add(fxdpnt *, fxdpnt *, fxdpnt **, int);
-void mul(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t);
-void divv(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t);
+void incr(fxdpnt **, int, char *);
+void decr(fxdpnt **, int, char *);
+void sub(fxdpnt *, fxdpnt *, fxdpnt **, int, char *);
+void add(fxdpnt *, fxdpnt *, fxdpnt **, int, char *);
+void mul(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
+void divv(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
+
+#define _internal_debug if (_ARB_DEBUG && m) { \
+fprintf(stderr, __func__); \
+fprintf(stderr, "()  %s", m); \
+}
+#define _internal_debug_end if (_ARB_DEBUG && m) \
+arb_printtrue(*c);
+
 #endif
 

@@ -1,5 +1,9 @@
 #include "internal.h"
 /*
+
+	https://gmplib.org/manual/Square-Root-Algorithm.html
+
+
 	This function is under construction.
 
 
@@ -42,22 +46,6 @@
 	* if the number has an even length you can get two digits but if the length
 	 *  is odd then you'll need to start with one (though 3 may work??)
 
-        while (1)
-        {
-                if ( num * num == num1 )
-                {
-                        break;
-                } else if (num * num > num1 ) {
-                        --num;
-                        break;
-                }
-                ++num;
-
-
-        }
-
-	this style of loop should work for figuring out the squares
-
 	
 	There is no position agnostic way to generalize long hand
 	square root
@@ -69,7 +57,7 @@
 	order to derive a "7" which is the first correct digit
 
 	1> factor the leading set
-	2> square the initial factoziation and carry it down
+	2> square the initial factorization and carry it down
 	3> subtract the new guess from the primary
 	4> multiply the entire estimated answer by 2 and put it to the side
 	5> factor the side new guess up the last guess by manipulating
@@ -89,28 +77,27 @@
 
 */
 
-fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
+static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 {
-	/* Handle sqrt factorization guesses of the form
-		465n * n < guess. so the naive algorithm works fine
+	/* regular factorization. we only need to obtain two
+		digit numbers so the naive algorithm is fine
 	*/
-
 	fxdpnt *temp = arb_str2fxdpnt("+0.00");
 	arb_copy(temp, a);
 	int comp = -100;
-	while (1)
+	do
 	{
-		mul(a, a, &temp, base, scale);
+		mul(a, a, &temp, base, scale, 0);
 		comp = arb_compare(temp, b,  10);
 		if (comp == 0) {
 			break;
 		} else if (comp > 0)
 		{
-			decr(&a, base);
+			decr(&a, base, 0);
 			break;
 		}
-		incr(&a, base);
-	}
+		incr(&a, base, 0);
+	}while (1);
 	return a;
 }
 
@@ -119,36 +106,45 @@ void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 	*a = factor(*a, b, base, scale);
 }
 
-fxdpnt *factor_one(fxdpnt **a, fxdpnt *b, int base, size_t scale)
-{ 
-	fxdpnt *temp = arb_str2fxdpnt("1");
+static fxdpnt *guess(fxdpnt **a, fxdpnt *b, int base, size_t scale)
+{
+	/* Handle sqrt factorization guesses of the form
+		465n * n < guess
+	*/
+	fxdpnt *side = arb_str2fxdpnt("1");
 	fxdpnt *tmul = arb_str2fxdpnt("1");
-	//arb_copy(temp, *a);
 	int comp = -100;
-	while (1)
+	do
 	{ 
-		mul(*a, temp, &tmul, base, scale);
-		comp = arb_compare(tmul, b,  10);
+		mul(*a, side, &tmul, base, scale, 0);
+		comp = arb_compare(tmul, b, 10);
 		if (comp == 0) {
 			break;
 		} else if (comp > 0)
 		{
-			decr(&*a, base);
-			decr(&temp, base);
+			decr(&*a, base, 0);
+			decr(&side, base, 0);
 			break;
 		}
-		incr(&temp, base);
-		incr(&*a, base);
-	}
-	return temp;
+		incr(&side, base, 0);
+		incr(&*a, base, 0);
+	}while(1);
+	return side;
 }
 
-void pushon(fxdpnt *a, fxdpnt *b)
+void pushon(fxdpnt *c, fxdpnt *b, char *m)
 {
-	arb_expand(a, a->len + b->len);
-	memcpy(a->number + a->len, b->number, b->len * sizeof(ARBT));
-	a->len += b->len;
-	a->lp = a->len;
+	arb_expand(c, c->len + b->len);
+	memcpy(c->number + c->len, b->number, b->len * sizeof(ARBT));
+	c->len += b->len;
+	c->lp = c->len;
+	
+}
+void push(fxdpnt **c, fxdpnt *b, char *m)
+{
+	_internal_debug;
+	pushon(*c, b, m);
+	_internal_debug_end;
 }
 void addfront(fxdpnt *a, fxdpnt *b)
 {
@@ -197,48 +193,40 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	grabdigits(digi, a, &gotten, digits_to_get);
 	digits_to_get = 2;
 	
-	debug(digi, "digi = ");
+	
 
 	/* now factorize up to those one or two digits */
 	factor2(&fac, digi, base, scale); 
-	debug(fac, "fac = ");
-	pushon(ans, fac);
-	debug(ans, "debug = ");
+
+	push(&ans, fac, "ans = ");
+
 	/* we're done with the initial step. continue on to the real alg */
 
-	top:
+	
 	/*  square the ans */
-	mul(ans, ans, &g1, base, scale);
-	debug(g1, "g1 = "); 
+	mul(ans, ans, &g1, base, scale, "ans = ");
 
+top:
 	/* mul the ans by two */
-	mul(ans, two, &side, base, scale); 
+	mul(ans, two, &side, base, scale, "side = "); 
 
 	/* now push a one onto the "side" */
-	pushon(side, one); 
-	debug(side, "side = ");
+	push(&side, one, "side = "); 
 
 	/* now subtract the guess 1 from the original */
-	addfront(subtract, g1);
-	debug(subtract, "subtract = ");
-	sub(a, subtract, &a, base); 
-	debug(g1, "g1 = "); 
-	debug(a, "a = ");
+	addfront(subtract, g1); 
+	sub(a, subtract, &a, base, "a = "); 
 
-	/* now try to factorize the side guess up to the new original */
-	debug(side, "side = ");
-	digi = factor_one(&side, a, base, scale);
-	debug(digi, "digi  = ");
-	debug(side, "side = ");
+	/* now try to factorize the side guess up to the new original */ 
+	digi = guess(&side, a, base, scale); 
 
 	/* push the new digi onto the answer */
-	pushon(ans, digi);
-	debug(ans, "ans = ");
+	push(&ans, digi, "ans = ");
 
 	/* mul side by digi to obtain the new "subtract" */
-	mul(side, digi, &subtract, base, scale);
-	debug(subtract, "subtract = ");
+	mul(side, digi, &subtract, base, scale, "subtract = ");
 
+	printf("============================\n");
 	static size_t i = 10;
 	if (i--)
 	goto top;

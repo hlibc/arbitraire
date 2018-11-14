@@ -61,19 +61,6 @@ void arb_fprint(FILE *fp, fxdpnt *flt)
 	fflush(fp);
 }
 
-
-void debug(fxdpnt *flt, char *a)
-{
-	if (a)
-		printf("%s", a);
-	if (flt == NULL)
-	{
-		fprintf(stdout, "number was (null)\n");
-		return;
-	}
-	arb_fprint(stdout, flt);
-}
-
 void arb_print(fxdpnt *flt)
 { 
 	if (flt == NULL)
@@ -94,8 +81,12 @@ void arb_printerr(fxdpnt *flt)
 	arb_fprint(stderr, flt);
 }
 
-void arb_printline(fxdpnt *flt)
+void arb_printtrue(fxdpnt *flt)
 {
+	/*
+		This function prints fxdpnt's as the truly are as opposed
+		to jostling them for correct output
+	*/
 	size_t sign = 0;
 	if (flt->sign == '-')
 	{

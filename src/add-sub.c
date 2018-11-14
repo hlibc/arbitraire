@@ -169,23 +169,31 @@ fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	return c2;
 }
 
-void sub(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base)
-{
+void sub(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
+{ 
+	_internal_debug; 
 	*c = arb_sub(a, b, *c, base);
+	_internal_debug_end;
 }
 
-void add(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base)
+void add(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
 {
+	_internal_debug; 
 	*c = arb_add(a, b, *c, base);
+	_internal_debug_end;
 } 
 
-void decr(fxdpnt **a, int base)
+void decr(fxdpnt **c, int base, char *m)
 {
-	*a = arb_sub(*a, one, *a, base);
+	_internal_debug; 
+	*c = arb_sub(*c, one, *c, base);
+	_internal_debug_end;
 }
 
-void incr(fxdpnt **a, int base)
+void incr(fxdpnt **c, int base, char *m)
 {
-	*a = arb_add(*a, one, *a, base);
+	_internal_debug; 
+	*c = arb_add(*c, one, *c, base);
+	_internal_debug_end;
 }
 
