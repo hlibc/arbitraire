@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <time.h>
+#include <stdarg.h>
 
 /* defines */
 #define ARBT unsigned char	// designed to be any type
@@ -57,6 +58,7 @@ void arb_flipsign(fxdpnt *);
 void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);
 /* io */
 void arb_print(fxdpnt *);
+void arb_debug(fxdpnt *, char *);
 void _print_core(FILE *, ARBT *, size_t, size_t, size_t, int);
 fxdpnt *arb_str2fxdpnt(const char *);
 fxdpnt *arb_parse_str(fxdpnt *, const char *);
@@ -102,8 +104,12 @@ size_t arb_left(fxdpnt *);
 
 char *make_bignum(size_t, int, int);
 
-
-void arb_incr(fxdpnt **, int);
-void arb_sub2(fxdpnt *, fxdpnt *, fxdpnt **, int);
+/* function wrappers for simpler math handling */
+void incr(fxdpnt **, int);
+void decr(fxdpnt **, int);
+void sub(fxdpnt *, fxdpnt *, fxdpnt **, int);
+void add(fxdpnt *, fxdpnt *, fxdpnt **, int);
+void mul(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t);
+void divv(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t);
 #endif
 

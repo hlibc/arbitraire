@@ -22,7 +22,8 @@ fxdpnt *arb_newtonian_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, int scale)
 		arb_copy(g, g1);
 	} 
 	c = arb_mul(g, a, c, base, scale); 
-	c = arb_div(c, one, c, base, scale);
+	/* this is just to truncate the scale */
+	//c = arb_div(c, one, c, base, scale);
 	return c;
 }
 

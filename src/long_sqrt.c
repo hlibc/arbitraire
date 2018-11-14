@@ -100,16 +100,16 @@ fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	int comp = -100;
 	while (1)
 	{
-		arb_mul2(a, a, &temp, base, scale);
+		mul(a, a, &temp, base, scale);
 		comp = arb_compare(temp, b,  10);
 		if (comp == 0) {
 			break;
 		} else if (comp > 0)
 		{
-			arb_sub2(a, one, &a, base);
+			decr(&a, base);
 			break;
 		}
-		arb_incr(&a, base);
+		incr(&a, base);
 	}
 	return a;
 }
@@ -121,22 +121,24 @@ void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 
 fxdpnt *factor_one(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 { 
-	fxdpnt *temp = arb_str2fxdpnt("0");
-	arb_copy(temp, *a);
+	fxdpnt *temp = arb_str2fxdpnt("1");
+	fxdpnt *tmul = arb_str2fxdpnt("1");
+	//arb_copy(temp, *a);
 	int comp = -100;
 	while (1)
 	{ 
-		*a = arb_mul(*a, temp, *a, base, scale);
-		comp = arb_compare(*a, b,  10);
+		mul(*a, temp, &tmul, base, scale);
+		comp = arb_compare(tmul, b,  10);
 		if (comp == 0) {
 			break;
 		} else if (comp > 0)
 		{
-			arb_sub2(*a, one, &*a, base);
+			decr(&*a, base);
+			decr(&temp, base);
 			break;
 		}
-		arb_incr(&temp, base);
-		arb_incr(&*a, base);
+		incr(&temp, base);
+		incr(&*a, base);
 	}
 	return temp;
 }
@@ -194,48 +196,46 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	/* get first set of digits */
 	grabdigits(digi, a, &gotten, digits_to_get);
 	digits_to_get = 2;
-	printf("digi: ");
-	arb_print(digi);
+	
+	debug(digi, "digi = ");
 
 	/* now factorize up to those one or two digits */
 	factor2(&fac, digi, base, scale); 
-	arb_print(fac);
+	debug(fac, "fac = ");
 	pushon(ans, fac);
-	arb_print(ans);
+	debug(ans, "debug = ");
+	/* we're done with the initial step. continue on to the real alg */
 
-	/* now square the ans to get guess 1 */
-	arb_mul2(ans, ans, &g1, base, scale); 
-	printf("g1 = ");
-	arb_print(g1);
+	/*  square the ans */
+	mul(ans, ans, &g1, base, scale);
+	debug(g1, "g1 = "); 
 
-	/* now subtract guess 1 from the digi */
+	/* mul the ans by two */
+	mul(ans, two, &side, base, scale); 
 
+	/* now push a one onto the "side" */
+	pushon(side, one); 
+	debug(side, "side = ");
 
-	/* now multiply the ans by two into the side */
-	arb_mul2(ans, two, &side, base, scale);
-
-	/* now push a zero onto the "side" */
-	pushon(side, zero);
-	printf("side = ");
-	arb_print(side);
 	/* now subtract the guess 1 from the original */
-	addfront(subtract, g1);
-	printf("subtract = ");
-	arb_print(subtract);
-	arb_sub2(a, subtract, &a, base);
-	
-	printf("g1 = ");
-	arb_print(g1);
-	printf("a = ");
-	arb_print(a);
+	addfront(subtract, g1); 
+	debug(subtract, "subtract = ");
+	sub(a, subtract, &a, base); 
+	debug(g1, "g1 = "); 
+	debug(a, "a = ");
+
 	/* now try to factorize the side guess up to the new original */
+	debug(side, "side = ");
 	digi = factor_one(&side, a, base, scale);
-	
-	printf("digi: ");
-	arb_print(digi);
-	
-	printf("side = ");
-	arb_print(side);
+	debug(digi, "digi  = ");
+	debug(side, "side = ");
+
+
+
+
+
+
 	printf("bogus ans = ");
+
 	return ans;
 }

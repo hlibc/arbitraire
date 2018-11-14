@@ -1,1 +1,34 @@
 The nth root is x^(1/n)
+
+
+
+irc conversation about reversing that property for exponentation
+
+
+01:27 < fexx> well... be careful, because while it's true that (x^(1/2))^2 = x, that is, the square of the square root is the original number, it's NOT true in general that the square root of the square of a number is the original number
+
+
+
+
+01:27 < fexx> so, it is NOT true in general that (x^2)^(1/2) = x; that's only true for non-negative values of x
+01:27 < fexx> in general, you'd have (x^2)^(1/2) = |x|
+01:28 < fexx> which is something that also holds for all even index roots
+
+
+
+01:28 < notmike> don't you add when you multiply poers?
+01:28 < notmike> oh duh
+
+01:29 < fexx> no, the na"ive thing to do would be to multiply the 2 and the 1/2 to get 1, which would get the incorrect answer of just x
+
+01:29 < fexx> you'd add if you had x^a * x^b, if you mean that
+
+01:30 < notmike> 2 + 1/2 doesn't equal 1 though. It equals 3/2.
+01:30 < notmike> 5/2
+
+
+
+
+01:31 < fexx> what I mean is, for (x^2)^(1/2) people would be inclined to do 1/2 * 2 for the exponent
+01:31 < fexx> which would just get x^1 = x, which is not right
+

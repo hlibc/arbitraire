@@ -8,6 +8,7 @@
 #include <limits.h>
 #include <stdint.h>
 #include <math.h>
+#include <stdarg.h>
 
 typedef struct fxdpnt fxdpnt;
 
@@ -68,11 +69,16 @@ size_t arb_left(fxdpnt *);
 /* this functions generates bignums as char strings */
 char *make_bignum(size_t, int, int);
 /* function wrappers for simpler math handling */
-void arb_incr(fxdpnt **, int);
-void arb_decr(fxdpnt **, int);
-void arb_sub2(fxdpnt *, fxdpnt *, fxdpnt **, int);
-void arb_add2(fxdpnt *, fxdpnt *, fxdpnt **, int);
-void arb_mul2(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t);
-void arb_div2(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t);
+/*
+void incr(fxdpnt **, int);
+void decr(fxdpnt **, int);
+void sub(fxdpnt *, fxdpnt *, fxdpnt **, int);
+void add(fxdpnt *, fxdpnt *, fxdpnt **, int);
+void mul(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t);
+void divv(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t);
+*/
+
+/* new */
+fxdpnt *nthroot(fxdpnt *a, int base, size_t scale);
 #endif
 

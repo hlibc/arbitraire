@@ -61,8 +61,21 @@ void arb_fprint(FILE *fp, fxdpnt *flt)
 	fflush(fp);
 }
 
-void arb_print(fxdpnt *flt)
+
+void debug(fxdpnt *flt, char *a)
 {
+	if (a)
+		printf("%s", a);
+	if (flt == NULL)
+	{
+		fprintf(stdout, "number was (null)\n");
+		return;
+	}
+	arb_fprint(stdout, flt);
+}
+
+void arb_print(fxdpnt *flt)
+{ 
 	if (flt == NULL)
 	{
 		fprintf(stdout, "number was (null)\n");

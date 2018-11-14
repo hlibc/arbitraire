@@ -69,7 +69,7 @@ fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	return c2;
 }
 
-void arb_mul2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, size_t scale)
+void mul(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, size_t scale)
 {
 	*c = arb_mul(a, b, *c, base, scale);
 }
