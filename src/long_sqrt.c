@@ -206,6 +206,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	debug(ans, "debug = ");
 	/* we're done with the initial step. continue on to the real alg */
 
+	top:
 	/*  square the ans */
 	mul(ans, ans, &g1, base, scale);
 	debug(g1, "g1 = "); 
@@ -218,7 +219,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	debug(side, "side = ");
 
 	/* now subtract the guess 1 from the original */
-	addfront(subtract, g1); 
+	addfront(subtract, g1);
 	debug(subtract, "subtract = ");
 	sub(a, subtract, &a, base); 
 	debug(g1, "g1 = "); 
@@ -230,7 +231,17 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	debug(digi, "digi  = ");
 	debug(side, "side = ");
 
+	/* push the new digi onto the answer */
+	pushon(ans, digi);
+	debug(ans, "ans = ");
 
+	/* mul side by digi to obtain the new "subtract" */
+	mul(side, digi, &subtract, base, scale);
+	debug(subtract, "subtract = ");
+
+	static size_t i = 10;
+	if (i--)
+	goto top;
 
 
 
