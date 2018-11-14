@@ -54,7 +54,7 @@ release:
 	./.release.sh
 
 test:
-	$(MAKE) all
+	CFLAGS="-D_ARB_DEBUG=1" $(MAKE) all
 	echo "sqrt tests"
 	./tests/prand-a-a-a-wrapper.sh sqrt
 	echo "div tests"
