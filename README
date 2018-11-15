@@ -5,6 +5,49 @@ Arbitraire
 	Arbitraire support a pure mathematics number system of continuous and
 	arbitrarily sized fractional datum.
 
+	The algorithms used are fast, and contain no known bugs in the
+	fundamental operations. This library is competitive in regards to
+	speed with all other arbitrary precision implementations save for
+	GMP itself which is by far the fastest bignum library in existence.
+	Special care was taken to never compromise by shifting numbers around
+	in such a way as to force correct results. In effect I believe 
+	arbitraire's number system to naturally reflect the way numbers
+	actually work. In doing so we were able to drop lines of code and
+	expose an intrepid and interesting underlying system. In this way,
+	what you see is what you get, and the numerical requests you make
+	are the ones used internally. No extra zeros are tagged onto the ends
+	of numbers to change their behavior. In my opinion this is why
+	arbitraire has had no known bugs in its core operations since it was
+	initially claimed as production ready 1 year ago.
+
+	Division:
+		Knuth's algorithm D is used for division. Faster division
+	algorithms do exist, but in general Knuth's algorithm D is one of 
+	the fastest division algorithms and suffices for production grade
+	arbitrary precision methods. Care was taken to follow Knuth's TAOCP
+	methods exactly. In this way, arbitraire's division algorithm is not
+	merely a typical long division algorithm but instead, again, follows
+	Knuth's methods to the line.
+
+	Subtraction and addition:
+		These algorithms are somewhat novel and are of my own
+	design, they use an offset mechanism which makes them in principle
+	identical to pen+paper pure mathematics routines.
+
+	Multiplication:
+		Partial carry modified school book multiplication is used.
+	This algorithm was thought to be the fastest there was up to the time
+	of Karatsuba. Plans to add Karatsuba multiplication and Fast Fourier
+	Transformation multiplication are in the works. I believe however,
+	that you'll nonetheless find our current algorithm to be sufficient
+	for most purposes. And indeed it is sufficient for implementing a
+	performant square root.
+
+	Square root:
+		Newton's method is used for square root. Our square root
+	algorithm is quite performant perhaps due to using a correct division
+	implementation.
+
 
 BUILDING:
 ---------
@@ -64,6 +107,48 @@ USING THE API:
 	Bear in mind that 5 atexit slots of the C standard library are consumed
 	by arbitraire in order to free its "global" (file scope variables with 
 	external linkage) constants.
+
+DEBUGGING:
+----------
+
+	A special set of internal functions has been created.
+	They are:
+
+		add, sub, divv and mul.
+
+	These functions are not exposed by the API so as to preserve the
+	namespace.
+
+	These special debugging functions have a final field, which when
+	filled with a character string, print will that string and the
+	function name using __func__ and finally the result of the function.
+
+	If you don't compile with `CFLAGS=-D_ARB_DEBUG make' then it will
+	not be possible to activate the final field of these functions.
+	In this way, the final field can be populated but still not print
+	an information if it is never replaced with a NULL or 0 prior to
+	release.
+
+	These functions are used as follows:
+
+		mul(a, b, &c, base, scale, "message");
+		divv(a, b, &c, base, scale, "message");
+		add(a, b, &c, base, "message");
+		sub(a, b, &c, base, "message");
+
+	Generally, "message" would be populated with the name of the
+	variable you are using for the final "answer" which goes into
+	"c". The debugging functions then print the function name,
+	your message, and the final "answer" whch goes into "c".
+
+	I use them as follows:
+
+		mul(a, b, c, base, scale, "c = ");
+
+	C has no way of knowing the variable names verbatim as they are
+	used, so in this way one can debug their work without interfering
+	in the programming process with extra lines of code to print their
+	results out to screen.
 
 	
 INSPIRATIONS:
