@@ -203,25 +203,21 @@ void grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get)
 }
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
-	a = a;
-	base = base;
-	scale = scale;
-	int odd = 0;
 	int digits_to_get = 2;
 	size_t gotten = 0;
+	int lever = 1;
 	fxdpnt *digi = arb_str2fxdpnt("");  //arb_expand(NULL, a->len);
 	fxdpnt *g1 = arb_str2fxdpnt("");
 	fxdpnt *g2 = arb_str2fxdpnt("");
 	fxdpnt *ans = arb_str2fxdpnt("");
 	fxdpnt *fac = arb_str2fxdpnt("");
 	fxdpnt *side = arb_str2fxdpnt("");
-	fxdpnt *subtract = arb_str2fxdpnt("");
-	arb_copy(subtract, a);
+	fxdpnt *sum = arb_str2fxdpnt("");
+	arb_copy(sum, a);
 	arb_copy(g2, a);
-	memset(subtract->number, 0, subtract->len);
+	memset(sum->number, 0, sum->len);
 	
 	if (a->lp % 2 == 1) {
-		odd = 1;
 		digits_to_get = 1;
 	}
 
@@ -235,7 +231,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 
 	/*  square the ans */
 	mul(ans, ans, &g1, base, scale, "g1 = ");
-	int lever = 1;
+	
 	printf("intialized vvvvvvvvv\n");
 	top:
 
@@ -248,9 +244,9 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 
 	/* now subtract the guess 1 from the original */
 	if (lever--)
-	cap(&subtract, g1, "subtract = "); 
+	cap(&sum, g1, "sum = "); 
 	//sub(a, subtract, &a, base, "a = "); 
-	sub(g2, subtract, &g2, base, "g2 = "); 
+	sub(g2, sum, &g2, base, "g2 = "); 
 
 	/* now factorize the side up to g2 */ 
 	digi = guess(&side, g2, base, scale, "side = "); 
@@ -258,12 +254,12 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	/* push the new digi onto the answer */
 	push(&ans, digi, "ans = ");
 
-	/* mul side by digi to obtain the new "subtract" */
-	mul(side, digi, &subtract, base, scale, "subtract = ");
+	/* mul side by digi to obtain the new "sum" */
+	mul(side, digi, &sum, base, scale, "sum = ");
 
 	/* pull down two digits onto the new answer */
 	
-	grabdigits(g2, a, &gotten, digits_to_get);
+	//grabdigits(g2, a, &gotten, digits_to_get);
 	arb_print(g2);
 
 
