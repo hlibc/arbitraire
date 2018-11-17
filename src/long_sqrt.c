@@ -186,22 +186,19 @@ static void cap(fxdpnt **c, fxdpnt *b, char *m)
 	_internal_debug_end;
 }
 
-void grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get)
+fxdpnt *grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get)
 { 
 	if (*gotten + digits_to_get >= a->len)
 	{
 		arb_expand(digi, digi->len + *gotten + digits_to_get);
 		memset(digi->number + digi->len, 0, digits_to_get);
-		digi->len += digits_to_get;
-		digi->lp = digi->len;
-		
-		
 	} else {
 		memcpy(digi->number, a->number + *gotten, digits_to_get);
-	        digi->lp += digits_to_get;
-	        digi->len += digits_to_get;
-	        *gotten += digits_to_get;
 	}
+	digi->lp += digits_to_get;
+	digi->len += digits_to_get;
+	*gotten += digits_to_get;
+	return digi;
 }
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
@@ -214,17 +211,16 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *ans = arb_str2fxdpnt("");
 	fxdpnt *fac = arb_str2fxdpnt("");
 	fxdpnt *side = arb_str2fxdpnt("");
-	fxdpnt *sum = arb_str2fxdpnt("");
-	//arb_copy(sum, a);
-	arb_copy(g2, a);
-	memset(sum->number, 0, sum->len);
+	fxdpnt *temp = arb_str2fxdpnt("");
+	arb_copy(g1, a);
+	memset(g1->number, 0, g1->len);
 	
 	if (a->lp % 2 == 1) {
 		digits_to_get = 1;
 	}
 
 	/* get first set of digits */
-	grabdigits(digi, a, &gotten, digits_to_get);
+	digi = grabdigits(digi, a, &gotten, digits_to_get);
 	digits_to_get = 2;
 
 	/* now factorize up to those one or two digits */
@@ -232,38 +228,34 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	push(&ans, fac, "ans = ");
 
 	/*  square the ans */
-	mul(ans, ans, &g1, base, scale, "g1 = ");
-	cap(&sum, g1, "sum = "); 
+	mul(ans, ans, &temp, base, scale, "temp = ");
+	cap(&g1, temp, "g1 = "); 
 	printf("intialized vvvvvvvvv\n");
-	top:
-
+	top: 
 
 	/* mul the ans by two */
-	mul(ans, two, &side, base, scale, "side = "); 
-
+	mul(ans, two, &side, base, scale, "side = ");
 	/* now push a one onto the "side" */
 	push(&side, one, "side = "); 
 
 	/* now subtract the guess 1 from the original */
 	if (lever--)
+		sub(a, g1, &g2, base, "g2 = "); 
+	else {
+		
+		/* pull down two digits onto the new answer */
+		g2 = grabdigits(g2, a, &gotten, digits_to_get);
+		sub(g2, g1, &g2, base, "g2 = "); 
+	} 
 	
-	sub(a, g1, &g2, base, "g2 = "); 
-	sub(g2, sum, &g2, base, "g2 = "); 
-
 	/* now factorize the side up to g2 */ 
-	digi = guess(&side, g2, base, scale, "side = "); 
+	digi = guess(&side, g2, base, scale, "side = ");
 
 	/* push the new digi onto the answer */
 	push(&ans, digi, "ans = ");
 
-	/* mul side by digi to obtain the new "sum" */
-	mul(side, digi, &sum, base, scale, "sum = ");
-
-	/* pull down two digits onto the new answer */
-	
-	grabdigits(g2, a, &gotten, digits_to_get);
-	arb_print(g2);
-
+	/* mul side by digi to obtain the new "g1" */
+	mul(side, digi, &g1, base, scale, "g1 = ");
 
 	printf("============================\n");
 	static size_t i = 4;
