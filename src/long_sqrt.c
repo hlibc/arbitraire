@@ -133,6 +133,8 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 {
 	/* Handle sqrt factorization guesses of the form
 		465n * n < guess
+		return the small guess
+		populate the large number as "c"
 	*/
 	_internal_debug;
 	fxdpnt *side = arb_str2fxdpnt("1");
@@ -213,7 +215,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *fac = arb_str2fxdpnt("");
 	fxdpnt *side = arb_str2fxdpnt("");
 	fxdpnt *sum = arb_str2fxdpnt("");
-	arb_copy(sum, a);
+	//arb_copy(sum, a);
 	arb_copy(g2, a);
 	memset(sum->number, 0, sum->len);
 	
@@ -231,7 +233,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 
 	/*  square the ans */
 	mul(ans, ans, &g1, base, scale, "g1 = ");
-	
+	cap(&sum, g1, "sum = "); 
 	printf("intialized vvvvvvvvv\n");
 	top:
 
@@ -244,8 +246,8 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 
 	/* now subtract the guess 1 from the original */
 	if (lever--)
-	cap(&sum, g1, "sum = "); 
-	//sub(a, subtract, &a, base, "a = "); 
+	
+	sub(a, g1, &g2, base, "g2 = "); 
 	sub(g2, sum, &g2, base, "g2 = "); 
 
 	/* now factorize the side up to g2 */ 
@@ -259,7 +261,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 
 	/* pull down two digits onto the new answer */
 	
-	//grabdigits(g2, a, &gotten, digits_to_get);
+	grabdigits(g2, a, &gotten, digits_to_get);
 	arb_print(g2);
 
 

@@ -120,7 +120,8 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	leb = den->len;
 
 	v = den->number;
-	for (;*v == 0;v++,leb--); /* watch out for underflow on leb */
+	/* watch out for underflow on leb */
+	for (;*v == 0; v++, leb--);
 
 	if (leb > lea+scale) 
 		out_of_scale = 1; 
@@ -145,17 +146,17 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	}
 
 	if (leb > lea)
-		j=(leb-lea);
+		j = (leb-lea);
 	
-	for ( qg = b-1;i <= lea+scale-leb;++i, ++j, qg = b-1)
+	for (qg = b-1;i <= lea+scale-leb; ++i, ++j, qg = b-1)
 	{
 		if (v[0] != u[i])
 			qg = (u[i]*b + u[i+1]) / v[0];
 		
-		if (v[1]*qg > (u[i]*b + u[i+1] - v[0]*qg)*b + u[i+2])
+		if (v[1] * qg > (u[i] * b + u[i+1] - v[0] * qg) * b + u[i+2])
 		{
 			qg = qg - 1;
-			if (v[1]*qg > (u[i]*b + u[i+1] - v[0]*qg)*b + u[i+2])
+			if (v[1] * qg > (u[i] * b + u[i+1] - v[0] * qg) * b + u[i+2])
 				qg = qg - 1;
 		} 
 		// D4. [Multiply and Subtract]
