@@ -257,9 +257,11 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	/* mul side by digi to obtain the new "g1" */
 	mul(side, digi, &g1, base, scale, "g1 = ");
 
+	size_t i = 0;
+	top:
 	printf("============================\n");
-	arb_print(g1);
-	arb_print(g2);
+
+
 	sub(g2, g1, &g2, base, "g1 = "); 
 	g2 = grabdigits(g2, a, &gotten, digits_to_get);
 	arb_print(g2); 
@@ -274,42 +276,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	/* mul side by digi to obtain the new "g1" */
 	mul(side, digi, &g1, base, scale, "g1 = ");
 
-	printf("============================\n");
-	arb_print(g1);
-	arb_print(g2);
-	sub(g2, g1, &g2, base, "g1 = "); 
-	g2 = grabdigits(g2, a, &gotten, digits_to_get);
-	arb_print(g2); 
-	/* mul the ans by two */
-	mul(ans, two, &side, base, scale, "side = ");
-	/* now push a one onto the "side" */
-	push(&side, one, "side = "); 
-	/* now factorize the side up to g2 */ 
-	digi = guess(&side, g2, base, scale, "side = "); 
-	/* push the new digi onto the answer */
-	push(&ans, digi, "ans = "); 
-	/* mul side by digi to obtain the new "g1" */
-	mul(side, digi, &g1, base, scale, "g1 = ");
-
-
-	
-	printf("============================\n");
-	arb_print(g1);
-	arb_print(g2);
-	sub(g2, g1, &g2, base, "g1 = "); 
-	g2 = grabdigits(g2, a, &gotten, digits_to_get);
-	arb_print(g2); 
-	/* mul the ans by two */
-	mul(ans, two, &side, base, scale, "side = ");
-	/* now push a one onto the "side" */
-	push(&side, one, "side = "); 
-	/* now factorize the side up to g2 */ 
-	digi = guess(&side, g2, base, scale, "side = "); 
-	/* push the new digi onto the answer */
-	push(&ans, digi, "ans = "); 
-	/* mul side by digi to obtain the new "g1" */
-	mul(side, digi, &g1, base, scale, "g1 = ");
-	printf("bogus ans = ");
-
+	while (i++ < 10)
+	goto top;
 	return ans;
 }
