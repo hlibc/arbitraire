@@ -1,103 +1,6 @@
 #include "internal.h"
 /*
-
-	https://gmplib.org/manual/Square-Root-Algorithm.html
-
-
-	This function is under construction.
-
-
-               75.29
-            ________
-          \/ 5669.00
-             49
-             _______
-7*20 = 145  | 769
-         -    725
-             _______
-75*20= 1502 |  44 00
-          -    30 04
-              _______
-752*20=15049 | 13 9600
-           -   13 5441
-                _________
-7529*20=150582 |  315900
-             -
-
-            23.8
-          _______
-        \/5 69.00
-          4
-         _______       44 * 4 = 176
-     43 | 1 69         43 * 3 = 129
-          1 29
-          ______       469 * 9 = 4221   guessing backwards like this may offer
-     468 |  40.00      468 * 8 = 3744   an interesting speed up
-            37.44
-
-	
-
-        * Get the first number set
-        * attempt to find the square of the number set using multiplication
-        * push the discovered number onto the answer
-        * perform a subtraction and carry down 2 digits from the number that is being squared
-        * multiply the answer by 2 and put into temp
-        * find how many times temp can go into the carried down sub and its two digits
-
-
-	* if the number has an even length you can get two digits but if the length
-	 *  is odd then you'll need to start with one (though 3 may work??)
-
-	
-	There is no position agnostic way to generalize long hand
-	square root
-
-	for instance if you started with sqrt(5555)
-	and tried to factor the first 5, you would get a "2"
-	and this is incorrect because the sqrt of 5555 is
-	74.531..., so you need to first start with the "55" in 
-	order to derive a "7" which is the first correct digit
-
-	1> factor the leading set
-	2> square the initial factorization and carry it down
-	3> subtract the new guess from the primary
-	4> multiply the entire estimated answer by 2 and put it to the side
-	5> factor the side new guess up the last guess by manipulating
-	   its final digit (this should be seamless with factor())
-	6> take the last digit of the side new guess and push it
-		onto the answer, then use that guessing factor and replace
-		the primary guess
-	7> carry down two digits
-	8> subtract the new guess from the old guess
-	9> repeat
-
-	notes:
-		instead of pushing the answer digits onto a stack we
-	can use a pure maths method of multiplying by 10 (base) and
-	then adding the number. this will be an expensive procedure
-	but it can be optimized away at a later time
-
-	"a' can not be mutated. it needs to stay the same so
-	we can pull digits from it. However, when it runs out of
-	digits we need to populate the new guess using a fake array
-	of zeros
-
-	ergo we need (at least) the following variables
-		answer
- 	    _________________
-	 \ /  a (input)
-side          guess1
-digit         sum
-              guess1
-              sum
-
-	side * digi is computed to get a "digi" to push onto
-	the "answer". but it is also computed in order to get the 
-	next "guess". thi snew guess must then be subtracted from
-	the "sum" to get a new "sum"
-
-	answer is squared to get "side"
-
+	This function is under construction
 */
 
 static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
@@ -205,6 +108,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	int digits_to_get = 2;
 	size_t gotten = 0;
 	int lever = 1;
+	size_t i = 0;
 	fxdpnt *digi = arb_str2fxdpnt("");  //arb_expand(NULL, a->len);
 	fxdpnt *g1 = arb_str2fxdpnt("");
 	fxdpnt *g2 = arb_str2fxdpnt("");
@@ -213,70 +117,38 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *side = arb_str2fxdpnt("");
 	fxdpnt *temp = arb_str2fxdpnt("");
 	arb_copy(g1, a);
+	arb_copy(g2, a);
 	memset(g1->number, 0, g1->len);
 	
 	if (a->lp % 2 == 1) {
 		digits_to_get = 1;
-	}
-
-	/* get first set of digits */
+	} 
 	digi = grabdigits(digi, a, &gotten, digits_to_get);
-	digits_to_get = 2;
-
-	/* now factorize up to those one or two digits */
+	digits_to_get = 2; 
 	factor2(&fac, digi, base, scale);
 	push(&ans, fac, "ans = ");
-
-	/*  square the ans */
 	mul(ans, ans, &temp, base, scale, "temp = ");
 	cap(&g1, temp, "g1 = "); 
-	printf("intialized vvvvvvvvv\n");
-	
 
-	/* mul the ans by two */
-	mul(ans, two, &side, base, scale, "side = ");
-	/* now push a one onto the "side" */
-	push(&side, one, "side = "); 
-
-	/* now subtract the guess 1 from the original */
-	if (lever--)
-		sub(a, g1, &g2, base, "g2 = "); 
-	else {
-		
-		/* pull down two digits onto the new answer */
-		g2 = grabdigits(g2, a, &gotten, digits_to_get);
-		sub(g2, g1, &g2, base, "g2 = "); 
-	} 
-	
-	/* now factorize the side up to g2 */ 
-	digi = guess(&side, g2, base, scale, "side = ");
-
-	/* push the new digi onto the answer */
-	push(&ans, digi, "ans = ");
-
-	/* mul side by digi to obtain the new "g1" */
-	mul(side, digi, &g1, base, scale, "g1 = ");
-
-	size_t i = 0;
-	top:
-	printf("============================\n");
-
-
-	sub(g2, g1, &g2, base, "g1 = "); 
-	g2 = grabdigits(g2, a, &gotten, digits_to_get);
-	arb_print(g2); 
-	/* mul the ans by two */
-	mul(ans, two, &side, base, scale, "side = ");
-	/* now push a one onto the "side" */
-	push(&side, one, "side = "); 
-	/* now factorize the side up to g2 */ 
+	/* ------------------- */
+	mul(ans, two, &side, base, scale, "side = "); 
+	push(&side, one, "side = ");
+	sub(g2, g1, &g2, base, "g2 = "); 
 	digi = guess(&side, g2, base, scale, "side = "); 
-	/* push the new digi onto the answer */
 	push(&ans, digi, "ans = "); 
-	/* mul side by digi to obtain the new "g1" */
 	mul(side, digi, &g1, base, scale, "g1 = ");
-
-	while (i++ < 10)
+	/* -------------------*/
+	
+	top:
+	sub(g2, g1, &g2, base, "g1 = "); 
+	g2 = grabdigits(g2, a, &gotten, digits_to_get); 
+	mul(ans, two, &side, base, scale, "side = "); 
+	push(&side, one, "side = "); 
+	digi = guess(&side, g2, base, scale, "side = "); 
+	push(&ans, digi, "ans = "); 
+	mul(side, digi, &g1, base, scale, "g1 = "); 
+	while (i++ < scale - 1)
 	goto top;
+	
 	return ans;
 }
