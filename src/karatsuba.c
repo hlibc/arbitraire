@@ -11,33 +11,32 @@
 fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
 	/* divide the number into halves */
-	size_t halfa = a->len / 2;
-	size_t halfb = b->len / 2;
-	fxdpnt *front = arb_expand(NULL, halfa + halfb);
-	fxdpnt *mid1 = arb_expand(NULL, halfa + halfb);
-	fxdpnt *mid2 = arb_expand(NULL, halfa + halfb);
+	size_t ha = a->len / 2;
+	size_t hb = b->len / 2;
+	fxdpnt *front = arb_expand(NULL, ha + hb);
+	fxdpnt *mid1 = arb_expand(NULL, ha + hb);
+	fxdpnt *mid2 = arb_expand(NULL, ha + hb);
 	fxdpnt *midtot = arb_expand(NULL,a->len + b->len);
-	fxdpnt *end = arb_expand(NULL, halfa + halfb);
+	fxdpnt *end = arb_expand(NULL, ha + hb);
 	fxdpnt *total = arb_expand(NULL, a->len + b->len);
 
+
+
 	/* front half */
-	front->len = arb_mul_core(a->number, halfa, b->number, halfb, front->number, base);
-	front->lp = front->len;
-	arb_print(front); 
+	front->lp=front->len= arb_mul_core(a->number, ha, b->number, hb, front->number, base);
 
 	/* expand to the power of */
 	arb_expand(front, a->len + b->len);
-	front->len = a->len + b->len;
-	front->lp = front->len;
+	front->lp = front->len = a->len + b->len;
 	arb_print(front);
+	/* sum into total */
+	add(front, total, &total, base, 0);
+
 
 	/* middle halves */
-	mid1->len = arb_mul_core(a->number, halfa, b->number+ halfb, halfb, mid1->number, base);
-	mid1->lp = mid1->len;
+	mid1->lp=mid1->len= arb_mul_core(a->number, ha, b->number + hb, hb, mid1->number, base);
 	arb_print(mid1);
-	
-	mid2->len = arb_mul_core(a->number + halfa, halfa, b->number, halfb, mid2->number, base);
-	mid2->lp = mid2->len;
+	mid2->lp=mid2->len= arb_mul_core(a->number + ha, ha, b->number, hb, mid2->number, base);
 	arb_print(mid2);
 
 	/* sum middle halves */
@@ -45,20 +44,22 @@ fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	midtot->lp = midtot->len;
 
 	/* expand to the power of */
-	arb_expand(front, (halfa + halfb) * 2);
-	midtot->len = (halfa + halfb) + ((halfa + halfb)/2);
-	midtot->lp = midtot->len;
-	arb_print(midtot); 
+	arb_expand(front, (ha + hb) * 2);
+	midtot->lp = midtot->len = (ha + hb) + ((ha + hb)/2);
+	/* sum into total */
+	add(midtot, total, &total, base, 0);
+
+
 
 	/* end halves */
-	end->len = arb_mul_core(a->number + halfa, halfa, b->number + halfb, halfb, end->number, base);
-	end->lp = end->len;
+	end->lp=end->len= arb_mul_core(a->number + ha, ha, b->number + hb, hb, end->number, base);
 	arb_print(end);
-
-	/* sum the parts */
-	add(front, total, &total, base, 0);
-	add(midtot, total, &total, base, 0);
+	/* sum into total */
 	add(end, total, &total, base, 0);
 	
+
+	
+
 	return total;
 }
+
