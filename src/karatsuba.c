@@ -25,6 +25,12 @@
 
 */
 
+
+
+
+
+
+
 size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd)
 {
 	/* pass in two fxdpnts and four NULL new fxdpnts */
@@ -36,33 +42,56 @@ size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt
 	size_t alentoadd = 0;
 	size_t blentoadd = 0;
 	size_t projected_len = 0;
-	if (alen > blen) {
-		compensated_mag += alen - blen;
-		blentoadd = alen - blen;
-	} else if (blen > alen) {
-		compensated_mag += blen - alen;
-		alentoadd = blen - alen;
-	}
-		
+	size_t len = alen;
 	
-	if (oddity(alen)) {
-		alen += 1;
-		compensated_mag += 1;
+	if (alen > blen) {
+		len = alen;
+		compensated_mag += (alen - blen);
+	} else if (blen > alen) {
+		len = blen;
+		compensated_mag += (blen - alen);
 	}
-	if (oddity(blen)) {
-		blen += 1;
+	
+	
+	if (oddity(len)) {
+		len += 1;
 		compensated_mag += 1;
 	}
 
-	
+	half = len / 2;
+	arb_expand(a, len);
+	arb_expand(b, len);
+	a->len = a->lp = b->len = b->lp = len;
 
 	*aa = arb_expand(NULL, half);
 	*bb = arb_expand(NULL, half);
 	*cc = arb_expand(NULL, half);
 	*dd = arb_expand(NULL, half);
+	_arb_copy_core((*aa)->number, a->number, half);
+	_arb_copy_core((*bb)->number, a->number + half, half);
+	_arb_copy_core((*cc)->number, b->number, half);
+	_arb_copy_core((*dd)->number, b->number + half, half);
+
+	(*aa)->len = (*aa)->lp = (*bb)->len = (*bb)->lp = (*cc)->len = (*cc)->lp = (*dd)->len = (*dd)->lp = half;
+
 	/* we need to check if a number is even or odd in order for a true split */
 	/* return the total compensated magnitude */
 	return compensated_mag;
+}
+
+void split_test(fxdpnt *a, fxdpnt *b)
+{
+	fxdpnt *aa = NULL;
+	fxdpnt *bb = NULL;
+	fxdpnt *cc = NULL;
+	fxdpnt *dd = NULL;
+	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
+	arb_print(a);
+	arb_print(b);
+	arb_print(aa);
+	arb_print(bb);
+	arb_print(cc);
+	arb_print(dd);
 }
 
 fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
