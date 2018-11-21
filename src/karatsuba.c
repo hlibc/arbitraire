@@ -25,7 +25,7 @@
 
 */
 
-size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt *cc, fxdpnt *dd)
+size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd)
 {
 	/* pass in two fxdpnts and four NULL new fxdpnts */
 	size_t half = 0;
@@ -33,15 +33,28 @@ size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt *cc, fxdpnt 
 	size_t compensated_mag = 0;
 	size_t alen = a->len;
 	size_t blen = b->len;
+	size_t alentoadd = 0;
+	size_t blentoadd = 0;
+	size_t projected_len = 0;
+	if (alen > blen) {
+		compensated_mag += alen - blen;
+		blentoadd = alen - blen;
+	} else if (blen > alen) {
+		compensated_mag += blen - alen;
+		alentoadd = blen - alen;
+	}
+		
+	
 	if (oddity(alen)) {
 		alen += 1;
 		compensated_mag += 1;
 	}
-		
 	if (oddity(blen)) {
 		blen += 1;
 		compensated_mag += 1;
 	}
+
+	
 
 	*aa = arb_expand(NULL, half);
 	*bb = arb_expand(NULL, half);
