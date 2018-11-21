@@ -70,10 +70,12 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 	static int lever = 0;
 
 	/* align on a multiple of 16 */
+
 	if (request > 16)
 		request = (((request / 16) + 1) * 16);
 	else
 		request = 16;
+
 	
 	if (o == NULL) { 
 		o = arb_malloc(sizeof(fxdpnt));

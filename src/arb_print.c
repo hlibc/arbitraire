@@ -1,15 +1,16 @@
 #include "internal.h"
 
+
 int arb_highbase(int a)
 {
-	// Handle high bases
+	/* Handle high bases */
 	static int glph[36] = { '0', '1', '2', '3', '4', '5', '6', '7', '8',
 				'9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
 				'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
 				'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 	if (a < 36) 
 		return glph[a]; 
-	else // just use the ascii values for bases that are very high
+	else /* just use the ascii values for bases that are very high */
 		return a;
 }
 
@@ -84,7 +85,7 @@ void arb_printerr(fxdpnt *flt)
 void arb_printtrue(fxdpnt *flt)
 {
 	/*
-		This function prints fxdpnt's as the truly are as opposed
+		This function prints fxdpnt's as they truly are as opposed
 		to jostling them for correct output
 	*/
 	size_t sign = 0;
@@ -95,3 +96,4 @@ void arb_printtrue(fxdpnt *flt)
 	}
 	_print_core(stdout, flt->number, flt->len, flt->lp, sign, 0);
 }
+

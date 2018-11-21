@@ -127,27 +127,28 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	fxdpnt *end = NULL;
 	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
 	/* front half */
-	mul(aa, bb, &total, base, scale, 0);
+	mul(aa, cc, &total, base, scale, "total = ");
 	/* expand to the power of */
 	arb_expand(total, aa->len + bb->len);
 	total->len = total->lp = aa->len + bb->len;
+	arb_print(total);
 	/* sum into total */
 		// already done above
 	/* middle halves */
-	mul(aa, dd, &mid1, base, scale, 0);
-	mul(bb, cc, &mid2, base, scale, 0);
+	mul(aa, dd, &mid1, base, scale, "mid1 = ");
+	mul(bb, cc, &mid2, base, scale, "mid2 = ");
 	/* sum middle halves (a, d and b, c) */
-	add(mid1, mid2, &midtot, base, 0);
+	add(mid1, mid2, &midtot, base, "midtot = ");
 	
 	/* expand to the power of */
 	arb_expand(midtot, (aa->len + bb->len) / 2);
 	midtot->len = midtot->lp = ((aa->len + bb->len) / 2);
 	/* sum into total */
-	add(midtot, total, &total, base, 0);
+	add(midtot, total, &total, base, "total = ");
 	/* end halves */
-	mul(cc, dd, &end, base, scale, 0);
+	mul(cc, dd, &end, base, scale, "end = ");
 	/* sum into total */
-	mul(end, total, &total, base, scale, 0);
+	mul(end, total, &total, base, scale, "total = ");
 
 	return total;
 }
