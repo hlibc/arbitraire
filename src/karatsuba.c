@@ -23,6 +23,28 @@
 	12*5555*10^7 + (12*9999 + 345*5555)*10^4 + 345*9999 
 
 
+	notes:
+
+	instead of copying the needed data it would be faster to expand the
+	magnitudes and then make the new partial number's ->number be
+	pointers to sections of the originals. -- the problem with this is
+	that we would need to adjust ->allocated, ->len and ->lp accordingly
+
+
+	As a trivial speedup we could combine the steps that create variable
+	copies of the multiplicands for long-multiplication ie;
+		fxdpnt *a2 = arb_expand(NULL, MAX(scale, a->len));
+	and then some of the time complexity could be hidden behind this rather
+	important/useful step. This is ofc just an ease of use step and 
+	ultimately much faster methods must be divised to split numbers and for
+	long multiplication to handle scale. Though, in sub-add we use the
+	arb_place mechanism to feed an imaginary array of zeros this comes at
+	a computational cost of added conditional tests.
+
+	It may be best to view number expansion as a fast way of avoiding these
+	kinds of conditional methods of supplyng imaginary arrays of zeros to
+	represent the trailing end of a number. In order to determine the best way
+	we'll need tests of both types of functions.
 */
 
 
@@ -35,13 +57,9 @@ size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt
 {
 	/* pass in two fxdpnts and four NULL new fxdpnts */
 	size_t half = 0;
-	half = a->len / 2;
 	size_t compensated_mag = 0;
 	size_t alen = a->len;
 	size_t blen = b->len;
-	size_t alentoadd = 0;
-	size_t blentoadd = 0;
-	size_t projected_len = 0;
 	size_t len = alen;
 	
 	if (alen > blen) {
@@ -72,9 +90,9 @@ size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt
 	_arb_copy_core((*cc)->number, b->number, half);
 	_arb_copy_core((*dd)->number, b->number + half, half);
 
-	(*aa)->len = (*aa)->lp = (*bb)->len = (*bb)->lp = (*cc)->len = (*cc)->lp = (*dd)->len = (*dd)->lp = half;
+	(*aa)->len = (*aa)->lp = (*bb)->len = (*bb)->lp = half;
+	(*cc)->len = (*cc)->lp = (*dd)->len = (*dd)->lp = half;
 
-	/* we need to check if a number is even or odd in order for a true split */
 	/* return the total compensated magnitude */
 	return compensated_mag;
 }
@@ -93,6 +111,45 @@ void split_test(fxdpnt *a, fxdpnt *b)
 	arb_printtrue(bb);
 	arb_printtrue(cc);
 	arb_printtrue(dd);
+}
+
+fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+{
+	
+	fxdpnt *aa = NULL;
+	fxdpnt *bb = NULL;
+	fxdpnt *cc = NULL;
+	fxdpnt *dd = NULL;
+	fxdpnt *total = NULL;
+	fxdpnt *midtot = NULL;
+	fxdpnt *mid1 = NULL;
+	fxdpnt *mid2 = NULL;
+	fxdpnt *end = NULL;
+	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
+	/* front half */
+	mul(aa, bb, &total, base, scale, 0);
+	/* expand to the power of */
+	arb_expand(total, aa->len + bb->len);
+	total->len = total->lp = aa->len + bb->len;
+	/* sum into total */
+		// already done above
+	/* middle halves */
+	mul(aa, dd, &mid1, base, scale, 0);
+	mul(bb, cc, &mid2, base, scale, 0);
+	/* sum middle halves (a, d and b, c) */
+	add(mid1, mid2, &midtot, base, 0);
+	
+	/* expand to the power of */
+	arb_expand(midtot, (aa->len + bb->len) / 2);
+	midtot->len = midtot->lp = ((aa->len + bb->len) / 2);
+	/* sum into total */
+	add(midtot, total, &total, base, 0);
+	/* end halves */
+	mul(cc, dd, &end, base, scale, 0);
+	/* sum into total */
+	mul(end, total, &total, base, scale, 0);
+
+	return total;
 }
 
 fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
@@ -131,7 +188,7 @@ fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	midtot->lp = midtot->len;
 
 	/* expand to the power of */
-	arb_expand(front, (ha + hb) * 2);
+	arb_expand(midtot, (ha + hb) * 2);
 	midtot->lp = midtot->len = (ha + hb) + ((ha + hb)/2);
 	/* sum into total */
 	add(midtot, total, &total, base, 0);
