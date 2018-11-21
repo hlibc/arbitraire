@@ -138,12 +138,14 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	mul(aa, dd, &mid1, base, scale, "mid1 = ");
 	mul(bb, cc, &mid2, base, scale, "mid2 = ");
 	
-	/* sum middle halves (a, d and b, c) */
+	/* sum middle halves (a, d and b, c) (this number is correct )*/
 	add(mid1, mid2, &midtot, base, "midtot = ");
 	
 	/* expand to the power of */
-	arb_expand(midtot, (aa->len + bb->len) / 2);
-	midtot->len = midtot->lp = ((aa->len + bb->len) / 2);
+	arb_expand(midtot, (aa->len + bb->len + aa->len) );
+	midtot->len = midtot->lp = ((aa->len + bb->len + aa->len) );
+	printf("total = ");
+	arb_print(midtot);
 	/* sum into total */
 	add(midtot, total, &total, base, "total = ");
 	/* end halves */
@@ -194,8 +196,6 @@ fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	midtot->lp = midtot->len = (ha + hb) + ((ha + hb)/2);
 	/* sum into total */
 	add(midtot, total, &total, base, 0);
-
-
 
 	/* end halves */
 	end->lp=end->len= arb_mul_core(a->number + ha, ha, b->number + hb, hb, end->number, base);
