@@ -55,7 +55,7 @@ size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt
 	
 	if (oddity(len)) {
 		len += 1;
-		compensated_mag += 1;
+		compensated_mag += 2;
 	}
 
 	half = len / 2;
@@ -86,6 +86,7 @@ void split_test(fxdpnt *a, fxdpnt *b)
 	fxdpnt *cc = NULL;
 	fxdpnt *dd = NULL;
 	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
+	printf("compensated magnitude %zu\n", comp);
 	arb_printtrue(a); 
 	arb_printtrue(b);
 	arb_printtrue(aa);
