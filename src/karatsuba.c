@@ -134,9 +134,10 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	arb_print(total);
 	/* sum into total */
 		// already done above
-	/* middle halves */
+	/* middle halves (a*d + b*c*/
 	mul(aa, dd, &mid1, base, scale, "mid1 = ");
 	mul(bb, cc, &mid2, base, scale, "mid2 = ");
+	
 	/* sum middle halves (a, d and b, c) */
 	add(mid1, mid2, &midtot, base, "midtot = ");
 	
