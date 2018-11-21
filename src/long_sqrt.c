@@ -105,9 +105,9 @@ fxdpnt *grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get
 }
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
+	
 	int digits_to_get = 2;
 	size_t gotten = 0;
-	int lever = 1;
 	size_t i = 0;
 	fxdpnt *digi = arb_str2fxdpnt("");  //arb_expand(NULL, a->len);
 	fxdpnt *g1 = arb_str2fxdpnt("");
@@ -120,9 +120,13 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	arb_copy(g2, a);
 	memset(g1->number, 0, g1->len);
 	
-	if (oddity(a->lp))
+	
+	if (oddity(a->lp)) {
 		digits_to_get = 1;
+		if (a->lp < a->len)
+			digits_to_get = 2;
 	} 
+	/* get the first guess */
 	digi = grabdigits(digi, a, &gotten, digits_to_get);
 	digits_to_get = 2; 
 	factor2(&fac, digi, base, scale);
@@ -130,23 +134,26 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	mul(ans, ans, &temp, base, scale, "temp = ");
 	cap(&g1, temp, "g1 = "); 
 
-	/* ------------------- */
+	/* now try to subtract the first guess from the input */
 	mul(ans, two, &side, base, scale, "side = "); 
 	push(&side, one, "side = ");
 	sub(g2, g1, &g2, base, "g2 = "); 
+	//g2 = grabdigits(g2, a, &gotten, digits_to_get); 
 	digi = guess(&side, g2, base, scale, "side = "); 
 	push(&ans, digi, "ans = "); 
 	mul(side, digi, &g1, base, scale, "g1 = ");
-	/* -------------------*/
+	
 	
 	top:
+	
+	mul(ans, two, &side, base, scale, "side = "); 
+	push(&side, one, "side = ");
 	sub(g2, g1, &g2, base, "g1 = "); 
 	g2 = grabdigits(g2, a, &gotten, digits_to_get); 
-	mul(ans, two, &side, base, scale, "side = "); 
-	push(&side, one, "side = "); 
 	digi = guess(&side, g2, base, scale, "side = "); 
 	push(&ans, digi, "ans = "); 
 	mul(side, digi, &g1, base, scale, "g1 = "); 
+
 	while (i++ < scale - 1)
 	goto top;
 	
