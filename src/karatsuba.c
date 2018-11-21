@@ -129,8 +129,8 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	/* front half */
 	mul(aa, cc, &total, base, scale, "total = ");
 	/* expand to the power of */
-	arb_expand(total, aa->len + bb->len);
-	total->len = total->lp = aa->len + bb->len;
+	arb_expand(total, ((aa->len + bb->len) * 2));
+	total->len = total->lp = ((aa->len + bb->len) * 2);
 	arb_print(total);
 	/* sum into total */
 		// already done above
