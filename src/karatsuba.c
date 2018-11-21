@@ -25,6 +25,32 @@
 
 */
 
+size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt *cc, fxdpnt *dd)
+{
+	/* pass in two fxdpnts and four NULL new fxdpnts */
+	size_t half = 0;
+	half = a->len / 2;
+	size_t compensated_mag = 0;
+	size_t alen = a->len;
+	size_t blen = b->len;
+	if (oddity(alen)) {
+		alen += 1;
+		compensated_mag += 1;
+	}
+		
+	if (oddity(blen)) {
+		blen += 1;
+		compensated_mag += 1;
+	}
+
+	*aa = arb_expand(NULL, half);
+	*bb = arb_expand(NULL, half);
+	*cc = arb_expand(NULL, half);
+	*dd = arb_expand(NULL, half);
+	/* we need to check if a number is even or odd in order for a true split */
+	/* return the total compensated magnitude */
+	return compensated_mag;
+}
 
 fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
