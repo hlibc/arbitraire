@@ -86,12 +86,12 @@ void split_test(fxdpnt *a, fxdpnt *b)
 	fxdpnt *cc = NULL;
 	fxdpnt *dd = NULL;
 	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
-	arb_print(a);
-	arb_print(b);
-	arb_print(aa);
-	arb_print(bb);
-	arb_print(cc);
-	arb_print(dd);
+	arb_printtrue(a); 
+	arb_printtrue(b);
+	arb_printtrue(aa);
+	arb_printtrue(bb);
+	arb_printtrue(cc);
+	arb_printtrue(dd);
 }
 
 fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
