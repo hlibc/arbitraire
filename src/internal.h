@@ -117,6 +117,11 @@ void add(fxdpnt *, fxdpnt *, fxdpnt **, int, char *);
 void mul(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
 void divv(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
 
+/* oddity */
+int oddity(size_t);
+
+
+
 #define _internal_debug if (_ARB_DEBUG && m) { \
 fprintf(stderr, __func__); \
 fprintf(stderr, "()  %s", m); \

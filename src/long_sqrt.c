@@ -120,7 +120,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	arb_copy(g2, a);
 	memset(g1->number, 0, g1->len);
 	
-	if (a->lp % 2 == 1) {
+	if (oddity(a->lp))
 		digits_to_get = 1;
 	} 
 	digi = grabdigits(digi, a, &gotten, digits_to_get);

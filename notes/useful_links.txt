@@ -33,3 +33,16 @@ REFERENCES:
 
 	https://stackoverflow.com/questions/2267146/what-is-the-fastest-factorization-algorithm
 
+
+HISTORY:
+
+	https://www.fastcompany.com/3032233/the-surprisingly-short-history-of-the-plus-sign
+
+		"In 1557, Robert Recorde abbreviated “is equal to” to two long,
+		 parallel lines, birthing the equals sign to avoid repeating himself 
+		200 times in his book Whetstone of Whitte."
+
+		"The plus sign, originally a shorthand for the Latin word for 
+		“and,” et, came about in the late 15th century"
+
+
