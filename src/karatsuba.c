@@ -45,13 +45,12 @@
 	kinds of conditional methods of supplyng imaginary arrays of zeros to
 	represent the trailing end of a number. In order to determine the best way
 	we'll need tests of both types of functions.
+
+	IMPORTANT:
+
+		this karatsuba algorithm does not work unless supplied a mul
+	algorithm which does *not* strip leading zeros
 */
-
-
-
-
-
-
 
 size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd)
 {
@@ -69,7 +68,6 @@ size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt
 		len = blen;
 		compensated_mag += (blen - alen);
 	}
-	
 	
 	if (oddity(len)) {
 		len += 1;
@@ -115,7 +113,6 @@ void split_test(fxdpnt *a, fxdpnt *b)
 
 fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
-	
 	fxdpnt *aa = NULL;
 	fxdpnt *bb = NULL;
 	fxdpnt *cc = NULL;
@@ -126,47 +123,32 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	fxdpnt *mid2 = NULL;
 	fxdpnt *end = NULL;
 	fxdpnt *front = NULL;
+	size_t lpstore = a->lp + b->lp;
 	total = arb_expand(NULL, a->len + b->len);
 	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
 	/* front half */
 	mul(aa, cc, &front, base, scale, "total = ");
 	/* expand to the power of */
-	//arb_expand(total, ((aa->len + bb->len) * 2));
-	//total->len = total->lp = ((aa->len + bb->len) * 2);
-	//arb_print(total);
-
 	arb_expand(front, ((aa->len + bb->len) * 2));
 	front->len = front->lp = ((aa->len + bb->len) * 2);
 	arb_print(front);
-	
-	
-	/* sum into total */
-		// already done above
-	add(front, zero, &total, base, 0);
-	//arb_copy(total, front);
-	/* middle halves (a*d + b*c*/
+	/* middle halves */
 	mul(aa, dd, &mid1, base, scale, "mid1 = ");
 	mul(bb, cc, &mid2, base, scale, "mid2 = ");
-	
-	/* sum middle halves (a, d and b, c) (this number is correct )*/
+	/* sum middle halves */
 	add(mid1, mid2, &midtot, base, "midtot = ");
-	
 	/* expand to the power of */
-	arb_expand(midtot, (aa->len + bb->len + aa->len) );
-	midtot->len = midtot->lp = ((aa->len + bb->len + aa->len) );
-	printf("total = ");
-	arb_print(midtot);
+	arb_expand(midtot, (aa->len + bb->len + aa->len));
+	midtot->len = midtot->lp = ((aa->len + bb->len + aa->len));
 	/* sum into total */
-	add(midtot, total, &total, base, "total = ");
+	add(midtot, front, &total, base, "total = ");
 	/* end halves */
-	
-	arb_printtrue(bb);
-	arb_printtrue(dd);
 	mul(bb, dd, &end, base, scale, "end = ");
 	/* sum into total */
 	add(end, total, &total, base, "total = ");
 
 	total->lp = (total->len - comp);
+	//total->lp = total->lp - (total->lp - lpstore);
 	return total;
 }
 
