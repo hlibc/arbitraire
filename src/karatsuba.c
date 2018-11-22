@@ -38,7 +38,7 @@
 	important/useful step. This is ofc just an ease of use step and 
 	ultimately much faster methods must be divised to split numbers and for
 	long multiplication to handle scale. Though, in sub-add we use the
-	arb_place mechanism to feed an imaginary array of zeros this comes at
+	arb_place mechanism to feed an imaginary array of zeros -- this comes at
 	a computational cost of added conditional tests.
 
 	It may be best to view number expansion as a fast way of avoiding these
@@ -166,6 +166,7 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	/* sum into total */
 	add(end, total, &total, base, "total = ");
 
+	total->lp = (total->len - comp);
 	return total;
 }
 
