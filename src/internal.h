@@ -120,6 +120,8 @@ void divv(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
 /* oddity */
 int oddity(size_t);
 
+/* */
+void *_arb_memset(void *, int, size_t);
 
 
 #define _internal_debug if (_ARB_DEBUG && m) { \

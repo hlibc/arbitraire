@@ -94,7 +94,7 @@ fxdpnt *grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get
 	if (*gotten + digits_to_get >= a->len)
 	{
 		arb_expand(digi, digi->len + *gotten + digits_to_get);
-		memset(digi->number + digi->len, 0, digits_to_get);
+		_arb_memset(digi->number + digi->len, 0, digits_to_get);
 	} else {
 		_arb_copy_core(digi->number, a->number + *gotten, digits_to_get);
 	}
@@ -118,7 +118,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *temp = arb_str2fxdpnt("");
 	arb_copy(g1, a);
 	arb_copy(g2, a);
-	memset(g1->number, 0, g1->len);
+	_arb_memset(g1->number, 0, g1->len);
 	
 	
 	if (oddity(a->lp)) {

@@ -19,7 +19,7 @@ fxdpnt *convscaled(fxdpnt *a, fxdpnt *b, int ibase, int obase)
 		k = a->lp;
 
 	b = arb_expand(b, k);
-	memset(b->number, 0, k*sizeof(ARBT)); // something is wrong with arb_expand
+	_arb_memset(b->number, 0, k); // something is wrong with arb_expand
 	b->len = b->lp = k;
 
 	for (i = 0; i < k; ++i) {

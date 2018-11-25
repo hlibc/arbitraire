@@ -43,7 +43,7 @@ void shmul(ARBT *num, int size, int digit, ARBT *result, int base)
 	size_t i = 0;
 
 	if (digit == 0)
-		memset(result, 0, size * sizeof(ARBT));
+		_arb_memset(result, 0, size);
 	else if (digit == 1)
 		_arb_copy_core(result, num, size);
 	else

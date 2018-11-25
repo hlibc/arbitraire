@@ -6,7 +6,7 @@ fxdpnt *arb_newtonian_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, int scale)
 	fxdpnt *g = arb_expand(NULL, apx);
 	fxdpnt *g1 = arb_expand(NULL, apx); 
 	fxdpnt *hold = arb_expand(NULL, apx); 
-	memset(g->number, 0,(apx)  * sizeof(ARBT)); 
+	_arb_memset(g->number, 0, apx); 
 	g->number[apx -1] = 1; 
 
 	for (;;)
