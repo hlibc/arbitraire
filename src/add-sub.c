@@ -27,7 +27,7 @@
 
 	It would be prudent to also implement the more traditional approach
 	of first comparing the numbers and then rearranging them, increasing
-	the magnitude to match the places and other typical algorithm so as
+	the magnitude to match the places and other typical algorithms so as
 	to compare them with arbitraire's techniques.
 */
 
