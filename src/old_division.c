@@ -22,14 +22,14 @@ fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 
 	for (; z < num->len;)
 	{ 
-		for (rec = 0, i = 0, j = z ; i < den->len ; j++ ,i++)
+		for (rec = 0, i = 0, j = z ; i < den->len; j++ ,i++)
 		{ 
-			sum = (u[j]) - (den->number[i]);
+			sum = u[j] - den->number[i];
 			if (sum < 0)
 			{
 				if (j == z)
 				{ 
-					u[j + 1] += ((u[j]) * b);
+					u[j + 1] += (u[j] * b);
 					z++;
 					q->len++;
 					q->number[z] = 0;
