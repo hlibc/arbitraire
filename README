@@ -77,9 +77,10 @@ TESTING:
 	Automatic testing with valgrind:
 
 		./tests/pseudo-random-wrapper.sh function valgrind
+		(argument agnostic)
 		./tests/prand-a-a-a-wrapper.sh function valgrind
 
-		for instance, test sqrt:
+		for instance, test square root (sqrt):
 
 			./tests/prand-a-a-a-wrapper.sh sqrt valgrind
 
