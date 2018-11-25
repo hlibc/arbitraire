@@ -2,7 +2,7 @@ Arbitraire
 
 	An arbitrary precision mathematics library. 
 	
-	Arbitraire support a pure mathematics number system of continuous and
+	Arbitraire supports a pure mathematics number system of continuous and
 	arbitrarily sized fractional datum.
 
 	The algorithms used are fast, and contain no known bugs in the
