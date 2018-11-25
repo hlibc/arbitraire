@@ -11,7 +11,7 @@
 	is crossed, I have mitigated this by using a special property of
 	subtraction that takes advantage of a left over carry. When a
 	left over carry is detected, the inverse of the solution is used.
-	Therefore is the solution was 999 we would perform the operation:
+	Ergo, if the solution was 999 we would perform the operation:
 
 		answer = 1000 - 999
 
@@ -114,13 +114,13 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	}
 	/* a left over borrow indicates that the zero threshold was crossed */
 	if (borrow == -1){
-		free(c->number);
-		c->number = array;
+		_arb_copyreverse_core(c->number, array, c->len);
 		arb_flipsign(c);
-	}else 
-		free(array);
-	arb_reverse(c);
-	
+	}else {
+		
+		arb_reverse(c);
+	}
+	free(array);
 	return c;
 }
 

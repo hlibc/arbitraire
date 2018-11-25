@@ -8,7 +8,6 @@ void _arb_copyreverse_core(ARBT *b, ARBT *a, size_t len)
 		b[i] = a[j];
 }
 
-
 void arb_copyreverse(fxdpnt *b, fxdpnt *a)
 { 
 	b = arb_expand(b, a->len);
