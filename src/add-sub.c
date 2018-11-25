@@ -4,7 +4,7 @@
 	These addition and subtraction routines are based on a type of
 	imaginary array of zeros. This imaginary array is called upon
 	to make up for the difference needed in order to perform the
-	operations on arrays of different lengths.
+	operations on numbers of differing magnitude.
 
 	While many subtraction routines require that the numbers first
 	be compared and the rearranged in the case that the zero threshold
@@ -85,15 +85,15 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0, j = 0, r = 0;
 	int sum = 0, borrow = 0;
-	int mborrow = -1; // mirror borrow must be -1
+	int mborrow = -1; /* mirror borrow must be -1 */
 	int mir = 0;
-	size_t z = 0, y = 0; // dummy variables for the mirror
+	size_t z = 0, y = 0; /* dummy variables for the mirror */
 	ARBT *array;
 
 	array = arb_malloc((MAX(a->len, b->len) * 2) * sizeof(ARBT));
 
 	for (; i < a->len || j < b->len;c->len++, ++r){
-		mir = arb_place(a, b, &y, r) - arb_place(b, a, &z, r) + mborrow; // mirror
+		mir = arb_place(a, b, &y, r) - arb_place(b, a, &z, r) + mborrow; /* mirror */
 		sum = arb_place(a, b, &i, r) - arb_place(b, a, &j, r) + borrow;
 
 		borrow = 0;
@@ -102,7 +102,7 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 			sum += base;
 		}
 		c->number[c->len] = sum;
-		// maintain a mirror for subtractions that cross the zero threshold
+		/* maintain a mirror for subtractions that cross the zero threshold */
 		y = i;
 		z = j;
 		mborrow = 0;
@@ -112,7 +112,7 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 		}
 		array[c->len] = (base-1) - mir;
 	}
-	// a left over borrow indicates that the zero threshold was crossed
+	/* a left over borrow indicates that the zero threshold was crossed */
 	if (borrow == -1){
 		free(c->number);
 		c->number = array;
