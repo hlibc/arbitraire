@@ -38,7 +38,7 @@ fxdpnt *convscaled(fxdpnt *a, fxdpnt *b, int ibase, int obase)
 	// non-integer
 	fxdpnt *ob = hrdware2arb(obase);
 	fxdpnt *ofrac = arb_expand(NULL, rr(a)*2);
-	memcpy(ofrac->number, a->number + a->lp, rr(a) * sizeof(ARBT));
+	_arb_copy_core(ofrac->number, a->number + a->lp, rr(a));
 	ofrac->len = rr(a);
 	ofrac->lp = 0;
 	fxdpnt *z = arb_expand(NULL, a->lp);
