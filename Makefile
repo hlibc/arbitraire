@@ -63,4 +63,6 @@ test:
 	./tests/pseudo-random-wrapper.sh add
 	echo "sub tests"
 	./tests/pseudo-random-wrapper.sh sub
+	echo "mul tests"
+	./tests/pseudo-random-wrapper.sh mul
 
