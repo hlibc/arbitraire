@@ -126,7 +126,7 @@ DEBUGGING:
 	If you don't compile with `CFLAGS=-D_ARB_DEBUG make' then it will
 	not be possible to activate the final field of these functions.
 	In this way, the final field can be populated but still not print
-	an information if it is never replaced with a NULL or 0 prior to
+	any information if it is never replaced with a NULL or 0 prior to
 	release.
 
 	These functions are used as follows:
