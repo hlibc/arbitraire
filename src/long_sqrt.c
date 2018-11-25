@@ -65,7 +65,7 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 void pushon(fxdpnt *c, fxdpnt *b)
 {
 	arb_expand(c, c->len + b->len);
-	memcpy(c->number + c->len, b->number, b->len * sizeof(ARBT));
+	_arb_copy_core(c->number + c->len, b->number, b->len);
 	c->len += b->len;
 	c->lp = c->len;
 	
@@ -79,7 +79,7 @@ void push(fxdpnt **c, fxdpnt *b, char *m)
 void addfront(fxdpnt *a, fxdpnt *b)
 {
 	arb_expand(a, b->len);
-	memcpy(a->number, b->number, b->len * sizeof(ARBT));
+	_arb_copy_core(a->number, b->number, b->len);
 }
 
 static void cap(fxdpnt **c, fxdpnt *b, char *m)
@@ -96,7 +96,7 @@ fxdpnt *grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get
 		arb_expand(digi, digi->len + *gotten + digits_to_get);
 		memset(digi->number + digi->len, 0, digits_to_get);
 	} else {
-		memcpy(digi->number, a->number + *gotten, digits_to_get);
+		_arb_copy_core(digi->number, a->number + *gotten, digits_to_get);
 	}
 	digi->lp += digits_to_get;
 	digi->len += digits_to_get;
