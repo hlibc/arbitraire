@@ -43,9 +43,9 @@ void shmul(ARBT *num, int size, int digit, ARBT *result, int base)
 	size_t i = 0;
 
 	if (digit == 0)
-		memset (result, 0, size * sizeof(ARBT));
+		memset(result, 0, size * sizeof(ARBT));
 	else if (digit == 1)
-		memcpy (result, num, size * sizeof(ARBT));
+		_arb_copy_core(result, num, size);
 	else
 	{
 		for (carry = 0, i = size ; i>0;i--)
