@@ -10,7 +10,7 @@ Arbitraire
 	speed with all other arbitrary precision implementations save for
 	GMP itself which is by far the fastest bignum library in existence.
 	Special care was taken to never compromise by shifting numbers around
-	in such a way as to force correct results. In effect I believe 
+	in such a way as to force correct results. In effect, I believe 
 	arbitraire's number system to naturally reflect the way numbers
 	actually work. In doing so we were able to drop lines of code and
 	expose an intrepid and interesting underlying system. In this way,
@@ -47,6 +47,9 @@ Arbitraire
 		Newton's method is used for square root. Our square root
 	algorithm is quite performant perhaps due to using a correct division
 	implementation.
+
+
+	Arbitraire is original work authored by CM Graff.
 
 
 BUILDING:
@@ -126,13 +129,14 @@ USING THE API:
 
 	Hardware types can be converted to fxdpnt bignums using hrdware2arb.
 
-		fxdpnt *somenumber = hrdware2arb(16123123);
+		fxdpnt *a = hrdware2arb(16123123);
 
 	This is not a very powerful or fast function as this is not a typical
 	internal operation for arbitraire. It only supports size_t. If you
 	really need to use hardware types you should probably write a new set
 	of functions for this. Functions such as this, which allocate their
-	own memory require that the caller free the memory.
+	own memory require that the caller free the memory using arb_free().
+
 
 DEBUGGING:
 ----------
