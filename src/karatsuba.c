@@ -113,6 +113,7 @@ void split_test(fxdpnt *a, fxdpnt *b)
 
 fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
+	c = c;
 	fxdpnt *aa = NULL;
 	fxdpnt *bb = NULL;
 	fxdpnt *cc = NULL;
@@ -123,7 +124,7 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	fxdpnt *mid2 = NULL;
 	fxdpnt *end = NULL;
 	fxdpnt *front = NULL;
-	size_t lpstore = a->lp + b->lp;
+	//size_t lpstore = a->lp + b->lp;
 	total = arb_expand(NULL, a->len + b->len);
 	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
 	/* front half */
@@ -154,6 +155,8 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 
 fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
+	c = c;
+	scale = scale;
 	/* divide the number into halves */
 	size_t ha = a->len / 2;
 	size_t hb = b->len / 2;

@@ -2,6 +2,7 @@
 
 fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 {
+	scale = scale;
 	size_t i = 0;
 	size_t j = 0;
 	size_t z = 0;
