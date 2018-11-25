@@ -56,3 +56,5 @@ fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 }
 
 
+
+
