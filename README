@@ -65,10 +65,14 @@ TESTING:
 
 		make test
 
+
 	Run the test wrappers and binaries:
 	
-		./tests/pseudo-random-wrapper.sh function
-		./tests/prand-a-a-a-wrapper.sh ag-function
+		./tests/pseudo-random-wrapper.sh add|mul|sub|div|sqrt ...
+	
+		(argument agnostic, (functions of the form f(a, a, a));
+		./tests/prand-a-a-a-wrapper.sh ag-add|ag-sub ...
+
 
 	Automatic testing with valgrind:
 
@@ -83,7 +87,8 @@ TESTING:
 USING THE API:
 --------------
 
-	An example for adding two numbers is provided below:
+	An example for writing a program to divide two numbers is provided 
+	below:
 
 	#include <arbitraire/arbitraire.h>
 
@@ -104,9 +109,29 @@ USING THE API:
 		return 0;
 	}
 
-	Bear in mind that 5 atexit slots of the C standard library are consumed
+
+
+	Bear in mind that 1 atexit slotsof the C standard library is consumed
 	by arbitraire in order to free its "global" (file scope variables with 
 	external linkage) constants.
+
+	If you want to use the global constants for some reason, make sure not
+	to modify or free them. They are; zero, one, p5 (.5), two and ten.
+
+	It does not make much sense to try and pre-define arbitrarily sized
+	transcendental constants such as pi or e. If you need these types of
+	numbers you should generate them to the needed precision of include
+	them,
+
+	Hardware types can be converted to fxdpnt bignums using hrdware2arb.
+
+		fxdpnt *somenumber = hrdware2arb(16123123);
+
+	This is not a very powerful or fast function as this is not a typical
+	internal operation for arbitraire. It only supports size_t. If you
+	really need to use hardware types you should probably write a new set
+	of functions for this. Functions such as this, which allocate their
+	own memory require that the caller free the memory.
 
 DEBUGGING:
 ----------
