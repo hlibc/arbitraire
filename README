@@ -120,7 +120,7 @@ DEBUGGING:
 	namespace.
 
 	These special debugging functions have a final field, which when
-	filled with a character string, print will that string and the
+	filled with a character string, will print that string and the
 	function name using __func__ and finally the result of the function.
 
 	If you don't compile with `CFLAGS=-D_ARB_DEBUG make' then it will
