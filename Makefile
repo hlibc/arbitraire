@@ -1,12 +1,6 @@
-# this generic makefile is part of the confiscation project and is intended to
-# be used with its accompanying configure script
-
-CFLAGS += -Wall -Wextra -I./include/ -I../include
+CFLAGS += -Wall -Wextra -I./include/
 SRCS = $(wildcard src/*.c)
 TSRCS = $(wildcard tests/*.c)
-# ASRCS is used for assembly code, which should be placed under a directory corresponding
-# to the architecture name if used.
-ASRCS = $(wildcard src/$(ARCH)/*.s)
 OBJ = $(SRCS:.c=.o)
 TOBJ = $(TSRCS:.c=)
 LIBNAME = $(libname)
