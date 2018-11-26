@@ -1,57 +1,41 @@
-CFLAGS += -Wall -Wextra -I./include/
+# this generic makefile is part of the confiscation project and is intended to
+# be used with its accompanying configure script
 
+CFLAGS += -Wall -Wextra -I./include/ -I../include
 SRCS = $(wildcard src/*.c)
-
 TSRCS = $(wildcard tests/*.c)
-
+# ASRCS is used for assembly code, which should be placed under a directory corresponding
+# to the architecture name if used.
+ASRCS = $(wildcard src/$(ARCH)/*.s)
 OBJ = $(SRCS:.c=.o)
-
-TEST_OBJ = $(TSRCS:.c=)
-
-LIBNAME = arbitraire
-
+TOBJ = $(TSRCS:.c=)
+LIBNAME = $(libname)
 STATLIB = lib$(LIBNAME).a
+DESTDIR = /
+PREFIX = /lib/
 
-DESTDIR ?= ../
+LDLIBS += -L. -l$(LIBNAME) -lm
 
-.PHONY: uninstall
-
-PREFIX ?= /$(LIBNAME)/
-
-LDLIBS += -l$(LIBNAME) -lm
-
-LDFLAGS += -L.
+-include config.mak
 
 all:
-
+	@test -e config.mak || { ./configure -error ; exit 1 ;};
 	$(MAKE) static
 	$(MAKE) create_test
 
 static: $(OBJ)
-
-	$(MAKE) static_link
-
-static_link:
-
 	$(AR) -cvq $(STATLIB) $(OBJ)
 
-
-create_test: $(TEST_OBJ)
-
-cleanobj:
-
-	$(RM) $(OBJ)
+create_test: $(TOBJ)
 
 clean:
-	$(MAKE) cleanobj
-	$(RM) $(STATLIB)
-	$(RM) $(TEST_OBJ)
-	$(RM) uninstall
-	$(RM) log* *-tests-* testing.bc some.bc
+	$(RM) $(OBJ) $(TOBJ) $(STATLIB) config.mak
 
-release:
+install:
+	mkdir -p $(DESTDIR)/$(prefix)/include $(DESTDIR)/$(prefix)/lib/
+	cp $(STATLIB) $(DESTDIR)/$(prefix)/lib/
+	cp -r include/$(LIBNAME)/ $(DESTDIR)/$(prefix)/include
 
-	./.release.sh
 
 test:
 	CFLAGS="-D_ARB_DEBUG=1" $(MAKE) all

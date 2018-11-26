@@ -1,0 +1,146 @@
+#!/bin/sh
+
+. ./.config
+
+print()
+{
+        printf -- "%s\n" "$*"
+}
+
+advanced_menu()
+{
+	print "
+	\`confiscator' -- an automatic configuration system for use with C,
+	C++ and assembly code. It is based on gmake the GNU imeplementation
+	of make.
+
+
+        This configuration system honors the ARCH variable for assembly code
+	specific directories. The architecture is not automatically detected
+	by the configure script, but can be passed to the makefile as follows:
+
+	./configure ARCH='archhere'
+
+	confiscator needs its own configuration file named \".config\" in order
+	to accomplish its generic goals. It should contain the following fields
+
+	projectname=\"\"                     The name of the project
+	copyright=\"\"                       The project author and copyright info
+	prefixtype=\"\"                      The installation prefix
+	description=\"\"                     A description of the project
+	libname=\"\"                         The name of the library
+
+	Source code files ending with .c or .cpp should be placed under a directory
+	named src/. Includes should be in their own directory that is based on 
+	the library name. Executables intended to test the library should be placed
+	under tests/. Assembly files ending with .s should be placed under
+	src/$(ARCH)/ corresponding to the architecure they are written for. A
+	typical layout might look as follows:
+
+	src/function1.c
+            function2.c
+
+	src/x86_64/function3.s
+                   function4.s
+
+        src/i386/function5.s
+                 function6.s
+
+        tests/executable1.c
+              executable2.c
+
+        include/projectname/header1.h
+                            header2.h
+            
+
+	The system is left as simple as possible so that the developer can add code
+	corresponding to their needs. One change assembly programmers will likely
+	want to make is to add a system for detecting the target architecture.
+	The best way to do this is to use cc -dumpmachine and a case statement to
+	match architectures you are using.
+	
+	"
+	exit 0;
+}
+menu()
+{
+	print "${projectname}
+
+${description}
+
+${copyright}
+
+
+	-h|--help               This menu
+	--advanced-help         The advanced menu for controlling
+                                this configuration system
+	--prefix=PREFIX         main installation prefix [${prefixtype}] 
+
+	Variable assignments are honored and passed to the makefile. For
+	example:
+
+	./configure --prefix=/home/user/buildarea CC=alternate-cc AS='\$(CC) -x assembler'
+	
+
+	
+	"
+	[ ! -z "$1" ] && exit $1
+}
+
+fatal()
+{
+        (>&2 print "fatal" "$*")
+        exit 1
+}
+
+prefix="${prefixtype}"
+
+
+
+for i in "$@"
+do	case "$i" in
+		-error)
+			menu
+			printf "\t"
+			print "RUN ./configure first!!"
+			print
+			exit 1
+			;;
+		--advanced-help)
+			advanced_menu
+			;;
+		-h|--help)
+			menu 0
+			;;
+		--prefix=*)
+			prefix=${i#*=}
+			;;
+		*=*) 
+			# Let these go until the end
+			;;
+		*)
+			fatal "$i is not a valid option !!"
+			;;
+	esac
+done
+
+
+print "Creating a config.mak to be sourced by the makefile"
+print "..."
+print "# Automatically generated" > config.mak
+print "
+prefix = $prefix
+libname = $libname
+" >> config.mak
+
+for i in "$@"
+do	case "$i" in
+		*=*)
+			print "${i%=*} = ${i#*=}" >> config.mak
+			;;
+	esac
+done
+
+print "done."
+
+
