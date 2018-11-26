@@ -38,6 +38,7 @@ install:
 
 
 test:
+	./configure
 	CFLAGS="-D_ARB_DEBUG=1" $(MAKE) all
 	echo "sqrt tests"
 	./tests/prand-a-a-a-wrapper.sh sqrt
