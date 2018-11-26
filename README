@@ -12,13 +12,12 @@ Arbitraire
 	Special care was taken to never compromise by shifting numbers around
 	in such a way as to force correct results. In effect, I believe 
 	arbitraire's number system to naturally reflect the way numbers
-	actually work. In doing so we were able to drop lines of code and
+	actually work. In doing so, we were able to drop lines of code and
 	expose an intrepid and interesting underlying system. In this way,
 	what you see is what you get, and the numerical requests you make
-	are the ones used internally. No extra zeros are tagged onto the ends
-	of numbers to change their behavior. In my opinion this is why
-	arbitraire has had no known bugs in its core operations since it was
-	initially claimed as production ready 1 year ago.
+	are the ones used internally. In my opinion this is why arbitraire 
+	has had no known bugs in its core operations since it was initially 
+	claimed as production ready in early 2018.
 
 	Division:
 		Knuth's algorithm D is used for division. Faster division
@@ -49,7 +48,27 @@ Arbitraire
 	implementation.
 
 
-	Arbitraire is original work authored by CM Graff.
+	Arbitraire continues research into other mathematics operations, ergo,
+	other algorithms are under construction but should not be used at this 
+	time. They are as follows:
+
+		long hand square root
+		karatsuba multiplication
+		school book long division
+		newton's method for division
+		newton's method for Nth root
+		fully optimized subtraction and addition
+
+
+	Arbitraire strictly follows POSIX and the C99/C11 standards, ergo, it is
+	portable to any POSIX compliant system and works with all of the
+	architectures offered by linux. mac, netbsd, freebsd, openbsd and
+	indeed many other systems. Our sponsors have supplied access to nearly
+	endless amounts of hardware and operating systems with which to verify
+	this.
+
+
+	Arbitraire is an original work authored by CM Graff.
 
 
 BUILDING:
@@ -63,8 +82,8 @@ BUILDING:
 TESTING:
 --------
 
-	Test the square root implementation with a series of pseduo-random 10-
-	10000 digit numbers.
+	Test the core operations (add, mul, sub, div and sqrt)  with a series 
+	of pseudo-random 10-10000 digit numbers.
 
 		make test
 
@@ -74,7 +93,7 @@ TESTING:
 		./tests/pseudo-random-wrapper.sh add|mul|sub|div|sqrt ...
 	
 		(argument agnostic, (functions of the form f(a, a, a));
-		./tests/prand-a-a-a-wrapper.sh ag-add|ag-sub ...
+		./tests/prand-a-a-a-wrapper.sh add|mul|sub|div|sqrt ...
 
 
 	Automatic testing with valgrind:
@@ -83,7 +102,7 @@ TESTING:
 		(argument agnostic)
 		./tests/prand-a-a-a-wrapper.sh function valgrind
 
-		for instance, test square root (sqrt):
+		for instance, test square root (sqrt) with valgrind:
 
 			./tests/prand-a-a-a-wrapper.sh sqrt valgrind
 
@@ -134,8 +153,17 @@ USING THE API:
 	This is not a very powerful or fast function as this is not a typical
 	internal operation for arbitraire. It only supports size_t. If you
 	really need to use hardware types you should probably write a new set
-	of functions for this. Functions such as this, which allocate their
-	own memory require that the caller free the memory using arb_free().
+	of functions for this. Functions such as hrdware2arb, which allocate 
+	their own memory require that the caller free the memory using 
+	arb_free().
+	
+	Arbitraire's numbers are opaque objects, but can be accessed for
+	debugging using arb_size(), arb_allocated(), arb_sign() and arb_left(). 
+	Details for doing this can be found inside of tests/print.c. Because of
+	this, the numbers must be accessed as pure mathematical objects. Object 
+	opacity helps to provide a safe and portable interface which can 
+	withstand internal security changes and other updates without affecting
+	the code which uses arbitraire as a bignum library.
 
 
 DEBUGGING:
