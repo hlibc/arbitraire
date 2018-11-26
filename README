@@ -24,9 +24,8 @@ Arbitraire
 	algorithms do exist, but in general Knuth's algorithm D is one of 
 	the fastest division algorithms and suffices for production grade
 	arbitrary precision methods. Care was taken to follow Knuth's TAOCP
-	methods exactly. In this way, arbitraire's division algorithm is not
-	merely a typical long division algorithm but instead, again, follows
-	Knuth's methods to the line.
+	methods as closely as possible. In this way, arbitraire's division 
+	algorithm is not merely a typical long division algorithm.
 
 	Subtraction and addition:
 		These algorithms are somewhat novel and are of my own
