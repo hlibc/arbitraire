@@ -23,7 +23,7 @@ static: $(OBJ)
 create_test: $(TOBJ)
 
 clean:
-	$(RM) $(OBJ) $(TOBJ) $(STATLIB) config.mak
+	$(RM) $(OBJ) $(TOBJ) $(STATLIB) config.mak log  log2 testing.bc *tests-passed.txt
 
 install:
 	mkdir -p $(DESTDIR)/$(prefix)/include $(DESTDIR)/$(prefix)/lib/
