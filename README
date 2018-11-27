@@ -75,13 +75,22 @@ BUILDING:
 
 	git clone https://github.com/hlibc/arbitraire
 	cd arbitraire
-	make
+	./configure --prefix=$(pwd)/usr 
+	CFLAGS="-O3" make
+	make install
+
+	Arbitraire should be built at optimization level -O3, but nonetheless
+	performs fine with no optimization.
+
+	The contents of tests/ is not installed. This method is for installing
+	arbitraire on a target system, for testing and developing arbitraire
+	see TESTING: below.
 
 
 TESTING:
 --------
 
-	Test the core operations (add, mul, sub, div and sqrt)  with a series 
+	Test the core operations (add, mul, sub, div and sqrt) with a series 
 	of pseudo-random 10-10000 digit numbers.
 
 		make test
@@ -109,7 +118,7 @@ TESTING:
 USING THE API:
 --------------
 
-	An example for writing a program to divide two numbers is provided 
+	An example for writing a program to add two numbers is provided 
 	below:
 
 	#include <arbitraire/arbitraire.h>
@@ -131,9 +140,16 @@ USING THE API:
 		return 0;
 	}
 
+	Compile the example program as follows:
+
+		cc example.c libarbitraire.a -I./include
+
+	You can also compile your programs against arbitraire by either
+	installing it or by putting them inside of tests/ and running
+	./configure ; make
 
 
-	Bear in mind that 1 atexit slotsof the C standard library is consumed
+	Bear in mind that 1 atexit slot of the C standard library is consumed
 	by arbitraire in order to free its "global" (file scope variables with 
 	external linkage) constants.
 
@@ -142,7 +158,7 @@ USING THE API:
 
 	It does not make much sense to try and pre-define arbitrarily sized
 	transcendental constants such as pi or e. If you need these types of
-	numbers you should generate them to the needed precision of include
+	numbers you should generate them to the needed precision or include
 	them,
 
 	Hardware types can be converted to fxdpnt bignums using hrdware2arb.

@@ -23,7 +23,7 @@ static: $(OBJ)
 create_test: $(TOBJ)
 
 clean:
-	$(RM) $(OBJ) $(TOBJ) $(STATLIB) config.mak log  log2 testing.bc *tests-passed.txt
+	$(RM) $(OBJ) $(TOBJ) $(STATLIB) config.mak log log2 testing.bc *tests-passed.txt
 
 install:
 	mkdir -p $(DESTDIR)/$(prefix)/include $(DESTDIR)/$(prefix)/lib/
@@ -33,7 +33,7 @@ install:
 
 test:
 	./configure
-	CFLAGS="-D_ARB_DEBUG=1" $(MAKE) all
+	CFLAGS="-O3 -D_ARB_DEBUG=1" $(MAKE) all
 	echo "sqrt tests"
 	./tests/prand-a-a-a-wrapper.sh sqrt
 	echo "div tests"
