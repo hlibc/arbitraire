@@ -57,7 +57,7 @@
 	*most* important and such a failure would be a serious and unacceptable
 	regression.
 
-	make bignum requires 3 arguments, the limit, which in most cases should
+	make_bignum requires 3 arguments, the limit, which in most cases should
 	be between 1000 and 10000, but can be no smaller than 3. The base. And
 	finally an option for *not* trying negative numbers.
 
