@@ -17,8 +17,6 @@ ${copyright}
 
 
 	-h|--help               This menu
-	--advanced-help         The advanced menu for controlling
-                                this configuration system
 	--prefix=PREFIX         main installation prefix [${prefixtype}] 
 
 	Variable assignments are honored and passed to the makefile. For
