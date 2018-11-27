@@ -20,7 +20,7 @@
 	simply discarded in the case it is not needed (there is no left
 	over carry).
 
-	There are a number of tradeoffs involved in with using these methods.
+	There are a number of tradeoffs involved with using these methods.
 	I have decided to stay with this technique as I innovated it myself
 	for arbitraire and find it interesting for comparison against other
 	more common techniques.
@@ -87,29 +87,25 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	int sum = 0, borrow = 0;
 	int mborrow = -1; /* mirror borrow must be -1 */
 	int mir = 0;
-	size_t z = 0, y = 0; /* dummy variables for the mirror */
 	ARBT *array;
+	int hold = 0;
 
 	array = arb_malloc((MAX(a->len, b->len) * 2) * sizeof(ARBT));
 
-	for (; i < a->len || j < b->len;c->len++, ++r){
-		mir = arb_place(a, b, &y, r) - arb_place(b, a, &z, r) + mborrow; /* mirror */
-		sum = arb_place(a, b, &i, r) - arb_place(b, a, &j, r) + borrow;
-
-		borrow = 0;
+	for (;i < a->len || j < b->len;c->len++, ++r){
+		hold = arb_place(a, b, &i, r) - arb_place(b, a, &j, r);
+		sum = hold + borrow;
+		mir = hold + mborrow;
+		borrow = mborrow = 0;
 		if(sum < 0){
 			borrow = -1;
 			sum += base;
 		}
-		c->number[c->len] = sum;
-		/* maintain a mirror for subtractions that cross the zero threshold */
-		y = i;
-		z = j;
-		mborrow = 0;
 		if(mir < 0){
 			mborrow = -1;
 			mir += base;
 		}
+		c->number[c->len] = sum;
 		array[c->len] = (base-1) - mir;
 	}
 	/* a left over borrow indicates that the zero threshold was crossed */
@@ -117,7 +113,6 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 		_arb_copyreverse_core(c->number, array, c->len);
 		arb_flipsign(c);
 	}else {
-		
 		arb_reverse(c);
 	}
 	free(array);
