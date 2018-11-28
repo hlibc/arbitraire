@@ -20,9 +20,9 @@
 	usages such as f(a, a, a) as opposed to needing f(a, b, c).
 */
 
-size_t arb_mul_core(ARBT *a, size_t alen, ARBT *b, size_t blen, ARBT *c, int base)
+size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int base)
 {
-	ARBT prod = 0, carry = 0;
+	UARBT prod = 0, carry = 0;
 	size_t i = 0;
 	size_t j = 0;
 	size_t k = 0;
@@ -49,21 +49,12 @@ size_t arb_mul_core(ARBT *a, size_t alen, ARBT *b, size_t blen, ARBT *c, int bas
 
 fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
-	/* a2 and b2 are likely superfluous, and are slated for removal.
-		However, this may require a special method for scaling.
-	*/
-	fxdpnt *a2 = arb_expand(NULL, MAX(scale, a->len));
-	fxdpnt *b2 = arb_expand(NULL, MAX(scale, b->len));
-	fxdpnt *c2 = arb_expand(NULL, a2->len + b2->len);
-	arb_setsign(a, b, c2);
-	arb_copy(a2, a);
-	arb_copy(b2, b);
-	arb_mul_core(a2->number, a2->len, b2->number, b2->len, c2->number, base);
-	c2->lp = a2->lp + b2->lp;
-	c2->len = MIN(rr(a2) + rr(b2), MAX(scale, MAX(rr(a2), rr(b2)))) + c2->lp;
+	fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
+	arb_setsign(a, b, c2); 
+	arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
+	c2->lp = a->lp + b->lp;
+	c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
 	c2 = remove_leading_zeros(c2);
-	arb_free(a2);
-	arb_free(b2);
 	if (c)
 		arb_free(c);
 	return c2;

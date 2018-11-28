@@ -37,7 +37,7 @@
 	see src/modulo.c for this operation.
 */
 
-void shmul(ARBT *num, int size, int digit, ARBT *result, int base)
+void shmul(UARBT *num, int size, int digit, UARBT *result, int base)
 {
 	int carry, value;
 	size_t i = 0;
@@ -59,7 +59,7 @@ void shmul(ARBT *num, int size, int digit, ARBT *result, int base)
 	}
 }
 
-int _long_sub(ARBT *u, size_t i, ARBT *v, size_t k, int b)
+int _long_sub(UARBT *u, size_t i, UARBT *v, size_t k, int b)
 { 
 	int borrow = 0;
 	int val = 0;
@@ -75,7 +75,7 @@ int _long_sub(ARBT *u, size_t i, ARBT *v, size_t k, int b)
 	return borrow;
 }
 
-int _long_add(ARBT *u, size_t i, ARBT *v, size_t k, int b)
+int _long_add(UARBT *u, size_t i, UARBT *v, size_t k, int b)
 {
 	int carry = 0;
 	int val = 0;
@@ -93,9 +93,9 @@ int _long_add(ARBT *u, size_t i, ARBT *v, size_t k, int b)
 
 fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 {
-	ARBT *u;
-	ARBT *v;
-	ARBT *temp;
+	UARBT *u;
+	UARBT *v;
+	UARBT *temp;
 	ssize_t uscal = 0;
 	int out_of_scale = 0;
 	size_t quodig = scale+1;
@@ -104,7 +104,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	size_t leb = 0;
 	size_t i = 0;
 	size_t j = 0;
-	ARBT qg = 0;
+	UARBT qg = 0;
 
 	if (iszero(den) == 0)
 		arb_error("divide by zero\n");
@@ -115,7 +115,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	if (uscal < (ssize_t)scale)
 		offset = scale - uscal;
 
-	u = arb_calloc(1, (num->len + offset + 3) * sizeof(ARBT));
+	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
 	_arb_copy_core(u + 1, num->number, (num->len));
 
 	leb = den->len;
@@ -134,12 +134,12 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	q->lp = quodig-scale;
 	q->len = q->lp + scale;
 	
-	temp = arb_malloc((den->len+1) * sizeof(ARBT));
+	temp = arb_malloc((den->len+1) * sizeof(UARBT));
 
 	if (out_of_scale)
 		goto end;
 
-	ARBT norm = b / (*v + 1);
+	UARBT norm = b / (*v + 1);
 	
 	if (norm != 1){
 		shmul(u, lea+uscal+offset+1, norm, u, b);
@@ -181,17 +181,11 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 
 fxdpnt *arb_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 {
-	fxdpnt *num2 = arb_expand(NULL, num->len);
-	fxdpnt *den2 = arb_expand(NULL, den->len);
-	fxdpnt *q2 = arb_expand(NULL, num->len + den->len + scale);
-	arb_copy(num2, num);
-	arb_copy(den2, den);
-	q2 = arb_div_inter(num2, den2, q2, b, scale);
-	arb_free(q);
-	arb_free(num2);
-	arb_free(den2);
-	q = q2;
-	return q;
+	fxdpnt *q2 = NULL;
+	q2 = arb_expand(NULL, num->len + den->len + scale);
+	q2 = arb_div_inter(num, den, q2, b, scale);
+	free(q);
+	return q2;
 }
 
 void divv(fxdpnt *num, fxdpnt *den, fxdpnt **c, int b, size_t scale, char *m)

@@ -14,7 +14,7 @@ int arb_highbase(int a)
 		return a;
 }
 
-void _print_core(FILE *fp, ARBT *number, size_t len, size_t radix, size_t sign, int fold)
+void _print_core(FILE *fp, UARBT *number, size_t len, size_t radix, size_t sign, int fold)
 {
 	size_t i = 0;
 	size_t k = sign;

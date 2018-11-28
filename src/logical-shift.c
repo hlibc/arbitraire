@@ -17,9 +17,9 @@ fxdpnt *arb_leftshift(fxdpnt *a, size_t n, int faux)
 	return a;
 }
 
-void rightshift_core(ARBT *a, size_t len, size_t n)
+void rightshift_core(UARBT *a, size_t len, size_t n)
 { 
-	memmove(a + n, a, (len - n) * sizeof(ARBT));
+	memmove(a + n, a, (len - n) * sizeof(UARBT));
 	while (n-- > 0)
 		 a[n] = 0;
 }

@@ -7,8 +7,8 @@ fxdpnt *old_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	size_t j = 0;
 	size_t z = 0;
 	size_t width = num->len + den->len;
-	ARBT *u = arb_malloc(width);
-	ARBT *v = arb_malloc(width);
+	UARBT *u = arb_malloc(width);
+	UARBT *v = arb_malloc(width);
 	int sum = 0;
 	int rec = 0;
 	q->lp = 0;

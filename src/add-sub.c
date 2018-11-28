@@ -34,7 +34,7 @@
 void arb_reverse(fxdpnt *x)
 {
 	size_t i = 0, half = x->len / 2;
-	ARBT swap = 0;
+	UARBT swap = 0;
 	for (;i < half; i++){
 		swap = x->number[i];
 		x->number[i] = x->number[x->len - i - 1];
@@ -42,25 +42,25 @@ void arb_reverse(fxdpnt *x)
 	}
 }
 
-ARBT arb_place(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
+UARBT arb_place(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 {
-	ARBT temp = 0;
+	UARBT temp = 0;
 	if ((rr(a)) < (rr(b)))
 		if((rr(b)) - (rr(a)) > r)
 			return 0;
 	if (*cnt < a->len){
 		temp = a->number[a->len - *cnt - 1];
-		(*cnt)++;
-		return temp;
+		//(*cnt)++;
+		
 	}
 	(*cnt)++;
-	return 0;
+	return temp;
 }
 
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0, j = 0, r = 0;
-	int sum = 0, carry = 0;
+	ARBT sum = 0, carry = 0;
 
 	for (; i < a->len || j < b->len;c->len++, ++r){
 		sum = arb_place(a, b, &i, r) + arb_place(b, a, &j, r) + carry;
@@ -84,13 +84,14 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0, j = 0, r = 0;
-	int sum = 0, borrow = 0;
-	int mborrow = -1; /* mirror borrow must be -1 */
-	int mir = 0;
-	ARBT *array;
-	int hold = 0;
+	ARBT sum = 0;
+	int8_t borrow = 0;
+	int8_t mborrow = -1; /* mirror borrow must be -1 */
+	ARBT mir = 0;
+	UARBT *array;
+	ARBT hold = 0;
 
-	array = arb_malloc((MAX(a->len, b->len) * 2) * sizeof(ARBT));
+	array = arb_malloc((MAX(a->len, b->len) * 2) * sizeof(UARBT));
 
 	for (;i < a->len || j < b->len;c->len++, ++r){
 		hold = arb_place(a, b, &i, r) - arb_place(b, a, &j, r);

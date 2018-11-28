@@ -67,6 +67,15 @@ Arbitraire
 	this.
 
 
+	Arbitraire's "fxdpnt" number system allows for efficient, POSIX compliant
+	implementations of POSIX bc. It is a "pen and paper" style of number system
+	yet with POSIX `bc' 'scale=' and printing semantics. For these semantics
+	the 'base' field has to be set to 10. However, the ability to operate 
+	natively in any base is left as decision to the caller of the functions.
+
+	
+
+
 	Arbitraire is an original work authored by CM Graff.
 
 
@@ -222,6 +231,9 @@ DEBUGGING:
 	used, so in this way one can debug their work without interfering
 	in the programming process with extra lines of code to print their
 	results out to screen.
+
+
+
 
 	
 INSPIRATIONS:

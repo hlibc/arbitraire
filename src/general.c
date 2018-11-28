@@ -80,13 +80,13 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 	if (o == NULL) { 
 		o = arb_malloc(sizeof(fxdpnt));
 		arb_init(o);
-		o->number = arb_calloc(1, sizeof(ARBT) * request);
+		o->number = arb_calloc(1, sizeof(UARBT) * request);
 		o->allocated = request;
 		o->len = request;
 		o->lp = 0;
 	} else if (request > o->allocated) {
 		o->allocated = request;
-		o->number = arb_realloc(o->number, o->allocated * sizeof(ARBT));
+		o->number = arb_realloc(o->number, o->allocated * sizeof(UARBT));
 		_arb_memset(o->number + o->len, 0, o->allocated - o->len);
 	}
 	if (lever == 0)
