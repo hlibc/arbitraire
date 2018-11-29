@@ -8,7 +8,7 @@ STATLIB = lib$(LIBNAME).a
 DESTDIR = /
 PREFIX = /lib/
 
-LDLIBS += -L. -l$(LIBNAME) -lm
+LDLIBS += -L. -l$(LIBNAME)
 
 -include config.mak
 

@@ -89,8 +89,6 @@ void *arb_malloc(size_t);
 void *arb_realloc(void *, size_t);
 void *arb_calloc(size_t, size_t);
 void arb_free(fxdpnt *);
-/* base conversion */
-fxdpnt *convscaled(fxdpnt *, fxdpnt *, int, int);
 /* to hardware and back */
 fxdpnt *hrdware2arb(size_t);
 size_t fxd2sizet(fxdpnt *, int);
