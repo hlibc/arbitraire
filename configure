@@ -76,7 +76,12 @@ libname = $libname
 for i in "$@"
 do	case "$i" in
 		*=*)
-			print "${i%=*} = ${i#*=}" >> config.mak
+			case "${i%=*}" in
+				CFLAGS)	print "${i%=*} += ${i#*=}" >> config.mak
+					;;
+				*)	print "${i%=*} = ${i#*=}" >> config.mak
+			esac
+			
 			;;
 	esac
 done
