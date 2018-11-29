@@ -2,7 +2,7 @@
 
 int main(void)
 {
-	char *s = make_bignum(3, 10, 1);
+	char *s = make_bignum(1000, 10, 1);
 	size_t len = strlen(s);
 	write(1, s, len);
 	write(1, "\n", 1);
