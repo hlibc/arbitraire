@@ -179,13 +179,21 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	return q;
 }
 
-fxdpnt *arb_div(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
+fxdpnt *arb_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
-	fxdpnt *q2 = NULL;
-	q2 = arb_expand(NULL, num->len + den->len + scale);
-	q2 = arb_div_inter(num, den, q2, b, scale);
-	free(q);
-	return q2;
+	if (a == c || b == c) {
+		fxdpnt *q2 = NULL;
+		q2 = arb_expand(NULL, a->len + b->len + scale);
+		q2 = arb_div_inter(a, b, q2, base, scale);
+		free(c);
+		return q2;
+	}
+	
+	c = arb_expand(c, a->len + b->len + scale);
+	c = arb_div_inter(a, b, c, base, scale);
+	
+	return c;
+	
 }
 
 void divv(fxdpnt *num, fxdpnt *den, fxdpnt **c, int b, size_t scale, char *m)
