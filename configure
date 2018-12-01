@@ -17,14 +17,8 @@ ${copyright}
 
 
 	-h|--help               This menu
-	--prefix=PREFIX         main installation prefix [${prefixtype}] 
-
-	Variable assignments are honored and passed to the makefile. For
-	example:
-
-	./configure --prefix=/home/user/buildarea CC=alternate-cc AS='\$(CC) -x assembler'
-	
-
+	--prefix=PREFIX         main installation prefix [${prefixtype}]
+	./configure --prefix=/home/user/buildarea
 	
 	"
 	[ ! -z "$1" ] && exit $1
@@ -55,9 +49,6 @@ do	case "$i" in
 		--prefix=*)
 			prefix=${i#*=}
 			;;
-		*=*) 
-			# Let these go until the end
-			;;
 		*)
 			fatal "$i is not a valid option !!"
 			;;
@@ -72,20 +63,6 @@ print "
 prefix = $prefix
 libname = $libname
 " >> config.mak
-
-for i in "$@"
-do	case "$i" in
-		*=*)
-			case "${i%=*}" in
-				CFLAGS)	print "${i%=*} += ${i#*=}" >> config.mak
-					;;
-				*)	print "${i%=*} = ${i#*=}" >> config.mak
-			esac
-			
-			;;
-	esac
-done
-
 print "done."
 
 
