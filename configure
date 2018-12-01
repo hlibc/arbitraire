@@ -38,10 +38,7 @@ for i in "$@"
 do	case "$i" in
 		-error)
 			menu
-			printf "\t"
-			print "RUN ./configure first!!"
-			print
-			exit 1
+			fatal "RUN ./configure first!!"
 			;;
 		-h|--help)
 			menu 0
