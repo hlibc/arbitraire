@@ -38,10 +38,17 @@ test:
 	./tests/prand-a-a-a-wrapper.sh sqrt
 	echo "div tests"
 	./tests/pseudo-random-wrapper.sh div
+	./tests/prand-a-a-a-wrapper.sh div
 	echo "add tests"
 	./tests/pseudo-random-wrapper.sh add
+	./tests/prand-a-a-a-wrapper.sh add
 	echo "sub tests"
 	./tests/pseudo-random-wrapper.sh sub
+	./tests/prand-a-a-a-wrapper.sh sub
 	echo "mul tests"
 	./tests/pseudo-random-wrapper.sh mul
+	./tests/prand-a-a-a-wrapper.sh mul
+	echo "mod tests"
+	./tests/pseudo-random-wrapper.sh mod
+	./tests/prand-a-a-a-wrapper.sh mod
 

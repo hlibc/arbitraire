@@ -30,7 +30,7 @@ gcc -dumpmachine >> "${machinename}"
 printf "%s\n" "The tests should halt upon detecting an error and the contents" >>"${machinename}"
 printf "%s\n" "of 'testing.bc' can be inspected to reveal the failing test" >>"${machinename}"
 printf "\n\n" >> "${machinename}"
-while :
+while [ $COUNT -lt 100 ]
 do	COUNT=$((COUNT +1))
 	printf "%s\n" "Test number: ${COUNT}" >>"${machinename}"
 	if [ $USE_VALGRIND = "1" ]
