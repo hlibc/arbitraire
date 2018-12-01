@@ -48,27 +48,16 @@ size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int 
 }
 
 fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
-{
-	if (a == c || b == c )
-	{
-		fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
-		arb_setsign(a, b, c2); 
-		arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
-		c2->lp = a->lp + b->lp;
-		c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
-		c2 = remove_leading_zeros(c2);
-		if (c)
-			arb_free(c);
-		return c2;
-	}
-	c = arb_expand(c, a->len + b->len);
-	arb_setsign(a, b, c);
-        arb_mul_core(a->number, a->len, b->number, b->len, c->number, base);
-        c->lp = a->lp + b->lp;
-        c->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c->lp;
-        c = remove_leading_zeros(c);
-        return c;
-
+{ 
+	fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
+	arb_setsign(a, b, c2); 
+	arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
+	c2->lp = a->lp + b->lp;
+	c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
+	c2 = remove_leading_zeros(c2);
+	if (c)
+		arb_free(c);
+	return c2;
 }
 
 void mul(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
