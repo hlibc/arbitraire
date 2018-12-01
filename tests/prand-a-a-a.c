@@ -27,9 +27,12 @@ int main(int argc, char *argv[])
 	if (string1 == NULL)
 		return 1;
 
-	a = arb_str2fxdpnt(string1);
+	
+        if (!(a = arb_str2fxdpnt(string1)))
+                return 1;
 
-	fprintf(fp, "scale=%zu;\n", scale);
+	scale = random() % MAXIMA;
+        fprintf(fp, "scale=%zu;\n", scale);
 
 	if (strcmp(argv[1], "sqrt") == 0) {
 		fprintf(fp, "sqrt(%s)\nquit\n", string1);
@@ -55,6 +58,13 @@ int main(int argc, char *argv[])
 		fprintf(fp, "%s * %s\nquit\n", string1, string1);
 		a = arb_mul(a, a, a, 10, scale);
 	}
+
+        if (strcmp(argv[1], "mod") == 0) {
+                fprintf(fp, "%s %% %s\nquit\n", string1, string1);
+                a = arb_mod(a, a, a, 10, scale);
+        }
+
+
 
 	arb_print(a);
 	arb_free(a);
