@@ -120,7 +120,10 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 
 	leb = den->len;
 
-	v = den->number;
+	
+	v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
+	_arb_copy_core(v, den->number, (den->len));
+	UARBT *vf = v;
 	/* watch out for underflow on leb */
 	for (;*v == 0; v++, leb--);
 
@@ -176,6 +179,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	q = remove_leading_zeros(q);
 	free(temp);
 	free(u);
+	free(vf);
 	return q;
 }
 
@@ -185,7 +189,7 @@ fxdpnt *arb_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 		fxdpnt *q2 = NULL;
 		q2 = arb_expand(NULL, a->len + b->len + scale);
 		q2 = arb_div_inter(a, b, q2, base, scale);
-		free(c);
+		arb_free(c);
 		return q2;
 	}
 	
