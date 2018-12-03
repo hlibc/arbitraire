@@ -7,17 +7,18 @@ Arbitraire
 
 	The algorithms used are fast, and contain no known bugs in the
 	fundamental operations. This library is competitive in regards to
-	speed with all other arbitrary precision implementations save for
-	GMP itself which is by far the fastest bignum library in existence.
+	speed with other arbitrary precision implementations 
+	
 	Special care was taken to never compromise by shifting numbers around
 	in such a way as to force correct results. In effect, I believe 
 	arbitraire's number system to naturally reflect the way numbers
 	actually work. In doing so, we were able to drop lines of code and
 	expose an intrepid and interesting underlying system. In this way,
 	what you see is what you get, and the numerical requests you make
-	are the ones used internally. In my opinion this is why arbitraire 
-	has had no known bugs in its core operations since it was initially 
-	claimed as production ready in early 2018.
+	are the ones used internally.
+
+	Arbitraire has had no known bugs in its core operations since it was 
+	initially claimed as production ready in early 2018.
 
 	Division:
 		Knuth's algorithm D is used for division. Faster division
