@@ -30,6 +30,7 @@ size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int 
 	size_t ret = blen;
 	c[k] = 0;
 	c[alen+blen-1] = 0;
+	ret = 0;
 	for (i = alen; i > 0 ; i--){
 		last = k;
 		for (j = blen, k = i + j, carry = 0; j > 0 ; j--, k--){
@@ -38,7 +39,7 @@ size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int 
 			c[k-1] = (prod % base);
 		}
 		/* self zeroing */
-		if (k != last) {
+		if (k != last) { 
 			++ret;
 			c[k-1] = 0;
 		}
@@ -50,13 +51,12 @@ size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int 
 fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 { 
 	fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
-	arb_setsign(a, b, c2); 
+	arb_setsign(a, b, c2);
 	arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
 	c2->lp = a->lp + b->lp;
 	c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
 	c2 = remove_leading_zeros(c2);
-	if (c)
-		arb_free(c);
+	arb_free(c);
 	return c2;
 }
 
