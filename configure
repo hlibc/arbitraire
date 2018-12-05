@@ -16,6 +16,8 @@ ${description}
 ${copyright}
 
 
+	\`configure' script instructions
+
 	-h|--help               This menu
 	--prefix=PREFIX         main installation prefix [${prefixtype}]
 	./configure --prefix=/home/user/buildarea
@@ -31,8 +33,6 @@ fatal()
 }
 
 prefix="${prefixtype}"
-
-
 
 for i in "$@"
 do	case "$i" in
@@ -55,6 +55,16 @@ done
 
 print "Creating a config.mak to be sourced by the makefile"
 print "..."
+print "prefix = $prefix"
+print "libname = $libname"
+print "..."
+print "arbitraire requires a C compiler, make (gmake), and ar"
+print "this configure script does not automatically detect them"
+print "but instead the makefile uses the environment"
+print "..."
+print "..."
+print "..."
+
 print "# Automatically generated" > config.mak
 print "
 prefix = $prefix

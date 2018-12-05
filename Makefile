@@ -13,7 +13,7 @@ LDLIBS += -L. -l$(LIBNAME)
 -include config.mak
 
 all:
-	@test -e config.mak || { ./configure -error ; exit 1 ;};
+	@test -e config.mak || ./configure -error
 	$(MAKE) static
 	$(MAKE) create_test
 
