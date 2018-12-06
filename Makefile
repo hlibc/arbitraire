@@ -35,20 +35,20 @@ test:
 	./configure
 	CFLAGS="-O3 -D_ARB_DEBUG=1" $(MAKE) all
 	echo "sqrt tests"
-	./tests/prand-a-a-a-wrapper.sh sqrt
+	./tests/random-wrapper.sh sqrt 1000 null
 	echo "div tests"
-	./tests/pseudo-random-wrapper.sh div
-	./tests/prand-a-a-a-wrapper.sh div
+	./tests/random-wrapper.sh div 10000 null
+	./tests/random-wrapper.sh div 10000 agnostic
 	echo "add tests"
-	./tests/pseudo-random-wrapper.sh add
-	./tests/prand-a-a-a-wrapper.sh add
+	./tests/random-wrapper.sh add 10000 null
+	./tests/random-wrapper.sh add 10000 agnostic
 	echo "sub tests"
-	./tests/pseudo-random-wrapper.sh sub
-	./tests/prand-a-a-a-wrapper.sh sub
+	./tests/random-wrapper.sh sub 10000 null
+	./tests/random-wrapper.sh sub 10000 agnostic
 	echo "mul tests"
-	./tests/pseudo-random-wrapper.sh mul
-	./tests/prand-a-a-a-wrapper.sh mul
+	./tests/random-wrapper.sh mul 10000 null
+	./tests/random-wrapper.sh mul 10000 agnostic
 	echo "mod tests"
-	./tests/pseudo-random-wrapper.sh mod
-	./tests/prand-a-a-a-wrapper.sh mod
+	./tests/random-wrapper.sh mod 10000 null
+	./tests/random-wrapper.sh mod 10000 agnostic
 

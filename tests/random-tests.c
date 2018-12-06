@@ -11,8 +11,10 @@ int main(int argc, char *argv[])
 	size_t scale = 0;
 	int ag = 0;
 	size_t maxima = 0;
+	int type = 1;
 
-	string1 = string2 = a = b = c = NULL;
+	string1 = string2 = NULL;
+	a = b = c = NULL;
 	
 	if (argc < 4)
 	{
@@ -22,15 +24,17 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	size_t maxima = strtoll(argv[2], NULL, 10);
+	maxima = strtoll(argv[2], NULL, 10);
 	if (strcmp(argv[3], "agnostic") == 0)
 		ag = 1;
+	if (strcmp(argv[1], "sqrt") == 0)
+		type = 0;
 
 	if (!(fp = fopen("testing.bc", "w+")))
 		return 1;
-	if (!(string1 = make_bignum(maxima, BASE_MAX, 1)))
+	if (!(string1 = make_bignum(maxima, BASE_MAX, type)))
 		return 1;
-	if (!(string2 = make_bignum(maxima, BASE_MAX, 1)))
+	if (!(string2 = make_bignum(maxima, BASE_MAX, type)))
 		return 1;
 	
 
@@ -44,6 +48,13 @@ int main(int argc, char *argv[])
 		return 1;
 	if (!(c = arb_expand(NULL, maxima*2)))
 		return 1;
+
+	
+	if (strcmp(argv[1], "sqrt") == 0) {
+		fprintf(fp, "sqrt(%s)\nquit\n", string1);
+		a = nsqrt(a, 10, scale);
+		arb_print(a);
+	}
 
 	if (strcmp(argv[1], "div") == 0) {
 		if (ag) {

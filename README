@@ -105,22 +105,15 @@ TESTING:
 
 	Run the test wrappers and binaries:
 	
-		./tests/pseudo-random-wrapper.sh add|mul|sub|div|sqrt ...
+		./tests/random-wrapper.sh add|mul|sub|div|sqrt 10000 null
 	
 		(argument agnostic, (functions of the form f(a, a, a));
-		./tests/prand-a-a-a-wrapper.sh add|mul|sub|div|sqrt ...
+		./tests/random-wrapper.sh add|mul|sub|div|sqrt 10000 agnostic
 
 
-	Automatic testing with valgrind:
+	Automatic testing with valgrind|strace|time:
 
-		./tests/pseudo-random-wrapper.sh function valgrind
-		(argument agnostic)
-		./tests/prand-a-a-a-wrapper.sh function valgrind
-
-		for instance, test square root (sqrt) with valgrind:
-
-			./tests/prand-a-a-a-wrapper.sh sqrt valgrind
-
+		./tests/random-wrapper.sh sqrt 10000 null valgrind|strace|time
 
 USING THE API:
 --------------
