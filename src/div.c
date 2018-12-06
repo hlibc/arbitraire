@@ -37,18 +37,17 @@
 	see src/modulo.c for this operation.
 */
 
-void shmul(UARBT *num, int size, int digit, UARBT *result, int base)
+void shmul(UARBT *num, size_t size, UARBT digit, UARBT *result, int base)
 {
 	int carry, value;
 	size_t i = 0;
 
-	if (digit == 0)
+	if (digit == 0) {
 		_arb_memset(result, 0, size);
-	else if (digit == 1)
+	} else if (digit == 1) {
 		_arb_copy_core(result, num, size);
-	else
-	{
-		for (carry = 0, i = size ; i>0;i--)
+	} else {
+		for (carry = 0, i = size ;i > 0; i--)
 		{
 			value = num[i-1] * digit + carry;
 			result[i-1] = value % base;
@@ -63,7 +62,7 @@ int _long_sub(UARBT *u, size_t i, UARBT *v, size_t k, int b)
 { 
 	int borrow = 0;
 	int val = 0;
-	for (; k+1 > 0; i--, k--) {
+	for (;k+1 > 0; i--, k--) {
 		val = u[i] - v[k] - borrow; 
 		borrow = 0;
 		if (val < 0) {
@@ -79,7 +78,7 @@ int _long_add(UARBT *u, size_t i, UARBT *v, size_t k, int b)
 {
 	int carry = 0;
 	int val = 0;
-	for (; k+1 > 0; i--, k--) { 
+	for (;k+1 > 0; i--, k--) { 
 		val = u[i] + v[k] + carry;
 		carry = 0;
 		if (val >= b) {
@@ -93,18 +92,20 @@ int _long_add(UARBT *u, size_t i, UARBT *v, size_t k, int b)
 
 fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 {
-	UARBT *u;
-	UARBT *v;
-	UARBT *temp;
+	UARBT *u = NULL;
+	UARBT *v = NULL;
+	UARBT *vf = NULL;
+	UARBT qg = 0;
+	UARBT *temp = NULL;
+	UARBT norm = 0;
 	ssize_t uscal = 0;
 	int out_of_scale = 0;
-	size_t quodig = scale+1;
+	size_t quodig = scale + 1;
 	size_t offset = 0;
 	size_t lea = 0;
 	size_t leb = 0;
 	size_t i = 0;
 	size_t j = 0;
-	UARBT qg = 0;
 
 	if (iszero(den) == 0)
 		arb_error("divide by zero\n");
@@ -119,12 +120,12 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
 	_arb_copy_core(u + 1, num->number, (num->len));
 
-	v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
+	vf = v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
 	_arb_copy_core(v, den->number, (den->len));
-	UARBT *vf = v;
 	leb = den->len;
-	
-	/* watch out for underflow on leb */
+
+	temp = arb_malloc((den->len+1) * sizeof(UARBT));
+
 	for (;*v == 0; v++, leb--);
 
 	if (leb > lea+scale) 
@@ -136,15 +137,11 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	arb_setsign(num, den, q);
 	q->lp = quodig-scale;
 	q->len = q->lp + scale;
-	
-	temp = arb_malloc((den->len+1) * sizeof(UARBT));
 
 	if (out_of_scale)
 		goto end;
 
-	UARBT norm = b / (*v + 1);
-	
-	if (norm != 1){
+	if ((norm = (b / (v[0] + 1))) != 1){
 		shmul(u, lea+uscal+offset+1, norm, u, b);
 		shmul(v, leb, norm, v, b);
 	}
@@ -152,19 +149,16 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	if (leb > lea)
 		j = (leb-lea);
 	
-	for (qg = b-1;i <= lea+scale-leb; ++i, ++j, qg = b-1)
-	{
+	for (qg = b-1;i <= lea+scale-leb; ++i, ++j, qg = b-1) {
 		if (v[0] != u[i])
 			qg = (u[i]*b + u[i+1]) / v[0];
-		
-		if (v[1] * qg > (u[i] * b + u[i+1] - v[0] * qg) * b + u[i+2])
-		{
+		if (v[1] * qg > (u[i] * b + u[i+1] - v[0] * qg) * b + u[i+2]) {
 			qg = qg - 1;
 			if (v[1] * qg > (u[i] * b + u[i+1] - v[0] * qg) * b + u[i+2])
 				qg = qg - 1;
 		} 
-		// D4. [Multiply and Subtract]
-		if (qg != 0){
+		/* D4. [Multiply and Subtract] */
+		if (qg != 0) {
 			arb_mul_core(v, leb, &qg, 1, temp, b);
 			if (!(_long_sub(u+leb, i, temp, leb, b)))
 				goto D7;
@@ -172,7 +166,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 			if (_long_add(u+leb, i, v, leb-1, b))
 				u[0] = 0; 
 		}
-		D7: // D7.
+		D7: /* D7 */
 		q->number[j] = qg;
 	}
 	end:
