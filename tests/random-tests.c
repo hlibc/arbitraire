@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 			arb_print(c);
 		} else { 
 			fprintf(fp, "%s * %s\nquit\n", string1, string1);
-			c = arb_mul(a, a, a, 10, scale);
+			a = arb_mul(a, a, a, 10, scale);
 			arb_print(a);
 		}
 	}
