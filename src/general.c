@@ -14,10 +14,14 @@ size_t rr(fxdpnt *a)
 
 void arb_free(fxdpnt *flt)
 {
+	/* paranoically sanitize the memory */
 	if (flt && flt->number) {
 		flt->number = NULL;
 		flt->allocated = 0;
+		flt->len = 0;
+		flt->lp = 0;
 		free(flt->number);
+		flt->number = NULL;
 	}
 	if (flt)
 		free(flt);
@@ -54,17 +58,12 @@ void *arb_realloc(void *ptr, size_t len)
 }
 
 void arb_cleanup(void)
-{
-	if (zero)
-		arb_free(zero);
-	if (p5)
-		arb_free(p5);
-	if (one)
-		arb_free(one);
-	if (two)
-		arb_free(two);
-	if (ten)
-		arb_free(ten);
+{ 
+	arb_free(zero);
+	arb_free(p5);
+	arb_free(one);
+	arb_free(two);
+	arb_free(ten);
 }
 
 fxdpnt *arb_expand(fxdpnt *o, size_t request)
@@ -78,6 +77,7 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 	else
 		request = 16;
 
+	/* allocation (vector creation) */
 	if (o == NULL) { 
 		o = arb_malloc(sizeof(fxdpnt));
 		arb_init(o);
@@ -85,6 +85,7 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 		o->allocated = request;
 		o->len = original;
 		o->lp = 0;
+	/* reallocation (vector expansion) */
 	} else if (request > o->allocated) {
 		o->allocated = request;
 		o->number = arb_realloc(o->number, o->allocated * sizeof(UARBT));
