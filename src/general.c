@@ -2,6 +2,7 @@
 
 void arb_error(char *message)
 {
+	// FIXME: return an error, and inform the user
 	fprintf(stderr, "%s\n", message);
 	exit(1);
 }
@@ -48,7 +49,7 @@ void *arb_realloc(void *ptr, size_t len)
 {
 	void *ret;
 	if(!(ret = realloc(ptr, len)))
-		arb_error("realloc failed\n"); // FIXME: return an error, and inform the user
+		arb_error("arb_realloc (realloc) failed\n");
 	return ret;
 }
 

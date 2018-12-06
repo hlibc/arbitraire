@@ -29,7 +29,7 @@ void _print_core(FILE *fp, UARBT *number, size_t len, size_t radix, size_t sign)
 			fprintf(fp, ".");
 			++k;
 			if (k % 68 == 0 && k != 0) {
-				fputc(arb_highbase((number[i])), fp);
+				//fputc(arb_highbase((number[i])), fp);
 				fputc('\\', fp);
 				fputc('\n', fp);
 			}
