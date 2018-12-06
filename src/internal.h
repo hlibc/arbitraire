@@ -15,11 +15,82 @@
 #include <time.h>
 #include <stdarg.h>
 
-/* defines */
+/*
+	Hypothesis:
+	ARBT must be large enough to hold any value that the addition,
+  	subtraction or multiplication of N UARBT can create.
+
+	UARBT must be large enough to hold the base you plan on operating in
+
+	Here we set UARBT as a uint8_t with a projected initial maximum base of
+	2^8 or 256. 
+
+	The ARBT is an int16_t which hence holds 2^15-1 = 32767.
+
+	256 * 256 = 65536 so it's not possible for the UARBT to support base
+	256 with an ARBT int16_t
+
+	180 * 180 = 32400 which will fit inside of an ARBT
+
+	We therefore set the maximum base as 180 for the current types
+
+	partial carry multiplication is a * b + c + carry at any iteration,
+
+	so is potentially 256 * 256 + 256 + 256, though the partial carry
+	is likely much smaller than this
+
+	256 * 256 + 256 + 256 = 66048 which exceeds even a 2^16 datum
+
+	180 * 180+ 180 + 180 = 32760 which will fit inside of the 
+	2^15-1 ARBT type.
+
+	The next size up is 2147483647 (2^31-1). This huge value would
+	allow us to go up to base 256 but would be a fairly large data
+	type for our needs.
+
+	Ergo, we set the maximum base at 180
+
+	Hypothesis 2:
+	
+	Hardware types can be assumed to be of 8, 16, 32 and 64 bits
+	for our purposes and for any reasonable base maxima of arbitraire
+	in the future.
+
+	an 8 needs a 32. therefore at 16 would need a 64 in order to go
+	to the full range of the datum for the base
+
+	2^16 = 65536 and 65536 * 65536 + 65536 + 65536 = 4295098368 and 
+	2^31-1 is 2147483647, we therefore need a 2^63-1 at 922337203685477580
+
+	Notice that even if you remove "c" and "d" from a * b + c + d
+	That the number produced is still large enough to exhaust the data
+	type fo the next size up. 
+
+	Theory:
+
+		system 1:
+			2^8 = 256
+			2^31-1 = 2147483647
+			256 * 256 + 256 + 256 = 66048
+			66048 < 2147483647
+
+		system 2:
+			sqrt(2^15-1) = 181.0165
+			180 * 180 + 180 + 180 = 32760
+			2^15 -1 = 32767
+			32760 < 32767
+	Similar principles can be constructed from the above two rules
+	That work for higher bases
+	
+	
+*/
 #define ARBT	int16_t
 #define UARBT	uint8_t
-#define MAX(a,b)      ((a)>(b)?(a):(b))
-#define MIN(a,b)      ((a)>(b)?(b):(a))
+
+
+/* basic defines */
+#define MAX(a,b) ((a)>(b)?(a):(b))
+#define MIN(a,b) ((a)>(b)?(b):(a))
 
 /* structures */
 typedef struct {		// fxdpnt fixed point type
@@ -100,15 +171,13 @@ int iszero(fxdpnt*);
 fxdpnt *arb_exp(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 /* novelties */
 fxdpnt *old_div(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-
+/* opaque API handlers */
 size_t arb_size(fxdpnt *);
 size_t arb_allocated(fxdpnt *);
 char arb_sign(fxdpnt *);
 size_t arb_left(fxdpnt *);
-
-
+/* generate "bignums" */
 char *make_bignum(size_t, int, int);
-
 /* function wrappers for simpler math handling */
 void incr(fxdpnt **, int, char *);
 void decr(fxdpnt **, int, char *);
@@ -116,13 +185,10 @@ void sub(fxdpnt *, fxdpnt *, fxdpnt **, int, char *);
 void add(fxdpnt *, fxdpnt *, fxdpnt **, int, char *);
 void mul(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
 void divv(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
-
 /* oddity */
 int oddity(size_t);
-
 /* */
 void *_arb_memset(void *, int, size_t);
-
 
 #define _internal_debug if (_ARB_DEBUG && m) { \
 fprintf(stderr, __func__); \
