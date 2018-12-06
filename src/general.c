@@ -14,14 +14,14 @@ size_t rr(fxdpnt *a)
 
 void arb_free(fxdpnt *flt)
 {
-	/* paranoically sanitize the memory */
 	if (flt && flt->number) {
+		free(flt->number);
+		/* sanitize the memory */
 		flt->number = NULL;
 		flt->allocated = 0;
 		flt->len = 0;
 		flt->lp = 0;
-		free(flt->number);
-		flt->number = NULL;
+		flt->sign = 0;
 	}
 	if (flt)
 		free(flt);
