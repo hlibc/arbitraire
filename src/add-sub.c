@@ -45,15 +45,17 @@ void arb_reverse(fxdpnt *x)
 UARBT arb_place(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 {
 	UARBT temp = 0;
+	/* exhausted, we no longer increment */
+	/* we must continue to return zeros though, 
+	   because the other number may still be valid */
 	if ((rr(a)) < (rr(b)))
 		if((rr(b)) - (rr(a)) > r)
 			return 0;
+	/* regular case */
 	if (*cnt < a->len){
 		temp = a->number[a->len - *cnt - 1];
-		//(*cnt)++;
-		
+		(*cnt)++;
 	}
-	(*cnt)++;
 	return temp;
 }
 
@@ -62,7 +64,7 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	size_t i = 0, j = 0, r = 0;
 	ARBT sum = 0, carry = 0;
 
-	for (; i < a->len || j < b->len;c->len++, ++r){
+	for (;i < a->len || j < b->len; c->len++, ++r){
 		sum = arb_place(a, b, &i, r) + arb_place(b, a, &j, r) + carry;
 		carry = 0;
 		if(sum >= base){
@@ -88,12 +90,12 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	int8_t borrow = 0;
 	int8_t mborrow = -1; /* mirror borrow must be -1 */
 	ARBT mir = 0;
-	UARBT *array;
+	UARBT *array = NULL;
 	ARBT hold = 0;
 
 	array = arb_malloc((MAX(a->len, b->len) * 2) * sizeof(UARBT));
 
-	for (;i < a->len || j < b->len;c->len++, ++r){
+	for (;i < a->len || j < b->len; c->len++, ++r){
 		hold = arb_place(a, b, &i, r) - arb_place(b, a, &j, r);
 		sum = hold + borrow;
 		mir = hold + mborrow;
