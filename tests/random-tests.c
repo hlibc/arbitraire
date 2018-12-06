@@ -1,19 +1,18 @@
 #include <arbitraire/arbitraire.h>
 #include <stdlib.h>
 #include <time.h>
-#define MAXIMA 10000
 #define BASE_MAX 10
 
 int main(int argc, char *argv[])
 {
 	fxdpnt *a, *b, *c;
-	FILE *fp;
+	FILE *fp = NULL;
 	char *string1, *string2;
-	size_t scale;
+	size_t scale = 0;
 	int ag = 0;
+	size_t maxima = 0;
 
-	
-	
+	string1 = string2 = a = b = c = NULL;
 	
 	if (argc < 4)
 	{
@@ -29,13 +28,13 @@ int main(int argc, char *argv[])
 
 	if (!(fp = fopen("testing.bc", "w+")))
 		return 1;
-	if (!(string1 = make_bignum(MAXIMA, BASE_MAX, 1)))
+	if (!(string1 = make_bignum(maxima, BASE_MAX, 1)))
 		return 1;
-	if (!(string2 = make_bignum(MAXIMA, BASE_MAX, 1)))
+	if (!(string2 = make_bignum(maxima, BASE_MAX, 1)))
 		return 1;
 	
 
-	scale = random() % MAXIMA;
+	scale = random() % maxima;
 	fprintf(fp, "scale=%zu;\n", scale);
 
 	
@@ -43,7 +42,7 @@ int main(int argc, char *argv[])
 		return 1;
 	if (!(b = arb_str2fxdpnt(string2)))
 		return 1;
-	if (!(c = arb_expand(NULL, MAXIMA*2)))
+	if (!(c = arb_expand(NULL, maxima*2)))
 		return 1;
 
 	if (strcmp(argv[1], "div") == 0) {
@@ -120,7 +119,6 @@ int main(int argc, char *argv[])
 
 	free(string1);
 	free(string2);
-	
 	arb_free(a);
 	arb_free(b);
 	arb_free(c);
