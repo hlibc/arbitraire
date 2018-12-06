@@ -13,10 +13,10 @@ size_t rr(fxdpnt *a)
 
 void arb_free(fxdpnt *flt)
 {
-	if (flt->number) {
-		free(flt->number);
+	if (flt && flt->number) {
 		flt->number = NULL;
 		flt->allocated = 0;
+		free(flt->number);
 	}
 	if (flt)
 		free(flt);
