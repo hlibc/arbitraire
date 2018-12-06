@@ -17,7 +17,6 @@ void arb_free(fxdpnt *flt)
 	if (flt && flt->number) {
 		free(flt->number);
 		/* sanitize the memory */
-		flt->number = NULL;
 		flt->allocated = 0;
 		flt->len = 0;
 		flt->lp = 0;
