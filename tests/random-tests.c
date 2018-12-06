@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	FILE *fp = NULL;
 	char *string1, *string2;
 	size_t scale = 0;
-	int ag = 0;
+	int ag = 1;
 	size_t maxima = 0;
 	int type = 1;
 
@@ -20,13 +20,14 @@ int main(int argc, char *argv[])
 	{
 		printf("requires a test type, like 'div' or 'sub'\n");
 		printf("requires a numerical maximum\n");
-		printf("-a activates a-a-a function mode\n");
+		printf("'agnostic' activates a-a-a function mode\n");
+		printf("./tests/random-tests div 10000 agnostic\n");
 		return 1;
 	}
 
 	maxima = strtoll(argv[2], NULL, 10);
 	if (strcmp(argv[3], "agnostic") == 0)
-		ag = 1;
+		ag = 0;
 	if (strcmp(argv[1], "sqrt") == 0)
 		type = 0;
 
