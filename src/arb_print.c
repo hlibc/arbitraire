@@ -1,6 +1,5 @@
 #include "internal.h"
 
-
 int arb_highbase(int a)
 {
 	/* Handle high bases */
@@ -17,30 +16,27 @@ int arb_highbase(int a)
 void _print_core(FILE *fp, UARBT *number, size_t len, size_t radix, size_t sign)
 {
 	size_t i = 0;
-	size_t k = sign;
+	size_t k = sign; /* set to 1 or 0 -- to account for the sign */
 
-	for (i=0; i < len ; ++i){
-		if (k % 68 == 0 && k != 0) {
+	for (; i < len ; ++i, ++k) {
+		if (k != 0 && k % 68 == 0) {
 			fputc('\\', fp);
 			fputc('\n', fp);
 		}
-		if (radix == i)
-		{
-			fprintf(fp, ".");
-			++k;
-			if (k % 68 == 0 && k != 0) {
-				//fputc(arb_highbase((number[i])), fp);
+		if (radix == i) {
+			fputc('.', fp);
+			if ((++k) % 68 == 0) {
 				fputc('\\', fp);
 				fputc('\n', fp);
 			}
 		}
 		fputc(arb_highbase((number[i])), fp);
-		++k;
 	}
 
-	if (!len)
+	if (!len) {
 		fputc('0', fp);
-	
+	}
+
 	fputc('\n', fp);
 
 	fflush(fp);
@@ -48,28 +44,25 @@ void _print_core(FILE *fp, UARBT *number, size_t len, size_t radix, size_t sign)
 
 void arb_fprint(FILE *fp, fxdpnt *flt)
 {
-	size_t sign = 0;
-	
-	if (iszero(flt) == 0)
-	{
+	if (iszero(flt) == 0) {
 		fputc('0', fp);
 		fputc('\n', fp);
 		goto end;
 	}
-	if (flt->sign == '-')
-	{
+	if (flt->sign == '-') {
 		fputc(flt->sign, fp);
-		sign = 1;
+		_print_core(fp, flt->number, flt->len, flt->lp, 1);
 	}
-	_print_core(fp, flt->number, flt->len, flt->lp, sign);
+	else {
+		_print_core(fp, flt->number, flt->len, flt->lp, 0);
+	}
 	end:
 	fflush(fp);
 }
 
 void arb_print(fxdpnt *flt)
 { 
-	if (flt == NULL)
-	{
+	if (flt == NULL) {
 		fprintf(stdout, "number was (null)\n");
 		return;
 	}
@@ -78,8 +71,7 @@ void arb_print(fxdpnt *flt)
 
 void arb_printerr(fxdpnt *flt)
 {
-	if (flt == NULL)
-	{
+	if (flt == NULL) {
 		fprintf(stdout, "number was (null)\n");
 		return;
 	}
@@ -89,7 +81,7 @@ void arb_printerr(fxdpnt *flt)
 void arb_printtrue(fxdpnt *flt)
 {
 	
-	/* This function prints fxdpnt's as they truly are as opposed
+	/* This function prints 'fxdpnt's as they truly are as opposed
 	 * to 1> splitting them, 2> printing '0' for zero length fxdpnts
 	 * or 3> testing for all zeros and then printing a single '0'
 	 */

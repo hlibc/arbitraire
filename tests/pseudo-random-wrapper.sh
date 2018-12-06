@@ -1,25 +1,25 @@
 #!/bin/sh
 
+set -e
+
 if [ $# -lt 1 ]
 then	printf "Requires a test type, like 'div', 'add', 'sub' or 'mul'\n"
 	exit 1
 fi
 
-USE_VALGRIND=0
+USE_VALGRIND="0"
 if [ $# -gt 1 ]
 then    if [ $2 = "valgrind" ] 
-	then	USE_VALGRIND=1
+	then	USE_VALGRIND="1"
 	fi
 fi
 
-COUNT=0
+COUNT="0"
 
 VERSION=$(cat .version)
 
 machinename="$(gcc -dumpmachine)"
 machinename="${VERSION}-${machinename}-tests-passed.txt"
-
-rm "${machinename}"
 
 printf "%s\n" "This is a set of PRNG tests to ensure that arbitraire ${VERSION} works" >>"${machinename}"
 printf "%s\n" "properly on the following machine type:" >>"${machinename}"
@@ -31,7 +31,7 @@ printf "%s\n" "The tests should halt upon detecting an error and the contents" >
 printf "%s\n" "of 'testing.bc' can be inspected to reveal the failing test" >>"${machinename}"
 printf "\n\n" >> "${machinename}"
 while [ $COUNT -lt 100 ]
-do	COUNT=$((COUNT +1))
+do	COUNT=$((COUNT + 1))
 	printf "%s\n" "Test number: ${COUNT}" >>"${machinename}"
 	if [ $USE_VALGRIND = "1" ]
 	then	valgrind --leak-check=full ./tests/pseudo-random-tests $1 > log 2>log3
