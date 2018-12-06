@@ -115,6 +115,20 @@ TESTING:
 
 		./tests/random-wrapper.sh sqrt 10000 null valgrind|strace|time
 
+	"random-wrapper.sh" wraps "random-tests" by invoking it 100 times,
+	logging its output and allowing it to be ran with other tools. However,
+	random-tests can also be used on its own:
+
+		./tests/random-tests div 10000 null
+
+		or for argument agnostic:
+
+		./tests/random-tests div 10000 agnostic
+
+	Each function also has its own test, for instance, to add two numbers:
+
+		./tests/add 123 123 10
+
 USING THE API:
 --------------
 
