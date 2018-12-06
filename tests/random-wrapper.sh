@@ -9,10 +9,12 @@ fi
 
 USE_VALGRIND="0"
 USE_STRACE="0"
+USE_TIME="0"
 
 if [ "$#" -gt 1 ]
-then	[ "$2" = "valgrind" ] && USE_VALGRIND="1"
-	[ "$2" = "strace" ] && USE_STRACE="1"
+then	[ "$4" = "valgrind" ] && USE_VALGRIND="1"
+	[ "$4" = "strace" ] && USE_STRACE="1"
+	[ "$4" = "time" ] && USE_TIME="1"
 fi
 
 COUNT="0"
@@ -35,10 +37,12 @@ while [ "$COUNT" -lt 100 ]
 do	COUNT="$((COUNT + 1))"
 	printf "%s\n" "Test number: ${COUNT}" >>"${machinename}"
 	if [ "$USE_VALGRIND" = "1" ]
-	then	valgrind --leak-check=full ./tests/random-tests "$1" > log 2>log3
+	then	valgrind --leak-check=full ./tests/random-tests "$1" "$2" "$3" >log 2>log3
 	elif [ "$USE_STRACE" = "1" ]
-	then	strace ./tests/random-tests "$1" > log
-	else	./tests/random-tests "$1" > log
+	then	strace ./tests/random-tests "$1" "$2" "$3" >log 2>log3
+	elif [ "$USE_TIME" = "1" ]
+	then	time ./tests/random-tests "$1" "$2" "$3" >log 2>log3
+	else	./tests/random-tests "$1" "$2" "$3" >log 2>log3
 	fi
 	bc -lq testing.bc > log2
 	if diff log log2
