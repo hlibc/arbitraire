@@ -59,33 +59,63 @@ int main(int argc, char *argv[])
 	}
 	
 	if (strcmp(argv[1], "newtonian-div") == 0) {
-		fprintf(fp, "%s / %s\nquit\n", string1, string2);
-		c = arb_newtonian_div(a, b, c, 10, scale);
-		arb_print(c);
+		if (ag) {
+			fprintf(fp, "%s / %s\nquit\n", string1, string2);
+			c = arb_newtonian_div(a, b, c, 10, scale);
+			arb_print(c);
+		} else { 
+			fprintf(fp, "%s / %s\nquit\n", string1, string1);
+			a = arb_newtonian_div(a, a, a, 10, scale);
+			arb_print(a);
+		}
 	}
 	
 	if (strcmp(argv[1], "add") == 0) {
-		fprintf(fp, "%s + %s\nquit\n", string1, string2);
-		c = arb_add(a, b, c, 10);
-		arb_print(c);
+		if (ag) {
+			fprintf(fp, "%s + %s\nquit\n", string1, string2);
+			c = arb_add(a, b, c, 10);
+			arb_print(c);
+		} else { 
+			fprintf(fp, "%s + %s\nquit\n", string1, string1);
+			a = arb_add(a, a, a, 10);
+			arb_print(a);
+		}
 	}
 	
 	if (strcmp(argv[1], "sub") == 0) {
-		fprintf(fp, "%s - %s\nquit\n", string1, string2);
-		c = arb_sub(a, b, c, 10);
-		arb_print(c);
+		if (ag) {
+			fprintf(fp, "%s - %s\nquit\n", string1, string2);
+			c = arb_sub(a, b, c, 10);
+			arb_print(c);
+		} else { 
+			fprintf(fp, "%s - %s\nquit\n", string1, string1);
+			a = arb_sub(a, a, a, 10);
+			arb_print(a);
+		}
 	}
 
 	if (strcmp(argv[1], "mul") == 0) {
-		fprintf(fp, "%s * %s\nquit\n", string1, string2);
-		c = arb_mul(a, b, c, 10, scale);
-		arb_print(c);
+		if (ag) {
+			fprintf(fp, "%s * %s\nquit\n", string1, string2);
+			c = arb_mul(a, b, c, 10, scale);
+			arb_print(c);
+		} else { 
+			fprintf(fp, "%s * %s\nquit\n", string1, string1);
+			c = arb_mul(a, a, a, 10, scale);
+			arb_print(a);
+		}
 	}
 	
 	if (strcmp(argv[1], "mod") == 0) {
-		fprintf(fp, "%s %% %s\nquit\n", string1, string2);
-		c = arb_mod(a, b, c, 10, scale);
-		arb_print(c);
+		if (ag) {
+			fprintf(fp, "%s %% %s\nquit\n", string1, string2);
+			c = arb_mod(a, b, c, 10, scale);
+			arb_print(c);
+		} else { 
+			fprintf(fp, "%s %% %s\nquit\n", string1, string1);
+			a = arb_mod(a, a, a, 10, scale);
+			arb_print(a);
+		}
 	}
 
 	free(string1);
