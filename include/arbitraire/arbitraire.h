@@ -31,6 +31,7 @@ void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);
 /* io */
 void arb_print(fxdpnt *);
 fxdpnt *arb_str2fxdpnt(const char *);
+void arb_printtrue(fxdpnt *);
 /* comparison */
 int arb_compare(fxdpnt *, fxdpnt *, int);
 /* copying */
@@ -66,14 +67,10 @@ char arb_sign(fxdpnt *);
 size_t arb_left(fxdpnt *);
 /* this functions generates bignums as char strings */
 char *make_bignum(size_t, int, int);
-/* function wrappers for simpler math handling */
-
 /* oddity */
 int oddity(size_t);
-
 /* new */
 fxdpnt *nthroot(fxdpnt *a, int base, size_t scale);
-
 void split_test(fxdpnt *a, fxdpnt *b);
 size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd);
 fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale);

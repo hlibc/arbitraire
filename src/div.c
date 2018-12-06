@@ -115,15 +115,15 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	if (uscal < (ssize_t)scale)
 		offset = scale - uscal;
 
+	/* temporary variables for num and den -- because we must modify them */
 	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
 	_arb_copy_core(u + 1, num->number, (num->len));
 
-	leb = den->len;
-
-	
 	v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
 	_arb_copy_core(v, den->number, (den->len));
 	UARBT *vf = v;
+	leb = den->len;
+	
 	/* watch out for underflow on leb */
 	for (;*v == 0; v++, leb--);
 

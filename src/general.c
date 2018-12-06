@@ -18,7 +18,8 @@ void arb_free(fxdpnt *flt)
 		flt->number = NULL;
 		flt->allocated = 0;
 	}
-	free(flt);
+	if (flt)
+		free(flt);
 }
 
 void arb_init(fxdpnt *flt)
@@ -68,27 +69,27 @@ void arb_cleanup(void)
 fxdpnt *arb_expand(fxdpnt *o, size_t request)
 {
 	static int lever = 0;
+	size_t original = request;
 
 	/* align on a multiple of 16 */
-
 	if (request > 16)
 		request = (((request / 16) + 1) * 16);
 	else
 		request = 16;
 
-	
 	if (o == NULL) { 
 		o = arb_malloc(sizeof(fxdpnt));
 		arb_init(o);
 		o->number = arb_calloc(1, sizeof(UARBT) * request);
 		o->allocated = request;
-		o->len = request;
+		o->len = original;
 		o->lp = 0;
 	} else if (request > o->allocated) {
 		o->allocated = request;
 		o->number = arb_realloc(o->number, o->allocated * sizeof(UARBT));
 		_arb_memset(o->number + o->len, 0, o->allocated - o->len);
 	}
+	/* initialize the global constants (once) */
 	if (lever == 0)
 	{
 		lever = 1;
