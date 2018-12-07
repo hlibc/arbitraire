@@ -2,14 +2,14 @@
 
 . ./.config
 
-print()
+stdout()
 {
         printf -- "%s\n" "$*"
 }
 
 menu()
 {
-	print "${projectname}
+	stdout "${projectname}
 
 ${description}
 
@@ -27,9 +27,14 @@ ${copyright}
 	[ ! -z "$1" ] && exit "$1"
 }
 
+stderr()
+{
+	(>&2 stdout "fatal" "$*")
+}
+
 fatal()
 {
-        (>&2 print "fatal" "$*")
+        stderr "$*"
         exit 1
 }
 
@@ -54,24 +59,25 @@ do	case "$i" in
 done
 
 
-print "Creating a config.mak to be sourced by the makefile"
-print "..."
-print "prefix = $prefix"
-print "libname = $libname"
-print "Attempting to produce lib${libname}.a"
-print "..."
-print "arbitraire requires a C compiler, \`make' (gmake), and \`ar'"
-print "this configure script does not automatically detect them"
-print "but instead the makefile uses the environment"
-print "..."
-print "..."
-print "..."
+stdout "Creating a config.mak to be sourced by the makefile"
+stdout "..."
+stdout "prefix = $prefix"
+stdout "libname = $libname"
+stdout "Attempting to produce lib${libname}.a"
+stdout "..."
+stdout "arbitraire requires a C compiler, \`make' (gmake), and \`ar'"
+stdout "this configure script does not automatically detect them"
+stdout "but instead the makefile uses the environment"
+stdout "..."
+stdout "..."
+stdout "..."
 
-print "# Automatically generated" > config.mak
-print "
+stdout "# Automatically generated" > config.mak
+stdout "
 prefix = $prefix
 libname = $libname
 " >> config.mak
-print "done."
+stdout
+stdout "done."
 
 
