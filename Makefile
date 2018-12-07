@@ -1,3 +1,8 @@
+# The top half of this makefile is part of the configurator project and is
+# designed to be universal and used to build any C library.
+# It is meant to be used with the adjacent `configure' script and `.config'
+# file.
+
 CFLAGS += -Wall -Wextra -I./include/
 SRCS = $(wildcard src/*.c)
 TSRCS = $(wildcard tests/*.c)

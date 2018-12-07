@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# This configure script is part of the configurator project and is 
+# designed to be universal and used to build any C library.
+# It is meant to be used with the adjacent `makefile' and `.config'
+# file.
+
 . ./.config
 
 stdout()
