@@ -29,11 +29,11 @@ Arbitraire
 		These algorithms are somewhat novel and are of my own
 	design, they use an offset mechanism which makes them in principle
 	identical to pen+paper pure mathematics routines. For subtraction we
-	don't wast cycles doing a pre-comparison of the numbers to determine
+	don't waste cycles doing a pre-comparison of the numbers to determine
 	if the zero threshold will be crossed. Subtractions that cross the
 	zero threshold have a special property which can be identified by a
 	left over value in the 'carry' variable. Arbitraire simultaneously
-	maintains a mirror of the subtraction as base-N where N is the
+	maintains a mirror of the subtraction as (base - N) where N is the
 	typical value and switches to this alternate solution in the case a
 	left over 'carry' is identified at the end of the computation.
 
@@ -79,15 +79,12 @@ Arbitraire
 	endless amounts of hardware and operating systems with which to verify
 	this.
 
-
-	Arbitraire's "fxdpnt" number system allows for efficient, POSIX compliant
-	implementations of POSIX bc. It is a "pen and paper" style of number system
-	yet with POSIX `bc' 'scale=' and printing semantics. For these semantics
-	the 'base' field has to be set to 10. However, the ability to operate 
-	natively in any base is left as a decision to the caller of the functions.
-
-	
-
+	Arbitraire's "fxdpnt" number system allows for efficient, POSIX 
+	compliant implementations of POSIX bc. It is a "pen and paper" style of
+	number system yet with POSIX `bc' 'scale=' and printing semantics. For
+	these semantics the 'base' field has to be set to 10. However, the 
+	ability to operate natively in any base is left as a decision to the 
+	caller of the functions.
 
 	Arbitraire is an original work authored by CM Graff.
 
@@ -241,7 +238,7 @@ DEBUGGING:
 	Generally, "message" would be populated with the name of the
 	variable you are using for the final "answer" which goes into
 	"c". The debugging functions then print the function name,
-	your message, and the final "answer" whch goes into "c".
+	your message, and the final "answer" which goes into "c".
 
 	I use them as follows:
 
@@ -251,9 +248,6 @@ DEBUGGING:
 	used, so in this way one can debug their work without interfering
 	in the programming process with extra lines of code to print their
 	results out to screen.
-
-
-
 
 	
 INSPIRATIONS:
@@ -266,9 +260,39 @@ INSPIRATIONS:
 
 	Donald Knuth's  TAOCP
 
+	Professor Wayne Clark -- thank you again for all of your guidance
+
+
+SPONSORS:
+---------
+
+	Packet, Works on ARM
+
+	The gcc farm
+
 
 CONTACTS:
 ---------
 
 	CM Graff   cm0graff@gmail.com
+
+
+RELEASES:
+---------
+
+	Github doesn't have an ideal method for naming releases so we opted to 
+	use these simple naming schemes. More conventionally named releases 
+	will be available after we get our main website back up.
+
+	When possible, make sure to use the last release available. Arbitraire
+	has been going through a lot of massive internal changes lately, but
+	these releases will allow you to get a stable and bug-free interface.
+
+	https://github.com/hlibc/arbitraire/archive/v0.3.tar.gz
+
+	https://github.com/hlibc/arbitraire/archive/v0.4.tar.gz
+
+
+
+
 
