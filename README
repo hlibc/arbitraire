@@ -28,21 +28,36 @@ Arbitraire
 	Subtraction and addition:
 		These algorithms are somewhat novel and are of my own
 	design, they use an offset mechanism which makes them in principle
-	identical to pen+paper pure mathematics routines.
+	identical to pen+paper pure mathematics routines. For subtraction we
+	don't wast cycles doing a pre-comparison of the numbers to determine
+	if the zero threshold will be crossed. Subtractions that cross the
+	zero threshold have a special property which can be identified by a
+	left over value in the 'carry' variable. Arbitraire simultaneously
+	maintains a mirror of the subtraction as base-N where N is the
+	typical value and switches to this alternate solution in the case a
+	left over 'carry' is identified at the end of the computation.
 
 	Multiplication:
 		Partial carry modified school book multiplication is used.
 	This algorithm was thought to be the fastest there was up to the time
-	of Karatsuba. Plans to add Karatsuba multiplication and Fast Fourier
-	Transformation multiplication are in the works. I believe however,
-	that you'll nonetheless find our current algorithm to be sufficient
-	for most purposes. And indeed it is sufficient for implementing a
-	performant square root.
+	of Karatsuba. Kolmogorov was giving a lecture describing how the
+	fundamental operations such as multiplication could not be reduced,
+	upon arriving the next day the young karatsuba had devised a method
+	for splitting the number into two parts and eliminating some of the
+	computations. The lecture was immediately terminated. Plans to add 
+	Karatsuba multiplication and Fast Fourier Transformation multiplication
+	are in the works. I believe however, that you'll nonetheless find our 
+	current algorithm to be sufficient for most purposes. And indeed it is 
+	sufficient for implementing a performant square root.
 
 	Square root:
 		Newton's method is used for square root. Our square root
 	algorithm is quite performant perhaps due to using a correct division
-	implementation.
+	implementation. Newton's method is thought to be identical in most ways
+	to the ancient Babylonian method for computing square root. We do
+	however use a method for comparing the scales of the converging guesses
+	so as to break out of the iteration -- which is non de facto in either
+	historical algorithm.
 
 
 	Arbitraire continues research into other mathematics operations, ergo,
@@ -69,7 +84,7 @@ Arbitraire
 	implementations of POSIX bc. It is a "pen and paper" style of number system
 	yet with POSIX `bc' 'scale=' and printing semantics. For these semantics
 	the 'base' field has to be set to 10. However, the ability to operate 
-	natively in any base is left as decision to the caller of the functions.
+	natively in any base is left as a decision to the caller of the functions.
 
 	
 
