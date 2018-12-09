@@ -13,7 +13,7 @@ fxdpnt *arb_mod(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	tmp = arb_div(a, b, tmp, base, scale);
 	tmp = arb_mul(tmp, b, tmp, base, newscale);
 	c = arb_sub(a, tmp, c, base);
-	free(tmp);
+	arb_free(tmp);
 	return c;
 }
 
