@@ -9,3 +9,4 @@ int iszero(fxdpnt *a)
 	}
 	return 0;
 }
+
