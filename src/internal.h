@@ -41,7 +41,7 @@
 
 	256 * 256 + 256 + 256 = 66048 which exceeds even a 2^16 datum
 
-	180 * 180+ 180 + 180 = 32760 which will fit inside of the 
+	180 * 180 + 180 + 180 = 32760 which will fit inside of the 
 	2^15-1 ARBT type.
 
 	The next size up is 2147483647 (2^31-1). This huge value would
@@ -64,7 +64,7 @@
 
 	Notice that even if you remove "c" and "d" from a * b + c + d
 	That the number produced is still large enough to exhaust the data
-	type fo the next size up. 
+	type of the next size up. 
 
 	Theory:
 
@@ -81,8 +81,6 @@
 			32760 < 32767
 	Similar principles can be constructed from the above two rules
 	That work for higher bases
-	
-	
 */
 #define ARBT	int16_t
 #define UARBT	uint8_t
@@ -112,7 +110,6 @@ extern fxdpnt *ten;
 /* arithmetic */
 fxdpnt *arb_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 size_t arb_mul_core(UARBT *, size_t, UARBT *, size_t, UARBT *, int);
-fxdpnt *arb_karatsuba_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 fxdpnt *arb_add_inter(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_sub_inter(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_sub(fxdpnt *, fxdpnt *, fxdpnt *, int);
