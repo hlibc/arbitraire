@@ -91,8 +91,7 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 		_arb_memset(o->number + o->len, 0, o->allocated - o->len);
 	}
 	/* initialize the global constants (once) */
-	if (lever == 0)
-	{
+	if (lever == 0) {
 		lever = 1;
 		zero = arb_str2fxdpnt("0");
 		p5 = arb_str2fxdpnt("0.5");
