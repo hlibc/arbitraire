@@ -2,8 +2,10 @@
 
 set -e
 
-if [ "$#" -lt 1 ]
+if [ "$#" -lt 3 ]
 then	printf "Requires a test type, like 'div', 'add', 'sub' or 'mul'\n"
+	printf "Requires a maxima\m"
+	printf "Must specify 'agnostic' or not\n"
 	exit 1
 fi
 
@@ -11,11 +13,10 @@ USE_VALGRIND="0"
 USE_STRACE="0"
 USE_TIME="0"
 
-if [ "$#" -gt 1 ]
-then	[ "$4" = "valgrind" ] && USE_VALGRIND="1"
-	[ "$4" = "strace" ] && USE_STRACE="1"
-	[ "$4" = "time" ] && USE_TIME="1"
-fi
+[ "$4" = "valgrind" ] && USE_VALGRIND="1"
+[ "$4" = "strace" ] && USE_STRACE="1"
+[ "$4" = "time" ] && USE_TIME="1"
+
 
 COUNT="0"
 
@@ -44,7 +45,7 @@ do	COUNT="$((COUNT + 1))"
 	then	time ./tests/random-tests "$1" "$2" "$3" >log 2>log3
 	else	./tests/random-tests "$1" "$2" "$3" >log 2>log3
 	fi
-	bc -lq testing.bc > log2
+	bc -l testing.bc > log2
 	if diff log log2
 	then	printf "%s\n" "Giant pseudo-random number test passed."
 		printf "%s\n" "Giant pseudo-random number test passed." >> "${machinename}"
