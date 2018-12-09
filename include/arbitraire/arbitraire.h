@@ -44,7 +44,6 @@ fxdpnt *long_sqrt(fxdpnt *, int, size_t);
 void arb_init(fxdpnt *);
 void arb_error(char *);
 /* allocation */
-fxdpnt *arb_alloc(size_t);
 fxdpnt *arb_expand(fxdpnt *, size_t);
 void *arb_malloc(size_t);
 void *arb_realloc(void *, size_t);
