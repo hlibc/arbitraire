@@ -94,7 +94,7 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	UARBT *array = NULL;
 	ARBT hold = 0;
 
-	array = arb_malloc((MAX(rr(a), rr(b)) + MAX(a->lp, b->lp)) * sizeof(UARBT));
+	array = arb_malloc((MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1) * sizeof(UARBT));
 
 	for (;i < a->len || j < b->len; c->len++, ++r){
 		hold = arb_place(a, b, &i, r) - arb_place(b, a, &j, r);
@@ -146,7 +146,7 @@ fxdpnt *arb_add(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 
 fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp));
+	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
 	c2->lp = MAX(a->lp, b->lp);
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-')
