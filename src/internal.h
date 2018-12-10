@@ -125,7 +125,6 @@ fxdpnt *arb_rightshift(fxdpnt *, size_t, int);
 fxdpnt *arb_leftshift(fxdpnt *, size_t, int);
 void rightshift_core(UARBT *, size_t, size_t);
 /* general */
-void arb_reverse(fxdpnt *);
 void arb_flipsign(fxdpnt *);
 void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);
 /* io */
@@ -141,8 +140,6 @@ int arb_compare(fxdpnt *, fxdpnt *, int);
 /* copying */
 void _arb_copy_core(UARBT *, UARBT *, size_t);
 void *arb_copy(fxdpnt *, fxdpnt *);
-void *arb_copyreverse(fxdpnt *, fxdpnt *);
-void _arb_copyreverse_core(UARBT *, UARBT *, size_t);
 /* sqrt */
 fxdpnt *nsqrt(fxdpnt *, int, size_t);
 fxdpnt *long_sqrt(fxdpnt *, int, size_t);

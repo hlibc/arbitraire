@@ -25,7 +25,6 @@ fxdpnt *arb_mod(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 fxdpnt *arb_rightshift(fxdpnt *, size_t, int);
 fxdpnt *arb_leftshift(fxdpnt *, size_t, int);
 /* general */
-void arb_reverse(fxdpnt *);
 void arb_flipsign(fxdpnt *);
 void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);
 /* io */
@@ -36,7 +35,6 @@ void arb_printtrue(fxdpnt *);
 int arb_compare(fxdpnt *, fxdpnt *, int);
 /* copying */
 void *arb_copy(fxdpnt *, fxdpnt *);
-void arb_copyreverse(fxdpnt *, fxdpnt *);
 /* sqrt */
 fxdpnt *nsqrt(fxdpnt *, int, size_t);
 fxdpnt *long_sqrt(fxdpnt *, int, size_t);
