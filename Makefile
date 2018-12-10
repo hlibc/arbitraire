@@ -40,14 +40,14 @@ install:
 # for invoking arbitraire's testing mechanisms in a simple way -- `make test'
 #
 # Before releases, make sure to run all of the tests with valgrind mode turned
-# on and run: grep 'no leaks' | wc -l on the logfile. If it outputs "1100" then
-# we know that all 1100 pseudo-random tests were completed in their entirety
-# and with no memory errors. Use the following command:
-#	`make clean ; make release ; grep 'no leaks' *tests-passed.txt | wc -l'
-#
+# on. This can be done with `make release', 1100 passing tests should be
+# reported as "1100"
 
 
 release:
+	make clean ; make release_inter ; grep 'no leaks' *tests-passed.txt | wc -l
+
+release_inter:
 	./configure
 	CFLAGS="-O3" $(MAKE) all
 	echo "sqrt tests"

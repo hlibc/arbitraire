@@ -16,7 +16,7 @@
 		answer = 1000 - 999
 
 	Instead of performing this operation in its entirety however, the
-	inverse solution is calculated along side the normative one and
+	inverse solution is calculated alongside the normative one and
 	simply discarded in the case it is not needed (there is no left
 	over carry).
 
