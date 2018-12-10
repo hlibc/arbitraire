@@ -42,12 +42,9 @@ void arb_reverse(fxdpnt *x)
 	}
 }
 
-UARBT arb_place(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
-{
+UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
+{ 
 	UARBT temp = 0;
-	/* exhausted, we no longer increment */
-	/* we must continue to return zeros though, 
-	   because the other number may still be valid */
 	if ((rr(a)) < (rr(b)))
 		if((rr(b)) - (rr(a)) > r)
 			return 0;
@@ -57,10 +54,6 @@ UARBT arb_place(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 		(*cnt)++;
 	}
 	return temp;
-}
-UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
-{
-	return arb_place(a, b, cnt, r);
 }
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
@@ -83,7 +76,6 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	}
 	if (carry) {
 		// TODO: implement logical right shift and reuse this code block
-		//		  ... it needs to be very fast though
 		for(z = c->len+1;z > 0; z--)
 			c->number[z] = c->number[z-1];
 		c->number[0] = 1;
@@ -104,8 +96,9 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	UARBT *tmp = NULL;
 	ARBT hold = 0;
 	size_t size = 0;
+	size_t array_allocated = (MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
 
-	array = arb_malloc((MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1) * sizeof(UARBT));
+	array = arb_malloc(array_allocated * sizeof(UARBT));
 	size = MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) - 1;
 
 	for (;i < a->len || j < b->len; size--, c->len++) {
@@ -128,8 +121,8 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	if (borrow == -1) {
 		tmp = c->number;
 		c->number = array;
+		c->allocated = array_allocated; // TODO: this should be scaled
 		free(tmp);
-   
 		arb_flipsign(c);
 	}else {
 		free(array);
