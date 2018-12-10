@@ -7,8 +7,8 @@
 	operations on numbers of differing magnitude.
 
 	While many subtraction routines require that the numbers first
-	be compared and the rearranged in the case that the zero threshold
-	is crossed, I have mitigated this by using a special property of
+	be compared and then rearranged in the case that the zero threshold
+	is crossed, we mitigate this by using a special property of
 	subtraction that takes advantage of a left over carry. When a
 	left over carry is detected, the inverse of the solution is used.
 	Ergo, if the solution was 999 we would perform the operation:
@@ -17,18 +17,8 @@
 
 	Instead of performing this operation in its entirety however, the
 	inverse solution is calculated alongside the normative one and
-	simply discarded in the case it is not needed (there is no left
+	simply discarded in the case it is not needed (whe there is no left
 	over carry).
-
-	There are a number of tradeoffs involved with using these methods.
-	I have decided to stay with this technique as I innovated it myself
-	for arbitraire and find it interesting for comparison against other
-	more common techniques.
-
-	It would be prudent to also implement the more traditional approach
-	of first comparing the numbers and then rearranging them, increasing
-	the magnitude to match the places and other typical algorithms so as
-	to compare them with arbitraire's techniques.
 */
 
 UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
