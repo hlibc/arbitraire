@@ -36,10 +36,10 @@ UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 }
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	size_t i = 0, j = 0;
+	size_t i = 0;
+	size_t j = 0;
 	ARBT sum = 0;
 	uint8_t carry = 0;
-	size_t z = 0;
 	size_t size = 0;
 
 	size = MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) - 1;
@@ -55,8 +55,8 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	}
 	if (carry) {
 		// TODO: implement logical right shift and reuse this code block
-		for(z = c->len+1;z > 0; z--)
-			c->number[z] = c->number[z-1];
+		for(i = c->len+1;i > 0; i--)
+			c->number[i] = c->number[i-1];
 		c->number[0] = 1;
 		c->len++;
 		c->lp++;
@@ -66,7 +66,8 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 
 fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	size_t i = 0, j = 0;
+	size_t i = 0;
+	size_t j = 0;
 	ARBT sum = 0;
 	int8_t borrow = 0;
 	int8_t mborrow = -1; /* mirror borrow must be -1 */
@@ -111,7 +112,11 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 
 fxdpnt *arb_add(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
+	fxdpnt *c2 = c;
+	if (a == c || b == c)
+		c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
+	else
+		c2 = arb_expand(c2, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
 	c2->lp = MAX(a->lp, b->lp);
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-') {
@@ -124,7 +129,7 @@ fxdpnt *arb_add(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 		c2 = arb_sub_inter(a, b, c2, base);
 	else
 		c2 = arb_add_inter(a, b, c2, base);
-	if (c)
+	if (a == c || b == c)
 		arb_free(c);
 	c2 = remove_leading_zeros(c2);
 	return c2;
@@ -132,7 +137,11 @@ fxdpnt *arb_add(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 
 fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
+	fxdpnt *c2 = c;
+	if (a == c || b == c)
+		c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
+	else
+		c2 = arb_expand(c2, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
 	c2->lp = MAX(a->lp, b->lp);
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-')
@@ -148,12 +157,13 @@ fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 		c2 = arb_add_inter(a, b, c2, base);
 	else
 		c2 = arb_sub_inter(a, b, c2, base);
-	if (c)
+	if (a == c || b == c)
 		arb_free(c);
 	c2 = remove_leading_zeros(c2);
 	return c2;
 }
 
+// TODO: make these return an integer error code
 void sub(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
 { 
 	_internal_debug; 
