@@ -58,46 +58,58 @@ UARBT arb_place(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 	}
 	return temp;
 }
-
+UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
+{
+	return arb_place(a, b, cnt, r);
+}
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	size_t i = 0, j = 0, r = 0;
+	size_t i = 0, j = 0;
 	ARBT sum = 0;
 	uint8_t carry = 0;
+	size_t z = 0;
+	size_t size = 0;
 
-	for (;i < a->len || j < b->len; c->len++, ++r){
-		sum = arb_place(a, b, &i, r) + arb_place(b, a, &j, r) + carry;
+	size = MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) - 1;
+
+	for (;i < a->len || j < b->len; size--, c->len++) {
+		sum = _pl(a, b, &i, c->len) + _pl(b, a, &j, c->len) + carry;
 		carry = 0;
 		if(sum >= base){
 			carry = 1;
 			sum -= base;
 		}
-		c->number[c->len] = sum;
+		c->number[size] = sum;
 	}
-	if (carry){
-		c->number[c->len++] = 1;
-		c->lp += 1;
+	if (carry) {
+		// TODO: implement logical right shift and reuse this code block
+		//		  ... it needs to be very fast though
+		for(z = c->len+1;z > 0; z--)
+			c->number[z] = c->number[z-1];
+		c->number[0] = 1;
+		c->len++;
+		c->lp++;
 	}
-	arb_reverse(c);
-
 	return c;
 }
 
-
 fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	size_t i = 0, j = 0, r = 0;
+	size_t i = 0, j = 0;
 	ARBT sum = 0;
 	int8_t borrow = 0;
 	int8_t mborrow = -1; /* mirror borrow must be -1 */
 	ARBT mir = 0;
 	UARBT *array = NULL;
+	UARBT *tmp = NULL;
 	ARBT hold = 0;
+	size_t size = 0;
 
 	array = arb_malloc((MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1) * sizeof(UARBT));
+	size = MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) - 1;
 
-	for (;i < a->len || j < b->len; c->len++, ++r){
-		hold = arb_place(a, b, &i, r) - arb_place(b, a, &j, r);
+	for (;i < a->len || j < b->len; size--, c->len++) {
+		hold = _pl(a, b, &i, c->len) - _pl(b, a, &j, c->len);
 		sum = hold + borrow;
 		mir = hold + mborrow;
 		borrow = mborrow = 0;
@@ -109,17 +121,19 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 			mborrow = -1;
 			mir += base;
 		}
-		c->number[c->len] = sum;
-		array[c->len] = (base-1) - mir;
+		c->number[size] = sum;
+		array[size] = (base-1) - mir;
 	}
 	/* a left over borrow indicates that the zero threshold was crossed */
-	if (borrow == -1){
-		_arb_copyreverse_core(c->number, array, c->len);
+	if (borrow == -1) {
+		tmp = c->number;
+		c->number = array;
+		free(tmp);
+   
 		arb_flipsign(c);
 	}else {
-		arb_reverse(c);
+		free(array);
 	}
-	free(array);
 	return c;
 }
 
