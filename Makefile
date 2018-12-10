@@ -46,10 +46,8 @@ install:
 #	`make clean ; make release ; grep 'no leaks' *tests-passed.txt | wc -l'
 #
 
-release:
-	make clean ; make release_inter ; grep 'no leaks' *tests-passed.txt | wc -l
 
-release_inter:
+release:
 	./configure
 	CFLAGS="-O3" $(MAKE) all
 	echo "sqrt tests"

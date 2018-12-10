@@ -31,11 +31,23 @@
 	to compare them with arbitraire's techniques.
 */
 
-static UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
+void arb_reverse(fxdpnt *x)
+{
+	size_t i = 0, half = x->len / 2;
+	UARBT swap = 0;
+	for (;i < half; i++){
+		swap = x->number[i];
+		x->number[i] = x->number[x->len - i - 1];
+		x->number[x->len - i - 1] = swap;
+	}
+}
+
+UARBT arb_place(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 {
 	UARBT temp = 0;
-	/* exhausted, we no longer increment we must continue to return zeros
-	   though, because the other number may still be valid */
+	/* exhausted, we no longer increment */
+	/* we must continue to return zeros though, 
+	   because the other number may still be valid */
 	if ((rr(a)) < (rr(b)))
 		if((rr(b)) - (rr(a)) > r)
 			return 0;
@@ -49,49 +61,43 @@ static UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	size_t i = 0, j = 0;
+	size_t i = 0, j = 0, r = 0;
 	ARBT sum = 0;
 	uint8_t carry = 0;
-	size_t z = 0;
-	size_t size = 0;
 
-	size = MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) - 1;
-	
-	for (;i < a->len || j < b->len; size--, c->len++) {
-		sum = _pl(a, b, &i, c->len) + _pl(b, a, &j, c->len) + carry;
+	for (;i < a->len || j < b->len; c->len++, ++r){
+		sum = arb_place(a, b, &i, r) + arb_place(b, a, &j, r) + carry;
 		carry = 0;
 		if(sum >= base){
 			carry = 1;
 			sum -= base;
 		}
-		c->number[size] = sum;
+		c->number[c->len] = sum;
 	}
-	if (carry) {
-		for(z = c->len+1;z > 0; z--)
-			c->number[z] = c->number[z-1];
-		c->number[0] = 1;
-		c->len++;
-		c->lp++;
+	if (carry){
+		c->number[c->len++] = 1;
+		c->lp += 1;
 	}
+	arb_reverse(c);
+
 	return c;
 }
 
+
 fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	size_t i = 0, j = 0;
+	size_t i = 0, j = 0, r = 0;
 	ARBT sum = 0;
 	int8_t borrow = 0;
 	int8_t mborrow = -1; /* mirror borrow must be -1 */
 	ARBT mir = 0;
 	UARBT *array = NULL;
 	ARBT hold = 0;
-	size_t size = 0;
 
 	array = arb_malloc((MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1) * sizeof(UARBT));
-	size = MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) - 1;
 
-	for (;i < a->len || j < b->len; size--, c->len++) {
-		hold = _pl(a, b, &i, c->len) - _pl(b, a, &j, c->len);
+	for (;i < a->len || j < b->len; c->len++, ++r){
+		hold = arb_place(a, b, &i, r) - arb_place(b, a, &j, r);
 		sum = hold + borrow;
 		mir = hold + mborrow;
 		borrow = mborrow = 0;
@@ -103,13 +109,15 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 			mborrow = -1;
 			mir += base;
 		}
-		c->number[size] = sum;
-		array[size] = (base-1) - mir;
+		c->number[c->len] = sum;
+		array[c->len] = (base-1) - mir;
 	}
 	/* a left over borrow indicates that the zero threshold was crossed */
-	if (borrow == -1) {
-		_arb_copy_core(c->number, array, c->len);
+	if (borrow == -1){
+		_arb_copyreverse_core(c->number, array, c->len);
 		arb_flipsign(c);
+	}else {
+		arb_reverse(c);
 	}
 	free(array);
 	return c;
@@ -141,11 +149,12 @@ fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
 	c2->lp = MAX(a->lp, b->lp);
 	arb_init(c2);
-	if (a->sign == '-' && b->sign == '-') {
+	if (a->sign == '-' && b->sign == '-')
+	{
 		arb_flipsign(c2);
 		c2 = arb_sub_inter(a, b, c2, base);
 	}
-	else if (a->sign == '-') {
+	else if (a->sign == '-'){
 		arb_flipsign(c2);
 		c2 = arb_add_inter(a, b, c2, base);
 	}
