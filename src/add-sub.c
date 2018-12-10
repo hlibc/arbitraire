@@ -31,17 +31,6 @@
 	to compare them with arbitraire's techniques.
 */
 
-void arb_reverse(fxdpnt *x)
-{
-	size_t i = 0, half = x->len / 2;
-	UARBT swap = 0;
-	for (;i < half; i++){
-		swap = x->number[i];
-		x->number[i] = x->number[x->len - i - 1];
-		x->number[x->len - i - 1] = swap;
-	}
-}
-
 UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 { 
 	UARBT temp = 0;
