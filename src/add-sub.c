@@ -62,7 +62,8 @@ UARBT arb_place(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0, j = 0, r = 0;
-	ARBT sum = 0, carry = 0;
+	ARBT sum = 0;
+	uint8_t carry = 0;
 
 	for (;i < a->len || j < b->len; c->len++, ++r){
 		sum = arb_place(a, b, &i, r) + arb_place(b, a, &j, r) + carry;
@@ -93,7 +94,7 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	UARBT *array = NULL;
 	ARBT hold = 0;
 
-	array = arb_malloc((MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1) * sizeof(UARBT));
+	array = arb_malloc((MAX(rr(a), rr(b)) + MAX(a->lp, b->lp)) * sizeof(UARBT));
 
 	for (;i < a->len || j < b->len; c->len++, ++r){
 		hold = arb_place(a, b, &i, r) - arb_place(b, a, &j, r);
@@ -145,7 +146,7 @@ fxdpnt *arb_add(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 
 fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
+	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp));
 	c2->lp = MAX(a->lp, b->lp);
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-')
@@ -194,4 +195,4 @@ void incr(fxdpnt **c, int base, char *m)
 	*c = arb_add(*c, one, *c, base);
 	_internal_debug_end;
 }
-`
+
