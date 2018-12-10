@@ -22,7 +22,7 @@
 */
 
 UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
-{ 
+{
 	UARBT temp = 0;
 	if ((rr(a)) < (rr(b)))
 		if((rr(b)) - (rr(a)) > r)
@@ -34,6 +34,7 @@ UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 	}
 	return temp;
 }
+
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0;
