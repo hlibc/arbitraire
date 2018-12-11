@@ -17,7 +17,7 @@
 
 	Instead of performing this operation in its entirety however, the
 	inverse solution is calculated alongside the normative one and
-	simply discarded in the case it is not needed (whe there is no left
+	simply discarded in the case it is not needed (when there is no left
 	over carry).
 */
 
@@ -35,7 +35,6 @@ UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 	return temp;
 }
 
-
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0;
@@ -49,7 +48,7 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	for (;i < a->len || j < b->len; size--, c->len++) {
 		sum = _pl(a, b, &i, c->len) + _pl(b, a, &j, c->len) + carry;
 		carry = 0;
-		if(sum >= base){
+		if(sum >= base) {
 			carry = 1;
 			sum -= base;
 		}
@@ -87,11 +86,11 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 		sum = hold + borrow;
 		mir = hold + mborrow;
 		borrow = mborrow = 0;
-		if(sum < 0){
+		if(sum < 0) {
 			borrow = -1;
 			sum += base;
 		}
-		if(mir < 0){
+		if(mir < 0) {
 			mborrow = -1;
 			mir += base;
 		}
