@@ -42,7 +42,8 @@ size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int 
 }
 
 fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
-{ 
+{
+	_arb_time_start;
 	fxdpnt *c2 = c;
 	if (a == c || b == c) {
 		c2 = arb_expand(NULL, a->len + b->len);
@@ -55,6 +56,7 @@ fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	c2 = remove_leading_zeros(c2);
 	if (a == c || b == c)
 		arb_free(c);
+	_arb_time_end;
 	return c2;
 }
 

@@ -5,6 +5,11 @@
 #define _ARB_DEBUG 0
 #endif
 
+
+#ifndef _ARB_TIME
+#define _ARB_TIME 0
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -105,6 +110,20 @@ extern fxdpnt *p5;
 extern fxdpnt *one;
 extern fxdpnt *two;
 extern fxdpnt *ten;
+
+extern long _arb_time;
+extern long _arb_time1;
+extern long _arb_time2;
+
+#define _arb_time_start \
+if (_ARB_TIME) \
+_arb_time = clock()
+
+#define _arb_time_end \
+if (_ARB_TIME)  {\
+_arb_time = clock() - _arb_time; \
+fprintf(stderr, "time = %ld\n", _arb_time); }
+
 
 /* function prototypes */
 /* arithmetic */

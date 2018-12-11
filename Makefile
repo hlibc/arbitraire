@@ -70,7 +70,7 @@ release_inter:
 
 test:
 	./configure
-	CFLAGS="-O3 -D_ARB_DEBUG=1" $(MAKE) all
+	CFLAGS="-O3 -D_ARB_TIME=1 -D_ARB_DEBUG=1" $(MAKE) all
 	echo "sqrt tests"
 	./tests/random-wrapper.sh sqrt 1000 null
 	echo "div tests"
