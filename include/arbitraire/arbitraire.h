@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <stdarg.h>
+#include <time.h>
 
 typedef struct fxdpnt fxdpnt;
 
