@@ -12,7 +12,7 @@ fxdpnt *remove_leading_zeros(fxdpnt *c)
 	}
 
 	if (effect) {
-		c = arb_leftshift(c, i, 1);
+		c = arb_leftshift(c, i);
 		c->len -= i;
 	}
 	return c;

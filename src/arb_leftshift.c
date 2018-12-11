@@ -1,8 +1,7 @@
 #include "internal.h"
 
-fxdpnt *arb_leftshift(fxdpnt *a, size_t n, int faux)
+fxdpnt *arb_leftshift(fxdpnt *a, size_t n)
 {
-	(void) faux;
 	size_t i = 0;
 	size_t j = n;
 	size_t k = 0;

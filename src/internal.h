@@ -121,9 +121,7 @@ int _long_add(UARBT *, size_t, UARBT *, size_t, int);
 /* modulus */
 fxdpnt *arb_mod(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 /* logical shift */
-fxdpnt *arb_rightshift(fxdpnt *, size_t, int);
-fxdpnt *arb_leftshift(fxdpnt *, size_t, int);
-void rightshift_core(UARBT *, size_t, size_t);
+fxdpnt *arb_leftshift(fxdpnt *, size_t);
 /* general */
 void arb_flipsign(fxdpnt *);
 void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);

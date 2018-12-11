@@ -22,8 +22,7 @@ fxdpnt *arb_div(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 /* modulus */
 fxdpnt *arb_mod(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 /* logical shift */
-fxdpnt *arb_rightshift(fxdpnt *, size_t, int);
-fxdpnt *arb_leftshift(fxdpnt *, size_t, int);
+fxdpnt *arb_leftshift(fxdpnt *, size_t);
 /* general */
 void arb_flipsign(fxdpnt *);
 void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);
