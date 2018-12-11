@@ -144,7 +144,6 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 		if (!(leb>lea))
 			quodig = lea-leb+scale+1;
 
-	arb_setsign(num, den, q);
 	q->lp = quodig-scale;
 	q->len = q->lp + scale;
 
@@ -195,6 +194,7 @@ fxdpnt *arb_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	else
 		c2 = arb_expand(c2, a->len + b->len + scale);
 	arb_init(c2);
+	arb_setsign(a, b, c2);
 	c2 = arb_div_inter(a, b, c2, base, scale);
 	if (a == c || b == c)
 		arb_free(c);
