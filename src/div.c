@@ -120,7 +120,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	if (iszero(den) == 0)
 		arb_error("divide by zero\n");
 	
-	lea = num->lp + rr(den);
+	lea = rl(num) + rr(den);
 
 	uscal = rr(num) - rr(den);
 	if (uscal < (ssize_t)scale)

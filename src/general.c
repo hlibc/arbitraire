@@ -7,6 +7,10 @@ void arb_error(char *message)
 	exit(1);
 }
 
+size_t rl(fxdpnt *a)
+{
+	return a->lp;
+}
 size_t rr(fxdpnt *a)
 {
 	return a->len - a->lp;

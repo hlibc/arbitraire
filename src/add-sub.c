@@ -27,13 +27,14 @@ UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 	if ((rr(a)) < (rr(b)))
 		if((rr(b)) - (rr(a)) > r)
 			return 0;
-	/* regular case */
+
 	if (*cnt < a->len){
 		temp = a->number[a->len - *cnt - 1];
 		(*cnt)++;
 	}
 	return temp;
 }
+
 
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
@@ -43,7 +44,7 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	uint8_t carry = 0;
 	size_t size = 0;
 
-	size = MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) - 1;
+	size = MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) - 1;
 
 	for (;i < a->len || j < b->len; size--, c->len++) {
 		sum = _pl(a, b, &i, c->len) + _pl(b, a, &j, c->len) + carry;
@@ -55,7 +56,6 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 		c->number[size] = sum;
 	}
 	if (carry) {
-		// TODO: implement logical right shift and reuse this code block
 		for(i = c->len+1;i > 0; i--)
 			c->number[i] = c->number[i-1];
 		c->number[0] = 1;
@@ -77,10 +77,10 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	UARBT *tmp = NULL;
 	ARBT hold = 0;
 	size_t size = 0;
-	size_t array_allocated = (MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
+	size_t array_allocated = (MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
 
 	array = arb_malloc(array_allocated * sizeof(UARBT));
-	size = MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) - 1;
+	size = MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) - 1;
 
 	for (;i < a->len || j < b->len; size--, c->len++) {
 		hold = _pl(a, b, &i, c->len) - _pl(b, a, &j, c->len);
@@ -115,10 +115,10 @@ fxdpnt *arb_add(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	fxdpnt *c2 = c;
 	if (a == c || b == c)
-		c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
+		c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
 	else
-		c2 = arb_expand(c2, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
-	c2->lp = MAX(a->lp, b->lp);
+		c2 = arb_expand(c2, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	c2->lp = MAX(rl(a), rl(b));
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-') {
 		arb_flipsign(c2);
@@ -140,10 +140,10 @@ fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	fxdpnt *c2 = c;
 	if (a == c || b == c)
-		c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
+		c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
 	else
-		c2 = arb_expand(c2, MAX(rr(a), rr(b)) + MAX(a->lp, b->lp) + 1);
-	c2->lp = MAX(a->lp, b->lp);
+		c2 = arb_expand(c2, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	c2->lp = MAX(rl(a), rl(b));
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-')
 	{
