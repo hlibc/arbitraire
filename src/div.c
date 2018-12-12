@@ -188,16 +188,11 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 
 fxdpnt *arb_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
-	fxdpnt *c2 = c;
-	if (a == c || b == c)
-		c2 = arb_expand(NULL, a->len + b->len + scale);
-	else
-		c2 = arb_expand(c2, a->len + b->len + scale);
+	fxdpnt *c2 = arb_expand(NULL, a->len + b->len + scale);
 	arb_init(c2);
 	arb_setsign(a, b, c2);
 	c2 = arb_div_inter(a, b, c2, base, scale);
-	if (a == c || b == c)
-		arb_free(c);
+	arb_free(c);
 	return c2;
 }
 
