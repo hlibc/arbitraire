@@ -36,9 +36,16 @@ int main(int argc, char *argv[])
 		
 		if (strcmp(str, "scale") == 0)
 		{
-			scale = strtol(str, NULL, 10);
+			//scale = strtol(str, NULL, 10);
+			getword(str,1000000, o);
+			if (strcmp(str, "=") == 0)
+			{
+				getword(str,1000000, o);
+				scale = strtol(str, NULL, 10);
+			}
 		}
 		printf("%s\n", str);
 	}
+	printf("scale was %zu\n", scale);
 	return 0;
 }
