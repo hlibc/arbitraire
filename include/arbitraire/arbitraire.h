@@ -1,6 +1,11 @@
 #ifndef ARBITRAIRE_H
 #define ARBITRAIRE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -74,6 +79,9 @@ fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale);
 fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale);
 fxdpnt *karatsuba3(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 
