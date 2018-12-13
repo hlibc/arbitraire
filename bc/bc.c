@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 			getword(str,1000000, o);
 		}
 		if (strcmp(str, ";"))
-			getword(str,1000000, o);
+			;
 
 		if (isdigit(*str) && string1 == NULL)
 			string1 = strdup(str);
