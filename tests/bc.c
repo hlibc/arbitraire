@@ -9,7 +9,7 @@ int getword(char *word, size_t lim, FILE *fp)
 	while (isspace(c = fgetc(fp)));
 		if (c != EOF)
 			*w++ = c;
-	if (!isalnum(c) && !ispunct(c))
+	if (isspace(c))
 	{
 		*w = '\0';
 		return c;
@@ -17,7 +17,7 @@ int getword(char *word, size_t lim, FILE *fp)
 	for ( ; --lim > 0; w++)
 	{
 		*w = fgetc(fp);
-		if (!isalnum(*w) && !ispunct(*w))
+		if (isspace(*w))
 		{
 			ungetc(*w, fp);
 			break;
@@ -29,9 +29,11 @@ int getword(char *word, size_t lim, FILE *fp)
 
 int main(int argc, char *argv[])
 {
+	if (argc < 1)
+		return 1;
 	FILE *o = fopen(argv[1], "r");
 	
-	char *str = malloc(1000000);
+	char *str = malloc(10000000);
 	size_t scale = 0;
 	char *string1 = NULL;
 	char *string2 = NULL;
@@ -54,7 +56,7 @@ int main(int argc, char *argv[])
 			getword(str,1000000, o);
 		}
 		if (strcmp(str, ";"))
-			;
+			{}
 		if (strcmp(str, "/") == 0)
 			division = 1;
 		
@@ -64,17 +66,18 @@ int main(int argc, char *argv[])
 		if (strcmp(str, "+") == 0)
 			addition =1;
 		
-		if (strcmp(str, "-") == 0)
+		if (str[0] == '-' && str[1] == 0)
 			subtraction = 1;
 		
 		if (strcmp(str, "%") == 0)
 			modulus = 1;
-		if (isdigit(*str) && string1 == NULL)
+		if ((isdigit(*str)  || *str == '-') && string1 == NULL)
 			string1 = strdup(str);
-		else if (isdigit(*str) && string2 == NULL)
+		else if ((isdigit(*str) || *str == '-') && string2 == NULL)
 			string2 = strdup(str);
-		printf("%s\n", str);
+		//printf("%s\n", str);
 	}
+	
 	fxdpnt *a = arb_str2fxdpnt(string1);
 	fxdpnt *b = arb_str2fxdpnt(string2);
 	fxdpnt *c = NULL;
@@ -94,6 +97,7 @@ int main(int argc, char *argv[])
 	if (modulus)
 		c = arb_mod(a, b, c, 10 , scale);
 	arb_print(c);
+
 	arb_free(a);
 	arb_free(b);
 	arb_free(c);
