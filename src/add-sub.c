@@ -192,3 +192,72 @@ void incr(fxdpnt **c, int base, char *m)
 	_internal_debug_end;
 }
 
+
+
+
+fxdpnt *arb_add2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+{
+	fxdpnt *c2 = c;
+	if (a == c || b == c)
+		c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	else
+		c2 = arb_expand(c2, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	c2->lp = MAX(rl(a), rl(b));
+	arb_init(c2);
+	if (a->sign == '-' && b->sign == '-') {
+		arb_flipsign(c2);
+		c2 = arb_add_inter(a, b, c2, base);
+	}
+	else if (a->sign == '-')
+		c2 = arb_sub_inter(b, a, c2, base);
+	else if (b->sign == '-')
+		c2 = arb_sub_inter(a, b, c2, base);
+	else
+		c2 = arb_add_inter(a, b, c2, base);
+	if (a == c || b == c)
+		arb_free(c);
+	return c2;
+}
+
+fxdpnt *arb_sub2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+{
+	fxdpnt *c2 = c;
+	if (a == c || b == c)
+		c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	else
+		c2 = arb_expand(c2, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	c2->lp = MAX(rl(a), rl(b));
+	arb_init(c2);
+	if (a->sign == '-' && b->sign == '-')
+	{
+		arb_flipsign(c2);
+		c2 = arb_sub_inter(a, b, c2, base);
+	}
+	else if (a->sign == '-'){
+		arb_flipsign(c2);
+		c2 = arb_add_inter(a, b, c2, base);
+	}
+	else if (b->sign == '-' || a->sign == '-')
+		c2 = arb_add_inter(a, b, c2, base);
+	else
+		c2 = arb_sub_inter(a, b, c2, base);
+	if (a == c || b == c)
+		arb_free(c);
+	
+	return c2;
+}
+
+
+void sub2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
+{ 
+	_internal_debug; 
+	*c = arb_sub2(a, b, *c, base);
+	_internal_debug_end;
+}
+
+void add2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
+{
+	_internal_debug; 
+	*c = arb_add2(a, b, *c, base);
+	_internal_debug_end;
+} 

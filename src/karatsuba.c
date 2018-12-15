@@ -71,7 +71,7 @@ void split_test(fxdpnt *a, fxdpnt *b)
 
 fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
-	c = c;
+	//c = c;
 	fxdpnt *aa = NULL;
 	fxdpnt *bb = NULL;
 	fxdpnt *cc = NULL;
@@ -83,14 +83,15 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	fxdpnt *end = NULL;
 	fxdpnt *front = NULL;
 
-	total = arb_expand(NULL, a->len + b->len);
+	//total = arb_expand(NULL, a->len + b->len);
+	total = c;
 	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
 	/* front half */
 	mul2(aa, cc, &front, base, scale, "total = ");
 	/* expand to the power of */
 	arb_expand(front, ((aa->len + bb->len) * 2));
 	front->len = front->lp = ((aa->len + bb->len) * 2);
-	arb_print(front);
+	//arb_print(front);
 	/* middle halves */
 	mul2(aa, dd, &mid1, base, scale, "mid1 = ");
 	arb_expand(mid1, (aa->len + bb->len + aa->len));
@@ -99,13 +100,13 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	arb_expand(mid2, (aa->len + bb->len + aa->len));
 	mid2->len = mid2->lp = ((aa->len + bb->len + aa->len));
 	/* sum middle halves */
-	add(mid1, mid2, &midtot, base, "midtot = ");
+	add2(mid1, mid2, &midtot, base, "midtot = ");
 	/* sum into total */
-	add(midtot, front, &total, base, "total = ");
+	add2(midtot, front, &total, base, "total = ");
 	/* end halves */
 	mul2(bb, dd, &end, base, scale, "end = ");
 	/* sum into total */
-	add(end, total, &total, base, "total = ");
+	add2(end, total, &total, base, "total = ");
 
 
 	total->len = total->lp = (total->len - comp);
@@ -121,17 +122,19 @@ fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
                 c2 = arb_expand(NULL, a->len + b->len);
         } else
                 c2 = arb_expand(c2, a->len + b->len);
-        arb_setsign(a, b, c2);
+        
 	size_t t = rl(a);
 	size_t u = rl(b);
-	size_t v = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + t + u - 1;
+	size_t v = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + t + u;
 
         c2 = karatsuba2(a, b, c2, base, scale);
-        c2->lp = t + u - 1;
+	arb_setsign(a, b, c2);
+        c2->lp = t + u;
  
 	c2->len = v;
         if (a == c || b == c)
                 arb_free(c);
+	c2 = remove_leading_zeros(c2);
         return c2;
 }
 
