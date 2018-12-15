@@ -11,6 +11,7 @@ size_t rl(fxdpnt *a)
 {
 	return a->lp;
 }
+
 size_t rr(fxdpnt *a)
 {
 	return a->len - a->lp;
@@ -75,6 +76,7 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 	size_t original = request;
 
 	/* align on a multiple of 16 */
+
 	if (request > 16)
 		request = (((request / 16) + 1) * 16);
 	else

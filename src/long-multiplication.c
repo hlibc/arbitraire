@@ -69,7 +69,21 @@ fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	_arb_time_end;
 	return c2;
 }
-
+fxdpnt *arb_mul2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+{ 
+        fxdpnt *c2 = c;
+        if (a == c || b == c) {
+                c2 = arb_expand(NULL, a->len + b->len);
+        } else
+                c2 = arb_expand(c2, a->len + b->len);
+        arb_setsign(a, b, c2);
+        arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
+        c2->lp = rl(a) + rl(b);
+        c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
+        if (a == c || b == c)
+                arb_free(c);
+        return c2;
+}
 void mul(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
 {
 	_internal_debug;
@@ -77,3 +91,9 @@ void mul(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
 	_internal_debug_end;
 }
 
+void mul2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
+{
+	_internal_debug;
+	*c = arb_mul2(a, b, *c, base, scale);
+	_internal_debug_end;
+}

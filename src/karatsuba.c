@@ -5,6 +5,9 @@
         12345678 * 55559999
 
         1234*5555*10^8 + (1234*9999 + 5678*5555)*10^4 + 5678*9999
+
+	We need a method for tracking the leading zero here. otherwise the radix
+	and length are off by one.
 */
 
 size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd)
@@ -79,7 +82,7 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	fxdpnt *mid2 = NULL;
 	fxdpnt *end = NULL;
 	fxdpnt *front = NULL;
-	//size_t lpstore = a->lp + b->lp;
+
 	total = arb_expand(NULL, a->len + b->len);
 	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
 	/* front half */
@@ -104,8 +107,31 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	/* sum into total */
 	add(end, total, &total, base, "total = ");
 
-	total->lp = (total->len - comp);
-	//total->lp = total->lp - (total->lp - lpstore);
+
+	total->len = total->lp = (total->len - comp);
+	
 	return total;
+}
+
+
+fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+{
+        fxdpnt *c2 = c;
+        if (a == c || b == c) {
+                c2 = arb_expand(NULL, a->len + b->len);
+        } else
+                c2 = arb_expand(c2, a->len + b->len);
+        arb_setsign(a, b, c2);
+	size_t t = rl(a);
+	size_t u = rl(b);
+	size_t v = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + t + u - 1;
+
+        c2 = karatsuba2(a, b, c2, base, scale);
+        c2->lp = t + u - 1;
+ 
+	c2->len = v;
+        if (a == c || b == c)
+                arb_free(c);
+        return c2;
 }
 
