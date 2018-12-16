@@ -59,9 +59,9 @@ fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 		c2 = arb_expand(NULL, a->len + b->len);
 	} else
 		c2 = arb_expand(c2, a->len + b->len);
-	if (MAX(a->len, b->len) > 50000)
-		c2 = karatsuba2(a, b, c2, base, scale);
-	else
+	//if (MAX(a->len, b->len) > 50000)
+	//	c2 = karatsuba2(a, b, c2, base, scale);
+	//else
 		arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
 	arb_setsign(a, b, c2);
 	c2->lp = rl(a) + rl(b);

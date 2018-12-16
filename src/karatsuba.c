@@ -19,22 +19,35 @@
 		   support fractional arguments.
 */
 
+/* it's probably possible to modify the normal copy function to do something like this */
+size_t karatsuba_copies(fxdpnt *a, fxdpnt *b, size_t half_or_len, size_t i)
+{
+	size_t j = 0;
+	for(;i < half_or_len;++i, ++j)
+	{
+		if (i < b->len)
+			a->number[j] = b->number[i];
+		else
+			a->number[j] = 0;
+	}
+	return i;
+}
+	
+
 size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd)
 {
 	/* pass in two fxdpnts and four NULL new fxdpnts */
-	/* theoretical future: free the first two fxdpnt */
 	size_t half = 0;
 	size_t compensated_mag = 0;
-	size_t alen = a->len;
-	size_t blen = b->len;
-	size_t len = alen;
+	size_t len = a->len;
+	size_t i = 0;
 	
-	if (alen > blen) {
-		len = alen;
-		compensated_mag += (alen - blen);
-	} else if (blen > alen) {
-		len = blen;
-		compensated_mag += (blen - alen);
+	if (a->len > b->len) {
+		len = a->len;
+		compensated_mag += (a->len - b->len);
+	} else if (b->len > a->len) {
+		len = b->len;
+		compensated_mag += (b->len - a->len);
 	}
 	
 	if (oddity(len)) {
@@ -43,72 +56,18 @@ size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt
 	}
 
 	half = len / 2;
-	//a = arb_expand(a, len);
-	//b = arb_expand(b, len);
-	//a->len = a->lp = b->len = b->lp = len;
-
 	*aa = arb_expand(NULL, half);
 	*bb = arb_expand(NULL, half);
 	*cc = arb_expand(NULL, half);
 	*dd = arb_expand(NULL, half);
-	//_arb_copy_core((*aa)->number, a->number, half);
-	//_arb_copy_core((*bb)->number, a->number + half, half);
-	//_arb_copy_core((*cc)->number, b->number, half);
-	//_arb_copy_core((*dd)->number, b->number + half, half);
-	size_t i = 0;
-	size_t j = 0;
-	for(i=0;i < half;++i, ++j)
-	{
-		if (i < a->len)
-			(*aa)->number[j] = a->number[i];
-		else
-			(*aa)->number[j] = 0;
-	}
-	
-	for(j=0;i < len;++i, ++j)
-	{
-		if (i < a->len)
-			(*bb)->number[j] = a->number[i];
-		else
-			(*bb)->number[j] = 0;
-	}
-
-	for(j=0,i=0;i < half;++i, ++j)
-	{
-		if (i < b->len)
-			(*cc)->number[j] = b->number[i];
-		else
-			(*cc)->number[j] = 0;
-	}
-	
-	for(j=0;i < len;++i, ++j)
-	{
-		if (i < b->len)
-			(*dd)->number[j] = b->number[i];
-		else
-			(*dd)->number[j] = 0;
-	}
+	i = karatsuba_copies(*aa, a, half, 0);
+	i = karatsuba_copies(*bb, a, len, i);
+	//i = 0;
+	i = karatsuba_copies(*cc, b, half, 0);
+	i = karatsuba_copies(*dd, b, len, i);
 	(*aa)->len = (*aa)->lp = (*bb)->len = (*bb)->lp = half;
 	(*cc)->len = (*cc)->lp = (*dd)->len = (*dd)->lp = half;
-
-	/* return the total compensated magnitude */
 	return compensated_mag;
-}
-
-void split_test(fxdpnt *a, fxdpnt *b)
-{
-	fxdpnt *aa = NULL;
-	fxdpnt *bb = NULL;
-	fxdpnt *cc = NULL;
-	fxdpnt *dd = NULL;
-	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
-	printf("compensated magnitude %zu\n", comp);
-	arb_printtrue(a); 
-	arb_printtrue(b);
-	arb_printtrue(aa);
-	arb_printtrue(bb);
-	arb_printtrue(cc);
-	arb_printtrue(dd);
 }
 
 fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
@@ -141,7 +100,15 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	mul2(bb, dd, &end, base, scale, 0);
 	add2(end, total, &total, base, 0);
 	total->len = total->lp = (total->len - comp);
-
+	arb_free(aa);
+	arb_free(bb);
+	arb_free(cc);
+	arb_free(dd);
+	arb_free(end);
+	arb_free(front);
+	arb_free(midtot);
+	arb_free(mid1);
+	arb_free(mid2);
 	return total;
 }
 
