@@ -1,6 +1,9 @@
 #include "internal.h"
 
 /*
+	This function is still under construction 
+
+
 	Karatsuba multiplication
 
 	Karatsuba multiplication takes a multiplication of the form:
