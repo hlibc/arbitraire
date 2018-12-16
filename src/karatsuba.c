@@ -22,6 +22,7 @@
 size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd)
 {
 	/* pass in two fxdpnts and four NULL new fxdpnts */
+	/* theoretical future: free the first two fxdpnt */
 	size_t half = 0;
 	size_t compensated_mag = 0;
 	size_t alen = a->len;
@@ -42,8 +43,8 @@ size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt
 	}
 
 	half = len / 2;
-	arb_expand(a, len);
-	arb_expand(b, len);
+	a = arb_expand(a, len);
+	b = arb_expand(b, len);
 	a->len = a->lp = b->len = b->lp = len;
 
 	*aa = arb_expand(NULL, half);
@@ -93,27 +94,22 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	fxdpnt *front = NULL;
 	total = c;
 	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
-	/* front half */
+	
 	mul2(aa, cc, &front, base, scale, 0);
-	/* expand to the power of */
 	arb_expand(front, ((aa->len + bb->len) * 2));
 	front->len = front->lp = ((aa->len + bb->len) * 2);
-	/* middle halves */
 	mul2(aa, dd, &mid1, base, scale, 0);
 	arb_expand(mid1, (aa->len + bb->len + aa->len));
 	mid1->len = mid1->lp = ((aa->len + bb->len + aa->len));
 	mul2(bb, cc, &mid2, base, scale, 0);
 	arb_expand(mid2, (aa->len + bb->len + aa->len));
 	mid2->len = mid2->lp = ((aa->len + bb->len + aa->len));
-	/* sum middle halves */
 	add2(mid1, mid2, &midtot, base, 0);
-	/* sum into total */
 	add2(midtot, front, &total, base, 0);
-	/* end halves */
 	mul2(bb, dd, &end, base, scale, 0);
-	/* sum into total */
 	add2(end, total, &total, base, 0);
 	total->len = total->lp = (total->len - comp);
+
 	return total;
 }
 
