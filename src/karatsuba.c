@@ -43,19 +43,51 @@ size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt
 	}
 
 	half = len / 2;
-	a = arb_expand(a, len);
-	b = arb_expand(b, len);
-	a->len = a->lp = b->len = b->lp = len;
+	//a = arb_expand(a, len);
+	//b = arb_expand(b, len);
+	//a->len = a->lp = b->len = b->lp = len;
 
 	*aa = arb_expand(NULL, half);
 	*bb = arb_expand(NULL, half);
 	*cc = arb_expand(NULL, half);
 	*dd = arb_expand(NULL, half);
-	_arb_copy_core((*aa)->number, a->number, half);
-	_arb_copy_core((*bb)->number, a->number + half, half);
-	_arb_copy_core((*cc)->number, b->number, half);
-	_arb_copy_core((*dd)->number, b->number + half, half);
+	//_arb_copy_core((*aa)->number, a->number, half);
+	//_arb_copy_core((*bb)->number, a->number + half, half);
+	//_arb_copy_core((*cc)->number, b->number, half);
+	//_arb_copy_core((*dd)->number, b->number + half, half);
+	size_t i = 0;
+	size_t j = 0;
+	for(i=0;i < half;++i, ++j)
+	{
+		if (i < a->len)
+			(*aa)->number[j] = a->number[i];
+		else
+			(*aa)->number[j] = 0;
+	}
+	
+	for(j=0;i < len;++i, ++j)
+	{
+		if (i < a->len)
+			(*bb)->number[j] = a->number[i];
+		else
+			(*bb)->number[j] = 0;
+	}
 
+	for(j=0,i=0;i < half;++i, ++j)
+	{
+		if (i < b->len)
+			(*cc)->number[j] = b->number[i];
+		else
+			(*cc)->number[j] = 0;
+	}
+	
+	for(j=0;i < len;++i, ++j)
+	{
+		if (i < b->len)
+			(*dd)->number[j] = b->number[i];
+		else
+			(*dd)->number[j] = 0;
+	}
 	(*aa)->len = (*aa)->lp = (*bb)->len = (*bb)->lp = half;
 	(*cc)->len = (*cc)->lp = (*dd)->len = (*dd)->lp = half;
 
