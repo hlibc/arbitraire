@@ -59,8 +59,11 @@ fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 		c2 = arb_expand(NULL, a->len + b->len);
 	} else
 		c2 = arb_expand(c2, a->len + b->len);
+	if (MAX(a->len, b->len) > 50000)
+		c2 = karatsuba2(a, b, c2, base, scale);
+	else
+		arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
 	arb_setsign(a, b, c2);
-	arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
 	c2->lp = rl(a) + rl(b);
 	c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
 	c2 = remove_leading_zeros(c2);
@@ -97,3 +100,5 @@ void mul2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
 	*c = arb_mul2(a, b, *c, base, scale);
 	_internal_debug_end;
 }
+
+

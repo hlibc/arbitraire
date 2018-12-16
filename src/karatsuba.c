@@ -1,13 +1,22 @@
 #include "internal.h"
 
 /*
-	a normal split
-        12345678 * 55559999
+	Karatsuba multiplication
 
-        1234*5555*10^8 + (1234*9999 + 5678*5555)*10^4 + 5678*9999
+	Karatsuba multiplication takes a multiplication of the form:
+		12345678 * 55559999
+	And transforms it into the form:
+ 	       1234*5555*10^8 + (1234*9999 + 5678*5555)*10^4 + 5678*9999
 
-	We need a method for tracking the leading zero here. otherwise the radix
-	and length are off by one.
+	This version of karatsuba multiplication is not optimized.
+
+	Some ideas for optimization are:
+
+		1> eliminate data copying using pointers.
+		3> use a simpler addition algorithm which does not support
+		   fractional arguments.
+		4> use a simpler multiplication algorithm which does not
+		   support fractional arguments.
 */
 
 size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd)
@@ -82,35 +91,29 @@ fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	fxdpnt *mid2 = NULL;
 	fxdpnt *end = NULL;
 	fxdpnt *front = NULL;
-
-	//total = arb_expand(NULL, a->len + b->len);
 	total = c;
 	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
 	/* front half */
-	mul2(aa, cc, &front, base, scale, "total = ");
+	mul2(aa, cc, &front, base, scale, 0);
 	/* expand to the power of */
 	arb_expand(front, ((aa->len + bb->len) * 2));
 	front->len = front->lp = ((aa->len + bb->len) * 2);
-	//arb_print(front);
 	/* middle halves */
-	mul2(aa, dd, &mid1, base, scale, "mid1 = ");
+	mul2(aa, dd, &mid1, base, scale, 0);
 	arb_expand(mid1, (aa->len + bb->len + aa->len));
 	mid1->len = mid1->lp = ((aa->len + bb->len + aa->len));
-	mul2(bb, cc, &mid2, base, scale, "mid2 = ");
+	mul2(bb, cc, &mid2, base, scale, 0);
 	arb_expand(mid2, (aa->len + bb->len + aa->len));
 	mid2->len = mid2->lp = ((aa->len + bb->len + aa->len));
 	/* sum middle halves */
-	add2(mid1, mid2, &midtot, base, "midtot = ");
+	add2(mid1, mid2, &midtot, base, 0);
 	/* sum into total */
-	add2(midtot, front, &total, base, "total = ");
+	add2(midtot, front, &total, base, 0);
 	/* end halves */
-	mul2(bb, dd, &end, base, scale, "end = ");
+	mul2(bb, dd, &end, base, scale, 0);
 	/* sum into total */
-	add2(end, total, &total, base, "total = ");
-
-
+	add2(end, total, &total, base, 0);
 	total->len = total->lp = (total->len - comp);
-	
 	return total;
 }
 
