@@ -38,17 +38,8 @@ Arbitraire
 	left over 'carry' is identified at the end of the computation.
 
 	Multiplication:
-		Partial carry modified school book multiplication is used.
-	This algorithm was thought to be the fastest there was up to the time
-	of Karatsuba. Kolmogorov was giving a lecture describing how the
-	fundamental operations such as multiplication could not be reduced,
-	upon arriving the next day the young karatsuba had devised a method
-	for splitting the number into two parts and eliminating some of the
-	computations. The lecture was immediately terminated. Plans to add 
-	Karatsuba multiplication and Fast Fourier Transformation multiplication
-	are in the works. I believe however, that you'll nonetheless find our 
-	current algorithm to be sufficient for most purposes. And indeed it is 
-	sufficient for implementing a performant square root.
+		Arbitraire uses karatsuba multiplication for larger numbers and
+	traditional schoolbook multiplication for numbers under 1000 digits.
 
 	Square root:
 		Newton's method is used for square root. Our square root
@@ -65,7 +56,6 @@ Arbitraire
 	They are as follows:
 
 		long hand square root
-		karatsuba multiplication
 		school book long division
 		newton's method for division
 		newton's method for Nth root

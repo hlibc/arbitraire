@@ -192,9 +192,6 @@ void incr(fxdpnt **c, int base, char *m)
 	_internal_debug_end;
 }
 
-
-
-
 fxdpnt *arb_add2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	fxdpnt *c2 = c;

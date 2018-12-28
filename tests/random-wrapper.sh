@@ -44,6 +44,7 @@ do	COUNT="$((COUNT + 1))"
 	then	time ./tests/random-tests "$1" "$2" "$3" >log 2>log3
 	else	./tests/random-tests "$1" "$2" "$3" >log 2>log3
 	fi
+	
 	bc -l testing.bc > log2
 	testcat testing.bc >> "${machinename}"
 	if diff log log2

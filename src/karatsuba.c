@@ -1,141 +1,86 @@
 #include "internal.h"
 
-/*
-	This function is still under construction 
-
-
-	Karatsuba multiplication
-
-	Karatsuba multiplication takes a multiplication of the form:
-		12345678 * 55559999
-	And transforms it into the form:
- 	       1234*5555*10^8 + (1234*9999 + 5678*5555)*10^4 + 5678*9999
-
-	This version of karatsuba multiplication is not optimized.
-
-	Some ideas for optimization are:
-
-		1> eliminate data copying using pointers.
-		3> use a simpler addition algorithm which does not support
-		   fractional arguments.
-		4> use a simpler multiplication algorithm which does not
-		   support fractional arguments.
-*/
-
-/* it's probably possible to modify the normal copy function to do something like this */
-size_t karatsuba_copies(fxdpnt *a, fxdpnt *b, size_t half_or_len, size_t i)
+static fxdpnt *arb_karatsuba_mul_core(fxdpnt *x, fxdpnt *y, fxdpnt *z, int base)
 {
-	size_t j = 0;
-	for(;i < half_or_len;++i, ++j)
-	{
-		if (i < b->len)
-			a->number[j] = b->number[i];
-		else
-			a->number[j] = 0;
-	}
-	return i;
-}
-	
-
-size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd)
-{
-	/* pass in two fxdpnts and four NULL new fxdpnts */
-	size_t half = 0;
-	size_t compensated_mag = 0;
-	size_t len = a->len;
-	size_t i = 0;
-	
-	if (a->len > b->len) {
-		len = a->len;
-		compensated_mag += (a->len - b->len);
-	} else if (b->len > a->len) {
-		len = b->len;
-		compensated_mag += (b->len - a->len);
-	}
-	
-	if (oddity(len)) {
-		len += 1;
-		compensated_mag += 2;
+	if (y->len < 100 || x->len < 100) {
+		z = arb_mul2(y, x, z, base, 10);
+		return z;
 	}
 
-	half = len / 2;
-	*aa = arb_expand(NULL, half);
-	*bb = arb_expand(NULL, half);
-	*cc = arb_expand(NULL, half);
-	*dd = arb_expand(NULL, half);
-	i = karatsuba_copies(*aa, a, half, 0);
-	i = karatsuba_copies(*bb, a, len, i);
-	//i = 0;
-	i = karatsuba_copies(*cc, b, half, 0);
-	i = karatsuba_copies(*dd, b, len, i);
-	(*aa)->len = (*aa)->lp = (*bb)->len = (*bb)->lp = half;
-	(*cc)->len = (*cc)->lp = (*dd)->len = (*dd)->lp = half;
-	return compensated_mag;
-}
+	size_t m = ((MIN(x->len, y->len)+1) / 2);
 
-fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
-{
-	//c = c;
-	fxdpnt *aa = NULL;
-	fxdpnt *bb = NULL;
-	fxdpnt *cc = NULL;
-	fxdpnt *dd = NULL;
-	fxdpnt *total = NULL;
-	fxdpnt *midtot = NULL;
-	fxdpnt *mid1 = NULL;
-	fxdpnt *mid2 = NULL;
-	fxdpnt *end = NULL;
-	fxdpnt *front = NULL;
-	total = c;
-	size_t comp = split(a, b, &aa, &bb, &cc, &dd);
+	fxdpnt x1[1] = { 0 };
+	fxdpnt y1[1] = { 0 };
+	fxdpnt x0[1] = { 0 };
+	fxdpnt y0[1] = { 0 };
+
+	x1->number = x->number;
+	x1->lp = x1->len = x->len - m;
+	y1->number = y->number;
+	y1->lp = y1->len = y->len - m;
+	x0->number = x->number + x->len - m;
+	x0->lp = x0->len = m;
+	y0->number = y->number + y->len - m;
+	y0->lp = y0->len = m;
+
+	/* these variables all get their memory from the calling functions */
+	fxdpnt *z1 = NULL;
+	fxdpnt *z2 = NULL;
+	fxdpnt *z3 = NULL;
+	fxdpnt *z4 = NULL;
+	fxdpnt *z6 = NULL;
+	fxdpnt *z7 = NULL;
+	fxdpnt *z8 = NULL;
+	fxdpnt *z5 = arb_expand(NULL, 0);
+
+	z1 = arb_karatsuba_mul_core(x1, y1, z1, base);
+	z4 = arb_karatsuba_mul_core(x0, y0, z4, base);
 	
-	mul2(aa, cc, &front, base, scale, 0);
-	arb_expand(front, ((aa->len + bb->len) * 2));
-	front->len = front->lp = ((aa->len + bb->len) * 2);
-	mul2(aa, dd, &mid1, base, scale, 0);
-	arb_expand(mid1, (aa->len + bb->len + aa->len));
-	mid1->len = mid1->lp = ((aa->len + bb->len + aa->len));
-	mul2(bb, cc, &mid2, base, scale, 0);
-	arb_expand(mid2, (aa->len + bb->len + aa->len));
-	mid2->len = mid2->lp = ((aa->len + bb->len + aa->len));
-	add2(mid1, mid2, &midtot, base, 0);
-	add2(midtot, front, &total, base, 0);
-	mul2(bb, dd, &end, base, scale, 0);
-	add2(end, total, &total, base, 0);
-	total->len = total->lp = (total->len - comp);
-	arb_free(aa);
-	arb_free(bb);
-	arb_free(cc);
-	arb_free(dd);
-	arb_free(end);
-	arb_free(front);
-	arb_free(midtot);
-	arb_free(mid1);
-	arb_free(mid2);
-	return total;
+	z2 = arb_add2(x1, x0, z2, base);
+	z3 = arb_add2(y1, y0, z3, base);
+	z5 = arb_karatsuba_mul_core(z2, z3, z5, base);
+
+
+	z6 = arb_sub2(z5, z1, z6, base);
+	z7 = arb_sub2(z6, z4, z7, base);
+	z7 = arb_expand(z7, z7->len + m);
+	z7->lp += m;
+	z7->len += m;
+
+	z1 = arb_expand(z1, z1->len + 2 * m);
+	z1->lp += 2 * m;
+	z1->len += 2 * m;
+	z8 = arb_add2(z1, z7, z8, base);
+	z = arb_add2(z8, z4, z, base);
+
+	arb_free(z1);
+	arb_free(z2);
+	arb_free(z3);
+	arb_free(z4);
+	arb_free(z5);
+	arb_free(z6);
+	arb_free(z7);
+	arb_free(z8);
+
+	return z;
 }
 
-
-fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+fxdpnt *arb_karatsuba_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
-        fxdpnt *c2 = c;
-        if (a == c || b == c) {
-                c2 = arb_expand(NULL, a->len + b->len);
-        } else
-                c2 = arb_expand(c2, a->len + b->len);
-        
-	size_t t = rl(a);
-	size_t u = rl(b);
-	size_t v = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + t + u;
-
-        c2 = karatsuba2(a, b, c2, base, scale);
+	fxdpnt *a2 = arb_expand(NULL, MAX(scale, a->len));
+	fxdpnt *b2 = arb_expand(NULL, MAX(scale, b->len));
+	fxdpnt *c2 = arb_expand(NULL, a2->len + b2->len + 3);
+	arb_copy(a2, a);
+	arb_copy(b2, b);
+	c2 = arb_karatsuba_mul_core(a2, b2, c2, base);
 	arb_setsign(a, b, c2);
-        c2->lp = t + u;
- 
-	c2->len = v;
-        if (a == c || b == c)
-                arb_free(c);
+	c2->lp = a2->lp + b2->lp;
+	c2->len = MIN(rr(a2) + rr(b2), MAX(scale, MAX(rr(a2), rr(b2)))) + c2->lp;
 	c2 = remove_leading_zeros(c2);
-        return c2;
+	arb_free(a2);
+	arb_free(b2);
+	if (c)
+		arb_free(c);
+	return c2;
 }
 
