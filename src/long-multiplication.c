@@ -64,7 +64,7 @@ fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	} else
 		c2 = arb_expand(c2, a->len + b->len);
 
-	c2 = arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
+	arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
 
 	arb_setsign(a, b, c2);
 	c2->lp = rl(a) + rl(b);

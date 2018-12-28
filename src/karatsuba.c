@@ -1,26 +1,25 @@
 #include "internal.h"
 
-static fxdpnt *arb_karatsuba_mul_core(fxdpnt *x, fxdpnt *y, fxdpnt *z, int base)
+static fxdpnt *arb_karatsuba_mul_core(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	if (y->len < 100 || x->len < 100) {
-		z = arb_mul2(y, x, z, base, 10);
-		return z;
+	if (b->len < 100 || a->len < 100) {
+		return arb_mul2(b, a, c, base, 10);
 	}
 
-	size_t m = ((MIN(x->len, y->len)+1) / 2);
+	size_t m = ((MIN(a->len, b->len)+1) / 2);
 
 	fxdpnt x1[1] = { 0 };
 	fxdpnt y1[1] = { 0 };
 	fxdpnt x0[1] = { 0 };
 	fxdpnt y0[1] = { 0 };
 
-	x1->number = x->number;
-	x1->lp = x1->len = x->len - m;
-	y1->number = y->number;
-	y1->lp = y1->len = y->len - m;
-	x0->number = x->number + x->len - m;
+	x1->number = a->number;
+	x1->lp = x1->len = a->len - m;
+	y1->number = b->number;
+	y1->lp = y1->len = b->len - m;
+	x0->number = a->number + a->len - m;
 	x0->lp = x0->len = m;
-	y0->number = y->number + y->len - m;
+	y0->number = b->number + b->len - m;
 	y0->lp = y0->len = m;
 
 	/* these variables all get their memory from the calling functions */
@@ -51,7 +50,7 @@ static fxdpnt *arb_karatsuba_mul_core(fxdpnt *x, fxdpnt *y, fxdpnt *z, int base)
 	z1->lp += 2 * m;
 	z1->len += 2 * m;
 	z8 = arb_add2(z1, z7, z8, base);
-	z = arb_add2(z8, z4, z, base);
+	c = arb_add2(z8, z4, c, base);
 
 	arb_free(z1);
 	arb_free(z2);
@@ -62,7 +61,7 @@ static fxdpnt *arb_karatsuba_mul_core(fxdpnt *x, fxdpnt *y, fxdpnt *z, int base)
 	arb_free(z7);
 	arb_free(z8);
 
-	return z;
+	return c;
 }
 
 fxdpnt *arb_karatsuba_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)

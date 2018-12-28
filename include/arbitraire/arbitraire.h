@@ -21,6 +21,7 @@ typedef struct fxdpnt fxdpnt;
 /* function prototypes */
 /* arithmetic */
 fxdpnt *arb_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_karatsuba_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 fxdpnt *arb_sub(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_add(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_newtonian_div(fxdpnt *, fxdpnt *, fxdpnt *, int, int);

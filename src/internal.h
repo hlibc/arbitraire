@@ -130,6 +130,7 @@ fprintf(stderr, "time = %ld\n", _arb_time); }
 fxdpnt *arb_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 fxdpnt *arb_mul2(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 size_t arb_mul_core(UARBT *, size_t, UARBT *, size_t, UARBT *, int);
+fxdpnt *arb_karatsuba_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 fxdpnt *arb_add_inter(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_sub_inter(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_sub(fxdpnt *, fxdpnt *, fxdpnt *, int);
