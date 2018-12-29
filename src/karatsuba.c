@@ -1,5 +1,9 @@
 #include "internal.h"
 
+/*
+	Karatsuba multiplication
+*/
+
 static fxdpnt *arb_karatsuba_mul_core(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	if (b->len < 100 || a->len < 100) {
@@ -23,13 +27,9 @@ static fxdpnt *arb_karatsuba_mul_core(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	y0->lp = y0->len = m;
 
 	/* these variables all get their memory from the calling functions */
-	fxdpnt *z1 = NULL;
-	fxdpnt *z2 = NULL;
-	fxdpnt *z3 = NULL;
-	fxdpnt *z4 = NULL;
-	fxdpnt *z6 = NULL;
-	fxdpnt *z7 = NULL;
-	fxdpnt *z8 = NULL;
+	fxdpnt *z1, *z2, *z3, *z4, *z6, *z7, *z8;
+	z1 = z2 = z3 = z4 = z6 = z7 = z8 = NULL;
+
 	fxdpnt *z5 = arb_expand(NULL, 0);
 
 	z1 = arb_karatsuba_mul_core(x1, y1, z1, base);
