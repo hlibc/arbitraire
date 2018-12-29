@@ -2,6 +2,8 @@
 
 /*
 	Karatsuba multiplication
+
+	arb_add2 and arb_sub2 are simply variants which do not strip zeros.
 */
 
 static fxdpnt *arb_karatsuba_mul_core(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
@@ -11,7 +13,13 @@ static fxdpnt *arb_karatsuba_mul_core(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	}
 
 	size_t m = ((MIN(a->len, b->len)+1) / 2);
+	
+	/* these variables all get their memory from the calling functions */
+	fxdpnt *z1, *z2, *z3, *z4, *z6, *z7, *z8;
+	z1 = z2 = z3 = z4 = z6 = z7 = z8 = NULL;
 
+	fxdpnt *z5 = arb_expand(NULL, 0);
+	/* stack variables as/with pointers to valid fxdpnts */
 	fxdpnt x1[1] = { 0 };
 	fxdpnt y1[1] = { 0 };
 	fxdpnt x0[1] = { 0 };
@@ -26,11 +34,6 @@ static fxdpnt *arb_karatsuba_mul_core(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	y0->number = b->number + b->len - m;
 	y0->lp = y0->len = m;
 
-	/* these variables all get their memory from the calling functions */
-	fxdpnt *z1, *z2, *z3, *z4, *z6, *z7, *z8;
-	z1 = z2 = z3 = z4 = z6 = z7 = z8 = NULL;
-
-	fxdpnt *z5 = arb_expand(NULL, 0);
 
 	z1 = arb_karatsuba_mul_core(x1, y1, z1, base);
 	z4 = arb_karatsuba_mul_core(x0, y0, z4, base);
@@ -38,7 +41,6 @@ static fxdpnt *arb_karatsuba_mul_core(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	z2 = arb_add2(x1, x0, z2, base);
 	z3 = arb_add2(y1, y0, z3, base);
 	z5 = arb_karatsuba_mul_core(z2, z3, z5, base);
-
 
 	z6 = arb_sub2(z5, z1, z6, base);
 	z7 = arb_sub2(z6, z4, z7, base);
