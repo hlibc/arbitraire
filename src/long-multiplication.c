@@ -16,9 +16,7 @@
 	arb_mul_core to stand alone.
 
 	An optimization is provided which tracks trailing zeros from the
-	operands and moves then onto the answer. This little trick was
-	surprisingly difficult to get right which may be why I've not seen it
-	used in other arbitrary precision methods. It hypothetically increases
+	operands and moves then onto the answer. It hypothetically increases
 	the speed of the multiplication when trailing zeros are present. Which
 	may ultimately help karatsuba multiplication a great deal.
 
