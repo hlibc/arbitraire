@@ -6,7 +6,7 @@
 	arb_add2 and arb_sub2 are simply variants which do not strip zeros.
 */
 
-static fxdpnt *arb_karatsuba_mul_core(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+static fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	if (b->len < 100 || a->len < 100) {
 		return arb_mul2(b, a, c, base, 10);
@@ -35,12 +35,12 @@ static fxdpnt *arb_karatsuba_mul_core(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	y0->lp = y0->len = m;
 
 
-	z1 = arb_karatsuba_mul_core(x1, y1, z1, base);
-	z4 = arb_karatsuba_mul_core(x0, y0, z4, base);
+	z1 = karatsuba(x1, y1, z1, base);
+	z4 = karatsuba(x0, y0, z4, base);
 	
 	z2 = arb_add2(x1, x0, z2, base);
 	z3 = arb_add2(y1, y0, z3, base);
-	z5 = arb_karatsuba_mul_core(z2, z3, z5, base);
+	z5 = karatsuba(z2, z3, z5, base);
 
 	z6 = arb_sub2(z5, z1, z6, base);
 	z7 = arb_sub2(z6, z4, z7, base);
@@ -73,7 +73,7 @@ fxdpnt *arb_karatsuba_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scal
 	fxdpnt *c2 = arb_expand(NULL, a2->len + b2->len + 3);
 	arb_copy(a2, a);
 	arb_copy(b2, b);
-	c2 = arb_karatsuba_mul_core(a2, b2, c2, base);
+	c2 = karatsuba(a2, b2, c2, base);
 	arb_setsign(a, b, c2);
 	c2->lp = a2->lp + b2->lp;
 	c2->len = MIN(rr(a2) + rr(b2), MAX(scale, MAX(rr(a2), rr(b2)))) + c2->lp;

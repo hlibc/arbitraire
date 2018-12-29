@@ -44,6 +44,10 @@ void _print_core(FILE *fp, UARBT *number, size_t len, size_t radix, size_t sign)
 
 void arb_fprint(FILE *fp, fxdpnt *flt)
 {
+	if (flt == NULL) {
+		fprintf(fp, "number was (null)\n");
+		return;
+	}
 	if (iszero(flt) == 0) {
 		fputc('0', fp);
 		fputc('\n', fp);
@@ -62,38 +66,23 @@ void arb_fprint(FILE *fp, fxdpnt *flt)
 
 void arb_print(fxdpnt *flt)
 { 
-	if (flt == NULL) {
-		fprintf(stdout, "number was (null)\n");
-		return;
-	}
 	arb_fprint(stdout, flt);
 }
 
 void arb_printerr(fxdpnt *flt)
 {
-	if (flt == NULL) {
-		fprintf(stdout, "number was (null)\n");
-		return;
-	}
 	arb_fprint(stderr, flt);
 }
 
 void arb_printtrue(fxdpnt *flt)
 {
-	
-	/* This function prints 'fxdpnt's as they truly are as opposed
-	 * to 1> splitting them, 2> printing '0' for zero length fxdpnts
-	 * or 3> testing for all zeros and then printing a single '0'
-	 */
-
 	size_t k = 0;
 	if (flt->sign == '-') {
 		fputc(flt->sign, stdout);
 	}
 	
-	while (k < flt->len) {
+	for(;k < flt->len;++k) {
 		fputc(arb_highbase((flt->number[k])), stdout);
-                ++k;
         }
 	fputc('\n', stdout);
 }
