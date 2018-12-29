@@ -90,7 +90,6 @@
 #define ARBT	int16_t
 #define UARBT	uint8_t
 
-
 /* basic defines */
 #define MAX(a,b) ((a)>(b)?(a):(b))
 #define MIN(a,b) ((a)>(b)?(b):(a))
@@ -112,8 +111,6 @@ extern fxdpnt *two;
 extern fxdpnt *ten;
 
 extern long _arb_time;
-extern long _arb_time1;
-extern long _arb_time2;
 
 #define _arb_time_start \
 if (_ARB_TIME) \
