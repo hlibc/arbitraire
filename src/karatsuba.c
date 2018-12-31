@@ -8,8 +8,6 @@
 
 static fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
-	static size_t iterations = 0;
-	++iterations;
 	if (b->len < 100 || a->len < 100) {
 		return arb_mul2(b, a, c, base, 10);
 	}
@@ -64,7 +62,7 @@ static fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	arb_free(z6);
 	arb_free(z7);
 	arb_free(z8);
-	fprintf(stderr, "total iterations %zu\n", iterations);
+
 	return c;
 }
 
