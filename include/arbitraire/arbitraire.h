@@ -77,8 +77,9 @@ fxdpnt *nthroot(fxdpnt *a, int base, size_t scale);
 void split_test(fxdpnt *a, fxdpnt *b);
 size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd);
 fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale);
-fxdpnt *karatsuba2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale);
-fxdpnt *karatsuba3(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale);
+
+/* transcendental */
+fxdpnt* arb_sin(fxdpnt *, int, size_t);
 
 #ifdef __cplusplus
 }

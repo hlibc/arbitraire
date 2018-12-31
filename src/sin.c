@@ -29,27 +29,27 @@ fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
 
 	for ( ; 1 ; )
 	{
-		j = arb_mul(two, i, j, base, scale);
-		j = arb_add(j, one, j, base);
+		mul(two, i, &j, base, scale, "j = ");
+		add(j, one, &j, base, "j = ");
 		
 		for (;1;)
 		{
 			if ((c = arb_compare(j, zero, base) != 1))
 				break;
 				
-			t = arb_div(x, j, t, base, scale);
-			d = arb_mul(d, t, d, base, scale);
-			decr(&j, base, 0);
+			divv(x, j, &t, base, scale, "t = ");
+			mul(d, t, &d, base, scale, "d = ");
+			decr(&j, base, "j = ");
 		}
-		incr(&i, base, 0);
-		t = arb_mul(d, sign, t, base, scale);
-		y = arb_add(y, t, y, base);
+		
+		mul(d, sign, &t, base, scale, "t ");
+		add(y, t, &y, base, "y = ");
 		arb_flipsign(sign);
 		
-		if ((c = arb_compare(y, z, base) ==0))
+		if ((c = arb_compare(y, z, base) == 0))
 			break;
 		z = arb_copy(z, y);
-
+		incr(&i, base, "i = ");
 	}
 	return y;
 /*

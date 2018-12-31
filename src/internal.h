@@ -204,6 +204,9 @@ int oddity(size_t);
 /* */
 void *_arb_memset(void *, int, size_t);
 
+/* transcendental */
+fxdpnt* arb_sin(fxdpnt *, int, size_t);
+
 #define _internal_debug if (_ARB_DEBUG && m) { \
 fprintf(stderr, __func__); \
 fprintf(stderr, "()  %s", m); \
