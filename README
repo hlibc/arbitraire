@@ -8,6 +8,13 @@ Arbitraire
 	The algorithms used are fast, and contain no known bugs in the
 	fundamental operations. This library is competitive in regards to
 	speed with other arbitrary precision implementations 
+
+	Arbitraire represents continued research into numerical properties and
+	numeracy in general. There are no plans for it to ever be truly done as
+	the study offers a nearly endless amount of tradeoffs, new algorithms
+	and challenges. An opaque API is provided which ensures that as
+	arbitraire changes and improves that there will be a stable API contract
+	for those using the library.
 	
 	Special care was taken to never compromise by shifting numbers around 
 	in such a way as to force correct results. In effect, I believe 
@@ -15,7 +22,17 @@ Arbitraire
 	actually work. In doing so, we were able to drop lines of code and 
 	expose an intrepid and interesting underlying system. In this way, what
 	you see is what you get, and the numerical requests you make are the 
-	ones used internally.
+	ones used internally. 
+
+	As of the time of this writing, arbitraire is only about 1400 lines of 
+	code, with a few hundred more representing some ongoing experiments. 
+	Along the way, a special lesson was learned -- one showing that 
+	mathematics implementations work best when they are massively simplified
+	and allowed to take a natural form. As optimization strategies are 
+	implemented and layered over arbitraire these properties will no longer 
+	be evident, but do take note that we found the current path by valuing 
+	beauty and simplicity and the memory safety that often comes with it 
+	until the correct properties emerged.
 
 	Division:
 		Knuth's algorithm D is used for division. Faster division
@@ -27,15 +44,28 @@ Arbitraire
 
 	Subtraction and addition:
 		Subtractions that cross the zero threshold have a special 
-	property which can be identified by a left over value in the 'carry' 
-	variable. Arbitraire simultaneously maintains a mirror of the 
-	subtraction as ((base-1)-N) where N is the typical value and switches 
-	to this alternate solution in the case a left over 'carry' is 
-	identified at the end of the computation.
+	property which can be identified by a left over 'carry'. Arbitraire 
+	simultaneously maintains a mirror of the subtraction as ((base-1)-N)
+	where N is the typical value and switches to this alternate solution
+	in the case a left over 'carry' is identified at the end of the 
+	computation. We are still studying the drawbacks of this tradeoff versus
+	the more common method of first comparing the values of the operands.
+	The main reason for using the current method is that it is extremely
+	elegant and has a much smaller code footprint than typical methods.
 
 	Multiplication:
-		Arbitraire uses karatsuba multiplication for larger numbers and
+		Arbitraire uses Karatsuba multiplication for larger numbers and
 	traditional schoolbook multiplication for numbers under 1000 digits.
+	Kolmogrov was giving a lecture in 1960 postulating that the fundamental
+	multiplication algorithm, long multiplication could not be reduced. The
+	young Karatsuba responded to this by inventing an algorithm where
+	greater speeds were achieved by breaking the number apart and operating
+	on it recursively. Since then, many faster variants of multiplication
+	have been discovered, namely fast fourier transformation multiplication
+	and Toom-3. To this day (2018), the issue of the fastest possible
+	multiplication algorithm is an open problem in computing. Arbitraire
+	continues research into these faster algorithms so make sure to check
+	back from time to time and see what we've done.
 
 	Square root:
 		Newton's method is used for square root. Our square root
@@ -100,6 +130,13 @@ TESTING:
 
 		make test
 
+	Test the core operations with valgrind:
+
+		make release
+
+		This should output the number "1100" showing that 1100 tests
+		were performed that showed no memory errors or leaks.
+
 
 	Run the test wrappers and binaries:
 	
@@ -126,6 +163,7 @@ TESTING:
 	Each function also has its own test, for instance, to add two numbers:
 
 		./tests/add 123 123 10
+
 
 USING THE API:
 --------------
@@ -159,7 +197,6 @@ USING THE API:
 	You can also compile your programs against arbitraire by either
 	installing it or by putting them inside of tests/ and running
 	./configure ; make
-
 
 	Bear in mind that 1 atexit slot of the C standard library is consumed
 	by arbitraire in order to free its "global" (file scope variables with 
@@ -244,7 +281,7 @@ INSPIRATIONS:
 
 	GNU's GMP library
 
-	Donald Knuth's  TAOCP
+	Donald Knuth's TAOCP
 
 	Professor Wayne Clark -- thank you again for all of your guidance
 
@@ -260,7 +297,7 @@ SPONSORS:
 CONTACTS:
 ---------
 
-	CM Graff   cm0graff@gmail.com
+	CM Graff  cm0graff@gmail.com
 
 
 RELEASES:
