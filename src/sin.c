@@ -1,6 +1,6 @@
 #include "internal.h"
 
-fxdpnt arb_sin(fxdpnt *x, int base, size_t scale)
+fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
 {
 /*
         int i;
@@ -22,6 +22,9 @@ fxdpnt arb_sin(fxdpnt *x, int base, size_t scale)
 	fxdpnt *j = arb_str2fxdpnt("0");
 	fxdpnt *d = arb_str2fxdpnt("1");
 	fxdpnt *t = arb_str2fxdpnt("0");
+	fxdpnt *y = arb_str2fxdpnt("0");
+	fxdpnt *z = arb_str2fxdpnt("0");
+	fxdpnt *sign = arb_str2fxdpnt("1");
 	int c = 0;
 
 	for ( ; 1 ; )
@@ -39,7 +42,16 @@ fxdpnt arb_sin(fxdpnt *x, int base, size_t scale)
 			decr(&j, base, 0);
 		}
 		incr(&i, base, 0);
+		t = arb_mul(d, sign, t, base, scale);
+		y = arb_add(y, t, y, base);
+		arb_flipsign(sign);
+		
+		if ((c = arb_compare(y, z, base) ==0))
+			break;
+		z = arb_copy(z, y);
+
 	}
+	return y;
 /*
         for (i = 0; 1; i++)
         {
