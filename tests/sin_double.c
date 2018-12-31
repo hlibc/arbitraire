@@ -20,17 +20,18 @@ double taylor_series_sin(double x)
         for (i = 0; 1; i++)
         {
                 d = 1.0;
+		j = (2*i) + 1;
+		printf("j is set to %d\n", j);
 		printf("stages of 'd'\n");
-                for (j = (2*i) + 1 ; j > 0; j--)
+                for (; j > 0; j--)
                 {
                         d *= (x / j);
 			printf("d = %f\n", d);
-			
                 }
                 y += d * sign;
 		printf("y = %f\n", y);
                 sign = -sign;
-                if ( y == z )
+                if (y == z)
                         break;
                 z = y;
         }

@@ -2,21 +2,6 @@
 
 fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
 {
-/*
-        int i;
-        int j;
-        int sign = 1;
-        double d;
-        double z = 0;
-        double y = 0;
-
-        while ( x >= (2*PI))
-                x -= (2*PI);
-
-        while ( x < 0 )
-                x += (2*PI);
-*/
-
 
 	fxdpnt *i = arb_str2fxdpnt("0");
 	fxdpnt *j = arb_str2fxdpnt("0");
@@ -29,18 +14,17 @@ fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
 
 	for ( ; 1 ; )
 	{
+		d = arb_copy(d, one);
 		mul(two, i, &j, base, scale, "j = ");
 		add(j, one, &j, base, "j = ");
 		
-		for (;1;)
-		{
+		do {
 			if ((c = arb_compare(j, zero, base) != 1))
 				break;
-				
 			divv(x, j, &t, base, scale, "t = ");
 			mul(d, t, &d, base, scale, "d = ");
 			decr(&j, base, "j = ");
-		}
+		}while (1);
 		
 		mul(d, sign, &t, base, scale, "t ");
 		add(y, t, &y, base, "y = ");
@@ -51,22 +35,12 @@ fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
 		z = arb_copy(z, y);
 		incr(&i, base, "i = ");
 	}
+	arb_free(i);
+	arb_free(j);	
+	arb_free(d);
+	arb_free(t);
+	arb_free(y);
+	arb_free(z);
+	arb_free(sign);
 	return y;
-/*
-        for (i = 0; 1; i++)
-        {
-                d = 1.0;
-                for (j = (2*i) + 1 ; j > 0; j--)
-                {
-                        d *= (x / j);
-                }
-                y += d * sign;
-                sign = -sign;
-                if ( y == z )
-                        break;
-                z = y;
-        }
-
-        return y;
-*/
 }
