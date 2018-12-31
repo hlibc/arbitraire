@@ -76,6 +76,20 @@ Arbitraire
 	so as to break out of the iteration -- which is non de facto in either
 	historical algorithm.
 
+	Sin:
+		Uses a 2 part taylor series expansion driver.
+	
+	Cos:
+		Uses a 2 part taylor series expansion driver.
+	
+	Sinh:
+		Uses a 2 part taylor series expansion driver.
+	
+	Cosh:
+		Uses a 2 part taylor series expansion driver.
+
+	Exp:
+		Uses a 2 part taylor series.
 
 	Arbitraire continues research into other mathematics operations, These 
 	algorithms are under construction but should not be used at this time. 

@@ -3,6 +3,16 @@
 /* this is a special type of taylor series expansion which
    creates a temporary middle term 
 
+   In arbitrary precision transcendental functions it does not seem possible
+   to use typical polynomial series expansions like the ones used in Sun fdlibm
+   Some type of argument range reduction needs to be done. However, I am also
+   not sure if it's possible to apply the remez algorithm to the arbitrary
+   precision numbers at this time.
+
+
+   For these reasons we use the typial taylor series. Other options might be
+   to use continued fractions.
+
 */
 
 fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol)
@@ -73,10 +83,9 @@ fxdpnt *arb_sinh(fxdpnt *x, int base, size_t scale)
 	return arb_series(x, base, scale, 1, 1);
 }
 
-fxdpnt *arb_exp_trans(fxdpnt *, int, size_t);
 fxdpnt *arb_exp_trans(fxdpnt *x, int base, size_t scale)
 {
-	fxdpnt *i = arb_str2fxdpnt("0");
+	fxdpnt *i = arb_str2fxdpnt("2");
 	fxdpnt *n = arb_str2fxdpnt("2");
 	fxdpnt *y = arb_str2fxdpnt("0");
 	fxdpnt *d = arb_str2fxdpnt("0");
@@ -84,57 +93,29 @@ fxdpnt *arb_exp_trans(fxdpnt *x, int base, size_t scale)
 	fxdpnt *t = arb_str2fxdpnt("0");
 
 	add(one, x, &y, base, "y = ");
-	int c = 0;
+
 	do {
 		d = arb_copy(d, x);
-		i = arb_copy(i, two);
-		while (1) {
-			c = arb_compare(i, n, base);
-			if (c == 1)
+		do {
+			if (arb_compare(i, n, base) == 1)
 				break;
-				
 			divv(x, i, &t, base, scale, "t = ");
 			mul(d, t, &d, base, scale, "d = ");
 			incr(&i, base, "i = ");
-		}
+		}while (1);
 		add(y, d, &y, base, "y = ");
 		incr(&n, base, "n = ");
-		if ((c = arb_compare(y, z, base)) == 0)
+		if (arb_compare(y, z, base) == 0)
 			break;
 		z = arb_copy(z, y);
 	}while (1);
-	
-	
-/*
-        int i;
-        int n = 0; 
-        double y = 0;
-        double d = 0;
-        double z = 0;
 
+	arb_free(i);
+	arb_free(n);
+	arb_free(d);
+	arb_free(z);
+	arb_free(t);
+	arb_free(x);
 
-        if (x == 1.0) {
-                y = EULER;
-        } else if (x < 0) {
-                y = 1.0 / myexp(-x);
-        } else {
-                n = 2;
-                y = 1.0 + x;
-                while ( 1 )
-                {
-                        d = x; 
-                        for (i = 2; i <= n; i++)
-                        {
-                                d *= x / i;
-                        } 
-                        y += d;
-                        n++; 
-                        if ( y == z )
-                                break;
-                        z = y;
-                }
-        }
-        return y;
-	*/
 	return y;
 }
