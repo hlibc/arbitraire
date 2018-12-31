@@ -80,6 +80,9 @@ fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale);
 
 /* transcendental */
 fxdpnt* arb_sin(fxdpnt *, int, size_t);
+fxdpnt *arb_cos(fxdpnt *, int, size_t);
+fxdpnt *arb_cosh(fxdpnt *, int, size_t);
+fxdpnt *arb_sinh(fxdpnt *, int, size_t);
 
 #ifdef __cplusplus
 }

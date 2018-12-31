@@ -206,6 +206,9 @@ void *_arb_memset(void *, int, size_t);
 
 /* transcendental */
 fxdpnt* arb_sin(fxdpnt *, int, size_t);
+fxdpnt *arb_cos(fxdpnt *, int, size_t);
+fxdpnt *arb_cosh(fxdpnt *, int, size_t);
+fxdpnt *arb_sinh(fxdpnt *, int, size_t);
 
 #define _internal_debug if (_ARB_DEBUG && m) { \
 fprintf(stderr, __func__); \

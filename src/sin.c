@@ -1,6 +1,11 @@
 #include "internal.h"
 
-fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
+/* this is a special type of taylor series expansion which
+   creates a temporary middle term 
+
+*/
+
+fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol)
 {
 
 	fxdpnt *i = arb_str2fxdpnt("0");
@@ -16,7 +21,8 @@ fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
 	{
 		d = arb_copy(d, one);
 		mul(two, i, &j, base, scale, "j = ");
-		add(j, one, &j, base, "j = ");
+		if (needsone)
+			add(j, one, &j, base, "j = ");
 		
 		do {
 			if ((c = arb_compare(j, zero, base) != 1))
@@ -28,19 +34,42 @@ fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
 		
 		mul(d, sign, &t, base, scale, "t ");
 		add(y, t, &y, base, "y = ");
-		arb_flipsign(sign);
+		if (hyperbol)
+			arb_flipsign(sign);
 		
 		if ((c = arb_compare(y, z, base) == 0))
 			break;
 		z = arb_copy(z, y);
 		incr(&i, base, "i = ");
 	}
+
 	arb_free(i);
 	arb_free(j);	
 	arb_free(d);
 	arb_free(t);
-	arb_free(y);
 	arb_free(z);
 	arb_free(sign);
+	arb_free(x);
 	return y;
 }
+
+fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
+{
+	return arb_series(x, base, scale, 1, 1);
+}
+
+fxdpnt *arb_cos(fxdpnt *x, int base, size_t scale)
+{
+	return arb_series(x, base, scale, 0, 1);
+}
+
+fxdpnt *arb_cosh(fxdpnt *x, int base, size_t scale)
+{
+	return arb_series(x, base, scale, 0, 0);
+}
+
+fxdpnt *arb_sinh(fxdpnt *x, int base, size_t scale)
+{
+	return arb_series(x, base, scale, 1, 1);
+}
+
