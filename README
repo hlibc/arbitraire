@@ -76,6 +76,8 @@ Arbitraire
 	so as to break out of the iteration -- which is non de facto in either
 	historical algorithm.
 
+	The following transcenental functions are new additions to arbitraire
+	and have not been extensively tested.
 	Sin:
 		Uses a 2 part taylor series expansion driver.
 	
