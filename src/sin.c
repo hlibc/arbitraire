@@ -73,9 +73,38 @@ fxdpnt *arb_sinh(fxdpnt *x, int base, size_t scale)
 	return arb_series(x, base, scale, 1, 1);
 }
 
-
-fxdpnt *arb_exp_trans(fxdpnt *x)
+fxdpnt *arb_exp_trans(fxdpnt *, int, size_t);
+fxdpnt *arb_exp_trans(fxdpnt *x, int base, size_t scale)
 {
+	fxdpnt *i = arb_str2fxdpnt("0");
+	fxdpnt *n = arb_str2fxdpnt("2");
+	fxdpnt *y = arb_str2fxdpnt("0");
+	fxdpnt *d = arb_str2fxdpnt("0");
+	fxdpnt *z = arb_str2fxdpnt("0");
+	fxdpnt *t = arb_str2fxdpnt("0");
+
+	add(one, x, &y, base, "y = ");
+	int c = 0;
+	do {
+		d = arb_copy(d, x);
+		i = arb_copy(i, two);
+		while (1) {
+			c = arb_compare(i, n, base);
+			if (c == 1)
+				break;
+				
+			divv(x, i, &t, base, scale, "t = ");
+			mul(d, t, &d, base, scale, "d = ");
+			incr(&i, base, "i = ");
+		}
+		add(y, d, &y, base, "y = ");
+		incr(&n, base, "n = ");
+		if ((c = arb_compare(y, z, base)) == 0)
+			break;
+		z = arb_copy(z, y);
+	}while (1);
+	
+	
 /*
         int i;
         int n = 0; 
@@ -107,5 +136,5 @@ fxdpnt *arb_exp_trans(fxdpnt *x)
         }
         return y;
 	*/
-	return x;
+	return y;
 }

@@ -209,6 +209,7 @@ fxdpnt* arb_sin(fxdpnt *, int, size_t);
 fxdpnt *arb_cos(fxdpnt *, int, size_t);
 fxdpnt *arb_cosh(fxdpnt *, int, size_t);
 fxdpnt *arb_sinh(fxdpnt *, int, size_t);
+fxdpnt *arb_exp_trans(fxdpnt *, int, size_t);
 
 #define _internal_debug if (_ARB_DEBUG && m) { \
 fprintf(stderr, __func__); \
