@@ -76,22 +76,6 @@ Arbitraire
 	so as to break out of the iteration -- which is non de facto in either
 	historical algorithm.
 
-	The following transcenental functions are new additions to arbitraire
-	and have not been extensively tested.
-	Sin:
-		Uses a 2 part taylor series expansion driver.
-	
-	Cos:
-		Uses a 2 part taylor series expansion driver.
-	
-	Sinh:
-		Uses a 2 part taylor series expansion driver.
-	
-	Cosh:
-		Uses a 2 part taylor series expansion driver.
-
-	Exp:
-		Uses a 2 part taylor series.
 
 	Arbitraire continues research into other mathematics operations, These 
 	algorithms are under construction but should not be used at this time. 
@@ -102,6 +86,7 @@ Arbitraire
 		Newton's method for division
 		Newton's method for Nth root
 		Fast Fourier transformation multiplication
+		Taylor series sin, cos, tan, tanh and exp
 
 
 	Arbitraire strictly follows POSIX and the C99/C11 standards, ergo, it is
