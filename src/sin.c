@@ -1,18 +1,5 @@
 #include "internal.h"
 
-/* this is a special type of taylor series expansion which
-   creates a temporary middle term 
-
-   In arbitrary precision transcendental functions it does not seem possible
-   to use typical polynomial series expansions like the ones used in Sun fdlibm
-   Some type of argument range reduction needs to be done. However, I am also
-   not sure if it's possible to apply the remez algorithm to the arbitrary
-   precision numbers at this time.
-
-   For these reasons we use the typial taylor series. Other options might be
-   to use continued fractions.
-
-*/
 
 fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol)
 {
@@ -59,7 +46,6 @@ fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol
 	divv(y, one, &y, base, oldscale, 0);
 	return y;
 }
-
 fxdpnt *arb_sin(fxdpnt *x, int base, size_t scale)
 {
 	return arb_series(x, base, scale, 1, 1);
