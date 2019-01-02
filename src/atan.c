@@ -15,15 +15,17 @@ fxdpnt *arb_atan(fxdpnt *x, int base, size_t scale)
 	fxdpnt *c6 = arb_str2fxdpnt(".197395559849880758370049765194790293447585103787852101517688");
 	fxdpnt *a = NULL;
 	fxdpnt *f = arb_str2fxdpnt("0");
+	fxdpnt *m = arb_str2fxdpnt("1");
 	int comp = 0;
 
 	/* Negative x? */
 
-	int m = 1;
+	
 	comp = arb_compare(x, zero, base);
 	if (comp == -1 || comp == 0)
 	{
-		m = -1;
+		//m = -1;
+		arb_flipsign(m);
 		arb_flipsign(x);
 	}
 
@@ -67,7 +69,7 @@ fxdpnt *arb_atan(fxdpnt *x, int base, size_t scale)
 		if (comp != 1)
 			break;
 		incr(&f, base, 0);
-		sub(x, np2, &t1, base, 0);
+		sub(x, p2, &t1, base, 0);
 		mul(x, p2, &t2, base, scale, 0);
 		incr(&t2, base, 0);
 		divv(t1, t2, &x, base, scale, 0);
@@ -88,14 +90,19 @@ fxdpnt *arb_atan(fxdpnt *x, int base, size_t scale)
 	/* Calculate the series. */
 	fxdpnt *i = arb_str2fxdpnt("3");
 	for (; 1 ;) {
+	fprintf(stderr, "do we get here\n");
 		mul(n, s, &n, base, scale, 0);
 		divv(n, i, &e, base, scale, 0);
 		comp = arb_compare(e, zero, base);
 		if (comp == 0) {
 			scale = z;
-			return NULL; // ((f*a+v)/m);
+			mul(f, a, &t1, base, scale, 0);
+			add(t1, v, &t1, base, 0);
+			divv(t1, m, &t1, base, scale, 0);
+			return t1;
 
 		}
+		add(v, e, &v, base, 0);
 		add(i, two, &i, base, 0);
 	}
 }
