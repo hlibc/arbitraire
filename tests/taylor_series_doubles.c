@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #define EULER 2.718281828459045
 
+double taylor_atan(double x)
+{
+	double y = x;
+	return y;
+}
 
 double taylor_series(double x, int needsone, int hyperbol, int isexp)
 {
