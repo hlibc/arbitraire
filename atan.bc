@@ -1,0 +1,80 @@
+define at(x) {
+  auto a, b, e, f, i, m, n, s, v, z
+
+  /* a is the value of a(.2) if it is needed. */
+  /* f is the value to multiply by a in the return. */
+  /* e is the value of the current term in the series. */
+  /* v is the accumulated value of the series. */
+  /* m is 1 or -1 depending on x (-x -> -1).  results are divided by m. */
+  /* i is the denominator value for series element. */
+  /* n is the numerator value for the series element. */
+  /* s is -x*x. */
+  /* z is the saved user's scale. */
+
+  /* Non base 10 ibase? */
+  if (ibase != A) {
+     b = ibase;
+     ibase = A;
+     v = a(x);
+     ibase = b;
+     return (v);
+  }
+
+  /* Negative x? */
+  m = 1;
+  if (x<0) {
+    m = -1;
+    x = -x;
+  }
+
+  /* Special case and for fast answers */
+  if (x==1) {
+    if (scale <= 25) return (.7853981633974483096156608/m)
+    if (scale <= 40) return (.7853981633974483096156608458198757210492/m)
+    if (scale <= 60) \
+      return (.785398163397448309615660845819875721049292349843776455243736/m)
+  }
+  if (x==.2) {
+    if (scale <= 25) return (.1973955598498807583700497/m)
+    if (scale <= 40) return (.1973955598498807583700497651947902934475/m)
+    if (scale <= 60) \
+      return (.197395559849880758370049765194790293447585103787852101517688/m)
+  }
+
+
+  /* Save the scale. */
+  z = scale;
+
+  /* Note: a and f are known to be zero due to being auto vars. */
+  /* Calculate atan of a known number. */
+  if (x > .2)  {
+    scale = z+5;
+    a = at(.2);
+  }
+
+  /* Precondition x. */
+  scale = z+3;
+  while (x > .2) {
+    f += 1;
+    x = (x-.2) / (1+x*.2);
+  }
+
+  /* Initialize the series. */
+  v = n = x;
+  s = -x*x;
+  x + 0;
+  
+  /* Calculate the series. */
+  for (i=3; 1; i+=2) {
+    e = (n *= s) / i;
+    if (e == 0) {
+      scale = z;
+      return ((f*a+v)/m);
+    }
+    v += e
+  }
+}
+
+at(12)
+
+
