@@ -78,6 +78,7 @@ fxdpnt *arb_atan(fxdpnt *x, int base, size_t scale)
 	fxdpnt *v = NULL;
 	fxdpnt *xx = NULL;
 	fxdpnt *s = NULL;
+	fxdpnt *e = NULL;
 	v = arb_copy(v, x);
 	n = arb_copy(n, x);
 	xx = arb_copy(xx, x);
@@ -85,4 +86,16 @@ fxdpnt *arb_atan(fxdpnt *x, int base, size_t scale)
 	mul(xx, x, &s, base, scale, 0);
 	
 	/* Calculate the series. */
+	fxdpnt *i = arb_str2fxdpnt("3");
+	for (; 1 ;) {
+		mul(n, s, &n, base, scale, 0);
+		divv(n, i, &e, base, scale, 0);
+		comp = arb_compare(e, zero, base);
+		if (comp == 0) {
+			scale = z;
+			return NULL; // ((f*a+v)/m);
+
+		}
+		add(i, two, &i, base, 0);
+	}
 }
