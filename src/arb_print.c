@@ -1,5 +1,10 @@
 #include "internal.h"
 
+/* Various routines for printing a fxdpnt bignum.
+   POSIX `bc' line splitting at 80 columns is used. For a non-split number 
+   use arb_printtrue.
+*/
+
 int arb_highbase(int a)
 {
 	/* Handle high bases */
@@ -45,7 +50,7 @@ void _print_core(FILE *fp, UARBT *number, size_t len, size_t radix, size_t sign)
 void arb_fprint(FILE *fp, fxdpnt *flt)
 {
 	if (flt == NULL) {
-		fprintf(fp, "number was (null)\n");
+		fputs("number was (null)\n", fp);
 		return;
 	}
 	if (iszero(flt) == 0) {
