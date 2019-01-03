@@ -90,7 +90,6 @@ fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
 		o->number = arb_calloc(1, sizeof(UARBT) * request);
 		o->allocated = request;
 		o->lp = o->len = original;
-		//o->lp = 0;
 	/* reallocation (vector expansion) */
 	} else if (request > o->allocated) {
 		o->allocated = request;
