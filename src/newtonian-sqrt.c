@@ -24,8 +24,7 @@ fxdpnt *nsqrt(fxdpnt *a, int base, size_t scale)
 	else
 	{
 		arb_free(g1);
-		g1 = hrdware2arb((a)->lp);
-		g1 = arb_mul(g1, p5, g1, base, 0);
+		g1 = hrdware2arb(a->lp / 2);
 		g = arb_exp(g, g1, g, base, 0);
 	}
 
