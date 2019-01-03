@@ -29,7 +29,6 @@ fxdpnt *arb_exp(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	}
 	arb_free(c);
 	arb_free(o);
-	c = t;
 	return t;
 }
 
