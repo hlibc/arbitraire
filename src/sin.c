@@ -4,16 +4,18 @@
 fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol)
 {
 	size_t oldscale = scale;
-	scale *= 2;
+	size_t sign = 0;
+	
 	fxdpnt *i = arb_str2fxdpnt("0");
 	fxdpnt *j = arb_str2fxdpnt("0");
-	fxdpnt *d = arb_str2fxdpnt("1");
+	fxdpnt *d = arb_str2fxdpnt("0");
 	fxdpnt *t = arb_str2fxdpnt("0");
 	fxdpnt *y = arb_str2fxdpnt("0");
 	fxdpnt *z = arb_str2fxdpnt("0");
 
-	int c = 0;
-	size_t sign = 0;
+	/* we have to increase the precision to guarantee correct output */
+	scale *= 2;
+	
 
 	do {
 		d = arb_copy(d, one);
@@ -23,7 +25,7 @@ fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol
 			incr(&j, base, 0);
 	
 		do {
-			if ((c = arb_compare(j, zero, base) != 1))
+			if (arb_compare(j, zero, base) != 1)
 				break;
 			divv(x, j, &t, base, scale, "t = ");
 			mul(d, t, &d, base, scale, "d = ");
@@ -35,7 +37,7 @@ fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol
 
 		add(y, d, &y, base, "y = ");
 	
-		if ((c = arb_compare(y, z, base) == 0))
+		if (arb_compare(y, z, base) == 0)
 			break;
 		z = arb_copy(z, y);
 		incr(&i, base, "i = ");
