@@ -11,14 +11,17 @@ fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol
 	fxdpnt *t = arb_str2fxdpnt("0");
 	fxdpnt *y = arb_str2fxdpnt("0");
 	fxdpnt *z = arb_str2fxdpnt("0");
-	fxdpnt *sign = arb_str2fxdpnt("1");
+
 	int c = 0;
+	size_t sign = 0;
 
 	do {
 		d = arb_copy(d, one);
+		
 		mul(two, i, &j, base, scale, "j = ");
 		if (needsone)
-			add(j, one, &j, base, "j = ");
+			incr(&j, base, 0);
+	
 		do {
 			if ((c = arb_compare(j, zero, base) != 1))
 				break;
@@ -26,14 +29,17 @@ fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol
 			mul(d, t, &d, base, scale, "d = ");
 			decr(&j, base, "j = ");
 		}while (1);
-		mul(d, sign, &t, base, scale, "t ");
-		add(y, t, &y, base, "y = ");
-		if (hyperbol)
-			arb_flipsign(sign);
+
+		if (hyperbol && oddity(sign++))
+			arb_flipsign(d);
+
+		add(y, d, &y, base, "y = ");
+	
 		if ((c = arb_compare(y, z, base) == 0))
 			break;
 		z = arb_copy(z, y);
 		incr(&i, base, "i = ");
+		
 	} while (1);
 
 	arb_free(i);
@@ -41,7 +47,6 @@ fxdpnt *arb_series(fxdpnt *x, int base, size_t scale, int needsone, int hyperbol
 	arb_free(d);
 	arb_free(t);
 	arb_free(z);
-	arb_free(sign);
 	arb_free(x);
 	divv(y, one, &y, base, oldscale, 0);
 	return y;
