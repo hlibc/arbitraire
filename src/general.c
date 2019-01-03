@@ -2,11 +2,17 @@
 
 void arb_error(char *message)
 {
-	// FIXME: return an error, and inform the user
+	/* arbitraire exits upon memory exhaustion. This is not ideal, but it
+	   saves many lines of codes versus returning the error back to the
+	   caller. At some future release this should be changed to return the 
+	   error to the caller instead of calling exit().
+	*/
+	fprintf(stderr, "CRITICAL MEMORY FAILURE\n");
 	fprintf(stderr, "%s\n", message);
 	exit(1);
 }
 
+/* wrappers to expose the length of the number on either side of the radix */
 size_t rl(fxdpnt *a)
 {
 	return a->lp;
@@ -17,6 +23,7 @@ size_t rr(fxdpnt *a)
 	return a->len - a->lp;
 }
 
+/* memory management and bignum creation routines */
 void arb_free(fxdpnt *flt)
 {
 	if (flt && flt->number) {
@@ -62,7 +69,9 @@ void *arb_realloc(void *ptr, size_t len)
 }
 
 void arb_cleanup(void)
-{ 
+{
+	/* this function is called by atexit() and should never be
+	   invoked manually */
 	arb_free(zero);
 	arb_free(p5);
 	arb_free(one);
@@ -77,7 +86,6 @@ fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
 	size_t original = request;
 
 	/* align on a multiple of 16 */
-
 	if (request > 16)
 		request = (((request / 16) + 1) * 16);
 	else
@@ -96,6 +104,7 @@ fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
 		o->number = arb_realloc(o->number, o->allocated * sizeof(UARBT));
 		_arb_memset(o->number + o->len, 0, o->allocated - o->len);
 	}
+
 	/* initialize the global constants (once) */
 	if (lever == 0) {
 		lever = 1;
@@ -107,10 +116,13 @@ fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
 		ten = arb_str2fxdpnt("10");
 		atexit(arb_cleanup);
 	}
+
+	/* allow specific radix positioning requests */
 	if (left) {
 		o->lp = left;
 		o->len = original;
 	}
+
 	return o;
 }
 
@@ -119,6 +131,7 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 	return arb_expand_inter(o, request, 0);
 }
 
+/* simple opacity wrappers so that the caller can display debug attributes */
 size_t arb_size(fxdpnt *a)
 {
         return a->len;
@@ -138,3 +151,4 @@ size_t arb_left(fxdpnt *a)
 {
 	return a->lp;
 }
+
