@@ -67,10 +67,11 @@ void arb_cleanup(void)
 	arb_free(p5);
 	arb_free(one);
 	arb_free(two);
+	arb_free(three);
 	arb_free(ten);
 }
 
-fxdpnt *arb_expand(fxdpnt *o, size_t request)
+fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
 {
 	static int lever = 0;
 	size_t original = request;
@@ -88,8 +89,8 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 		arb_init(o);
 		o->number = arb_calloc(1, sizeof(UARBT) * request);
 		o->allocated = request;
-		o->len = original;
-		o->lp = 0;
+		o->lp = o->len = original;
+		//o->lp = 0;
 	/* reallocation (vector expansion) */
 	} else if (request > o->allocated) {
 		o->allocated = request;
@@ -103,10 +104,20 @@ fxdpnt *arb_expand(fxdpnt *o, size_t request)
 		p5 = arb_str2fxdpnt("0.5");
 		one = arb_str2fxdpnt("1");
 		two = arb_str2fxdpnt("2");
+		three = arb_str2fxdpnt("3");
 		ten = arb_str2fxdpnt("10");
 		atexit(arb_cleanup);
 	}
+	if (left) {
+		o->lp = left;
+		o->len = original;
+	}
 	return o;
+}
+
+fxdpnt *arb_expand(fxdpnt *o, size_t request)
+{
+	return arb_expand_inter(o, request, 0);
 }
 
 size_t arb_size(fxdpnt *a)

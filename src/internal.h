@@ -108,6 +108,7 @@ extern fxdpnt *zero;
 extern fxdpnt *p5;
 extern fxdpnt *one;
 extern fxdpnt *two;
+extern fxdpnt *three;
 extern fxdpnt *ten;
 
 extern long _arb_time;
@@ -166,6 +167,7 @@ void arb_init(fxdpnt *);
 void arb_error(char *);
 /* allocation */
 fxdpnt *arb_expand(fxdpnt *, size_t);
+fxdpnt *arb_expand_inter(fxdpnt *, size_t, size_t);
 void *arb_malloc(size_t);
 void *arb_realloc(void *, size_t);
 void *arb_calloc(size_t, size_t);
