@@ -22,9 +22,7 @@ fxdpnt *nsqrt(fxdpnt *a, int base, size_t scale)
 		arb_copy(g, one);
 	}
 	else {
-		arb_free(g1);
-		g1 = hrdware2arb(a->lp / 2);
-		g = arb_exp(g, g1, g, base, 0);
+		g = arb_expand_inter(g, a->lp / 2, a->lp / 2);
 	}
 
 	for(s1 = MAX(rr(a), scale);;) {
