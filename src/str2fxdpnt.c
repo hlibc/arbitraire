@@ -1,5 +1,7 @@
 #include "internal.h"
 
+/* Turn a string into a fxdpnt bignum */
+
 int arb_base(int a)
 {
 	static int glph[110] = { 
@@ -31,7 +33,8 @@ fxdpnt *arb_parse_str(fxdpnt *flt, const char *str)
 	}
 
 	size_t i = 0;
-	int flt_set = 0, sign_set = 0;
+	int flt_set = 0;
+	int sign_set = 0;
 
 	flt->len = flt->lp = 0;
 
@@ -59,3 +62,4 @@ fxdpnt *arb_parse_str(fxdpnt *flt, const char *str)
 
 	return flt;
 }
+
