@@ -57,11 +57,11 @@ Arbitraire
 		Arbitraire uses Karatsuba multiplication for larger numbers and
 	traditional schoolbook multiplication for numbers under 1000 digits.
 	Kolmogrov was giving a lecture in 1960 postulating that the fundamental
-	multiplication algorithm, long multiplication could not be reduced. The
+	multiplication algorithm, long multiplication, could not be reduced. The
 	young Karatsuba responded to this by inventing an algorithm where
-	greater speeds were achieved by breaking the number apart and operating
-	on it recursively. Since then, many faster variants of multiplication
-	have been discovered, namely fast fourier transformation multiplication
+	greater speeds were achieved by breaking the numbers apart and operating
+	on them recursively. Since then, many faster variants of multiplication
+	have been discovered, namely Fast Fourier Transformation multiplication
 	and Toom-3. To this day (2018), the issue of the fastest possible
 	multiplication algorithm is an open problem in computing. Arbitraire
 	continues research into these faster algorithms so make sure to check
@@ -224,11 +224,10 @@ USING THE API:
 	
 	Arbitraire's numbers are opaque objects, but can be accessed for
 	debugging using arb_size(), arb_allocated(), arb_sign() and arb_left(). 
-	Details for doing this can be found inside of tests/print.c. Because of
-	this, the numbers must be accessed as pure mathematical objects. Object 
-	opacity helps to provide a safe and portable interface which can 
-	withstand internal security changes and other updates without affecting
-	the code which uses arbitraire as a bignum library.
+	Because of this, the numbers must be accessed as pure mathematical 
+	objects. Object opacity helps to provide a safe and portable interface 
+	which can withstand internal security changes and other updates without 
+	affecting the code which uses arbitraire as a bignum library.
 
 
 DEBUGGING:
@@ -320,5 +319,6 @@ RELEASES:
 
 	https://github.com/hlibc/arbitraire/archive/v0.6.tar.gz
 
+	https://github.com/hlibc/arbitraire/archive/v0.7.tar.gz
 
 
