@@ -1,0 +1,107 @@
+9999
+1999
+8000
+
+9999
+9991
+0008
+
+
+->allocated = 100
+
+shift to 50 off leaving 50 null spaces
+an allocation of an extra 100 would leave this at 200
+
+when a number is reused one would need/want to set ->offset
+back to zero.
+
+arb_init()
+{
+	->len = 0;
+	->lp = 0;
+	->allocated = leave alone
+	->offset = 0;
+}
+
+This would leave the caller in the position of having to reset reused variables
+this could be pushed onto arb_expand as yet another option in order to save loc
+
+
+if you went to use the number without resetting it then you would continue to have
+wasted memory. this wasted memory may not be a huge issue
+
+memory usage may not be a huge concern with bignum operations and it could be better
+to favor this fast resolution of leading zeros.
+
+Subtractions, divisions and multiplications all can result in leading zeros -- 
+the cost of logically shifting the number results in two traversals:
+	1. count the number of leading zeros
+	2. move the leading zeros
+with an offset reference to memory all we would have to do is count the zeros and
+shift the pointer to ->number
+
+This is obviously faster to use the offset reference. The question though remains
+whether or not it is a micro-optimization.
+
+Addition and subtraction are nearly constant-time operations in the sense of them
+being O(N)
+
+reference offsets are constant time in the sense that they are also O(N)
+
+logical shifting is O(N * 2) 
+
+Ergo, without reference counting the worst case is that every subtraction ends up
+nearly the cost of two subtractions, and every multiplication -- the cost of a
+multiplication plus a subtraction.
+
+
+Reference counting only counts the number of zeros
+
+Shifting has to count the number of zeros and then traverse the entire data array
+copying the results.
+
+The true value of reference counting therefore lies in it not truly being O(N)
+but O(partial N)
+
+My fear is that offset references will create run-away allocations and then as numbers
+are reused they will become needlessly large.
+
+It seems though that inevitably one must use the offset mechanism.
+
+it may be possible to reclaim that area during a vector expansion by manually handling
+the copy down of the array instead of allowing realloc to handle the memcpy.
+	* this would allow any call to arb_expand that has an already populated value
+	  to be self correcting and balance back the offsetted memory.
+
+
+if (request > ->allocated )
+{
+	o = arb_malloc(request);
+	...
+	memcpy(new->number, old->number + old->offset, old->len);
+	
+}
+
+Perhaps any time a reallocation is requested then we will perform the ->offset
+eliminating copy-down. All reallocations come at the cost of needing a full
+data traversal copy-down so this cost would be covered up and allow seamless
+reclaiming of the offset memory.
+
+The problem is that ->allocated starts to lose its meaning and must be
+->allocated - ->offset otherwise there is no reason to do the new malloc
+and the entire routine could be handled with a memcpy alone.
+
+->number = off,off,1,0,0,0,unused,unused  has: ->len = 4
+	a request of 6 could leave the offsets untouched.
+		* this may or may not be ideal -- again, we have to discourage
+		  run-away vector expansion
+			
+
+It's prudent to consider that the lifetime of a variable inside of arbitraire's
+core code is not terribly long anyway. Generally, with every operation that
+original vector is replaced with a new one despite their being code to allow
+their true reuse/
+
+
+
+
