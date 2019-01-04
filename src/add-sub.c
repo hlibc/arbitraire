@@ -21,6 +21,9 @@
 	over carry).
 */
 
+/* _pl() draws from an imaginary array of zeros and allows add and sub to work
+   on numbers with varying magnitudes in a concise manner
+*/
 UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 {
 	UARBT temp = 0;
@@ -35,6 +38,7 @@ UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 	return temp;
 }
 
+/* the actual addition */
 fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0;
@@ -54,6 +58,8 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 		}
 		c->number[size] = sum;
 	}
+	/* move the entire number to the right 1 place in the case that
+	   addition has a left over carry, array offsets also work */
 	if (carry) {
 		for(i = c->len+1;i > 0; i--)
 			c->number[i] = c->number[i-1];
@@ -64,6 +70,7 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	return c;
 }
 
+/* the actual subtraction */
 fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0;
@@ -110,6 +117,7 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	return c;
 }
 
+/* wrappers and identity redirection for add and sub */
 fxdpnt *arb_add(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 {
 	c = arb_add2(a, b, c, base);
@@ -124,7 +132,6 @@ fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	return c;
 }
 
-// TODO: make these return an integer error code
 void sub(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
 { 
 	_internal_debug; 
@@ -204,7 +211,6 @@ fxdpnt *arb_sub2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	
 	return c2;
 }
-
 
 void sub2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
 { 

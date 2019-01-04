@@ -1,6 +1,7 @@
 #include "internal.h"
 
-// TODO don't exit on zero
+// TODO: don't exit on zero
+// TODO: strip trailing zeros from the denominator
 
 /*
 	This is an implementation of Donald Knuth's Algorithm D

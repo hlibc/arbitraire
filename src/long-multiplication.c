@@ -77,6 +77,7 @@ fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	_arb_time_end;
 	return c;
 }
+
 fxdpnt *arb_mul2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 { 
         fxdpnt *c2 = c;

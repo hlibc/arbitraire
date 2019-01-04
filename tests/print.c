@@ -26,6 +26,9 @@ int main(int argc, char *argv[])
 	printf("->allocated = %zu\n", arb_allocated(a));
 	printf("->sign = %c\n", arb_sign(a));
 
+	/* arb_attrs() is just a wrapper for the above 4 functions */
+	arb_attrs(a, "a");
+
 	arb_free(a);
 	return 0;
 }

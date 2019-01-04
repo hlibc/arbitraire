@@ -20,17 +20,20 @@ static fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 
 	fxdpnt *z5 = arb_expand(NULL, 0);
 	/* stack variables as/with pointers to valid fxdpnts */
+	
 	fxdpnt x1[1] = { 0 };
-	fxdpnt y1[1] = { 0 };
-	fxdpnt x0[1] = { 0 };
-	fxdpnt y0[1] = { 0 };
-
 	x1->number = a->number;
 	x1->lp = x1->len = a->len - m;
+
+	fxdpnt y1[1] = { 0 };
 	y1->number = b->number;
 	y1->lp = y1->len = b->len - m;
+
+	fxdpnt x0[1] = { 0 };
 	x0->number = a->number + a->len - m;
 	x0->lp = x0->len = m;
+
+	fxdpnt y0[1] = { 0 };
 	y0->number = b->number + b->len - m;
 	y0->lp = y0->len = m;
 
@@ -62,19 +65,14 @@ static fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 }
 
 fxdpnt *arb_karatsuba_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
-{
-	fxdpnt *a2 = arb_expand(NULL, MAX(scale, a->len));
-	fxdpnt *b2 = arb_expand(NULL, MAX(scale, b->len));
-	fxdpnt *c2 = arb_expand(NULL, a2->len + b2->len + 3);
-	arb_copy(a2, a);
-	arb_copy(b2, b);
-	c2 = karatsuba(a2, b2, c2, base);
+{ 
+	/* karatsuba is described as taking an extra bit/limb, hence the +3 */
+	fxdpnt *c2 = arb_expand(NULL, a->len + b->len + 3);
+	c2 = karatsuba(a, b, c2, base);
 	arb_setsign(a, b, c2);
-	c2->lp = a2->lp + b2->lp;
-	c2->len = MIN(rr(a2) + rr(b2), MAX(scale, MAX(rr(a2), rr(b2)))) + c2->lp;
+	c2->lp = a->lp + b->lp;
+	c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
 	c2 = remove_leading_zeros(c2);
-	arb_free(a2);
-	arb_free(b2);
 	if (c)
 		arb_free(c);
 	return c2;
