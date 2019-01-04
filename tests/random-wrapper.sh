@@ -23,6 +23,12 @@ VERSION=$(testcat .version)
 machinename="$(gcc -dumpmachine)"
 machinename="${VERSION}-${machinename}-tests-passed.txt"
 
+TOTAL=100
+
+if [ $# = "5" ]
+then	TOTAL="$5"
+fi
+
 stdout "This is a set of PRNG tests to ensure that arbitraire ${VERSION} works" >>"${machinename}"
 stdout "properly on the following machine type:" >>"${machinename}"
 stdout >> "${machinename}"
@@ -33,7 +39,7 @@ stdout "The tests should halt upon detecting an error and the contents" >>"${mac
 stdout "of 'testing.bc' can be inspected to reveal the failing test" >>"${machinename}"
 stdout >> "${machinename}"
 stdout >> "${machinename}"
-while [ "$COUNT" -lt 100 ]
+while [ "$COUNT" -lt "$TOTAL" ]
 do	COUNT="$((COUNT + 1))"
 	stdout "Test number: ${COUNT}" >>"${machinename}"
 	if [ "$USE_VALGRIND" = "1" ]
