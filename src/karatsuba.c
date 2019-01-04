@@ -12,7 +12,7 @@ static fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 		return arb_mul2(b, a, c, base, 10);
 	}
 
-	size_t m = ((MIN(a->len, b->len)+1) / 2);
+	size_t m = (MIN(a->len, b->len)+1) / 2;
 	
 	/* these variables all get their memory from the calling functions */
 	fxdpnt *z1, *z2, *z3, *z4, *z6, *z7, *z8;
