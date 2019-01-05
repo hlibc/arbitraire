@@ -12,21 +12,21 @@ fxdpnt *nsqrt(fxdpnt *a, int base, size_t scale)
 	size_t s2 = 2;
 	
 	fxdpnt *g = arb_str2fxdpnt("10");
-	fxdpnt *g1 = arb_expand(NULL, a->len);
+	fxdpnt *g1 = NULL;
 	
 
 	if (a->sign == '-')
 		return NULL;
 	
 	if ((a->lp)<2){
-		arb_copy(g, one);
+		g = arb_copy(g, one);
 	}
 	else {
 		g = arb_expand_inter(g, a->lp / 2, a->lp / 2);
 	}
 
 	for(s1 = MAX(rr(a), scale);;) {
-		arb_copy(g1, g);
+		g1 = arb_copy(g1, g);
 		g = arb_div(a, g, g, base, s1);
 		g = arb_add(g, g1, g, base);
 		g = arb_mul(g, p5, g, base, s1);
