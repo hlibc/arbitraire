@@ -63,13 +63,15 @@ fxdpnt *arb_exp_trans(fxdpnt *x, int base, size_t scale)
 
         do {
                 d = arb_copy(d, x);
-                j = arb_copy(j, two);
+                //j = arb_copy(j, two);
+		j = arb_copy(j, i);
                 do {
-                        if (arb_compare(j, i, base) == 1)
+                        if (arb_compare(j, one, base) != 1)
 				break;
                         divv(x, j, &t, base, scale, 0);
                         mul(d, t, &d, base, scale, 0);
-                        incr(&j, base, 0);
+                        //incr(&j, base, 0);
+			decr(&j, base, 0);
                 } while(1);
                 add(y, d, &y, base, 0);
                 incr(&i, base, 0);
