@@ -48,28 +48,6 @@
 	see src/modulo.c for this operation.
 */
 
-void shmul(UARBT *num, size_t size, UARBT digit, UARBT *result, int base)
-{
-	int carry, value;
-	size_t i = 0;
-
-	if (digit == 0) {
-		_arb_memset(result, 0, size);
-	} else if (digit == 1) {
-		_arb_copy_core(result, num, size);
-	} else {
-		for (carry = 0, i = size ;i > 0; i--)
-		{
-			value = num[i-1] * digit + carry;
-			result[i-1] = value % base;
-			carry = value / base;
-		}
-		if (carry != 0) {
-			result[i-1] = carry;
-		}
-	}
-}
-
 int _long_sub(UARBT *u, size_t i, UARBT *v, size_t k, int b)
 { 
 	int borrow = 0;
@@ -132,10 +110,12 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
 
 	vf = v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
+	UARBT * tt = NULL;
+	
 	_arb_copy_core(v, den->number, (den->len));
 	leb = den->len;
 
-	temp = arb_malloc((den->len+1) * sizeof(UARBT));
+	tt = temp = arb_malloc((den->len+1) * sizeof(UARBT)); 
 
 	for (;*v == 0; v++, leb--);
 
@@ -154,19 +134,15 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	/* normalization is partially fused with copy down to temp */
 	norm = (b / (v[0] + 1));
 	u[0] = 0;
-	arb_mul_core(num->number, num->len, &norm, 1, u, b); /* populate the numerator */
+	arb_mul_core(num->number, num->len, &norm, 1, u, b); /* populate the numerator */ 
+	_arb_copy_core(temp, v, leb); 
 	
-	_arb_copy_core(temp, v, leb);
-	
-//	shmul(temp, leb, norm, v, b);
-	arb_mul_core(temp, leb, &norm, 1, v, b);
-	leb++;
-	for (;*v == 0; v++, leb--);
-	_print_core(stderr, v, leb, leb, 0);
-	
-	//shmul(den->number, leb, norm, v, b);
+	leb = arb_mul_core(temp, leb, &norm, 1, v, b);
 
-
+	/* deal with leading zeros from arb_mul_core */
+	if (*v == 0) {
+		v++;
+	}
 	
 	if (leb > lea)
 		j = (leb-lea);
@@ -193,7 +169,8 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	}
 	end:
 	q = remove_leading_zeros(q);
-	free(temp);
+	//free(temp);
+	free(tt);
 	free(u);
 	free(vf);
 	return q;
