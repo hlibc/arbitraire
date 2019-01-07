@@ -155,7 +155,17 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	norm = (b / (v[0] + 1));
 	u[0] = 0;
 	arb_mul_core(num->number, num->len, &norm, 1, u, b); /* populate the numerator */
-	shmul(v, leb, norm, v, b);
+	
+	_arb_copy_core(temp, v, leb);
+	
+//	shmul(temp, leb, norm, v, b);
+	arb_mul_core(temp, leb, &norm, 1, v, b);
+	leb++;
+	for (;*v == 0; v++, leb--);
+	_print_core(stderr, v, leb, leb, 0);
+	
+	//shmul(den->number, leb, norm, v, b);
+
 
 	
 	if (leb > lea)
