@@ -64,8 +64,9 @@ void shmul(UARBT *num, size_t size, UARBT digit, UARBT *result, int base)
 			result[i-1] = value % base;
 			carry = value / base;
 		}
-		if (carry != 0)
+		if (carry != 0) {
 			result[i-1] = carry;
+		}
 	}
 }
 
@@ -129,7 +130,6 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 
 	/* temporary variables for num and den -- because we must modify them */
 	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
-	_arb_copy_core(u + 1, num->number, (num->len));
 
 	vf = v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
 	_arb_copy_core(v, den->number, (den->len));
@@ -151,11 +151,13 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	if (out_of_scale)
 		goto end;
 
-	if ((norm = (b / (v[0] + 1))) != 1){
-		shmul(u, lea+uscal+offset+1, norm, u, b);
-		shmul(v, leb, norm, v, b);
-	}
+	/* normalization is partially fused with copy down to temp */
+	norm = (b / (v[0] + 1));
+	u[0] = 0;
+	arb_mul_core(num->number, num->len, &norm, 1, u, b); /* populate the numerator */
+	shmul(v, leb, norm, v, b);
 
+	
 	if (leb > lea)
 		j = (leb-lea);
 	
