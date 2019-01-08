@@ -9,13 +9,7 @@
 	Algorithm D is based on long division however it is quite a bit
 	different than the typical school-book algorithm method.
 
-	One of the things that makes Algorithm D unique is that it makes
-	use of arrays that start at the first element instead of the zeroth.
-	In this way, carries are actually put into the zeroth element instead
-	of any need for the arrays to be expanded -- leading to very concise 
-	code.
-
-	Algorithm D has a few other steps that separate it from typical 
+	Algorithm D has a few steps that separate it from typical 
 	school-book long division. 
 		* A normalization step is provided
 			This step is of the form such that a new numerator
@@ -50,8 +44,8 @@
 
 int _long_sub(UARBT *u, size_t i, UARBT *v, size_t k, int b)
 { 
-	int borrow = 0;
-	int val = 0;
+	uint8_t borrow = 0;
+	ARBT val = 0;
 	for (;k+1 > 0; i--, k--) {
 		val = u[i] - v[k] - borrow; 
 		borrow = 0;
@@ -66,8 +60,8 @@ int _long_sub(UARBT *u, size_t i, UARBT *v, size_t k, int b)
 
 int _long_add(UARBT *u, size_t i, UARBT *v, size_t k, int b)
 {
-	int carry = 0;
-	int val = 0;
+	uint8_t carry = 0;
+	ARBT val = 0;
 	for (;k+1 > 0; i--, k--) { 
 		val = u[i] + v[k] + carry;
 		carry = 0;
@@ -86,7 +80,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	UARBT *v = NULL;
 	UARBT *vf = NULL;
 	UARBT *temp = NULL;
-	UARBT *pp = NULL;
+	UARBT *p = NULL;
 	UARBT qg = 0;
 	UARBT norm = 0;
 	ssize_t uscal = 0;
@@ -101,30 +95,27 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	if (iszero(den) == 0)
 		arb_error("divide by zero\n");
 
-	/* set up the difficult offsets for division */
+	/* set up the offsets for division */
 	lea = rl(num) + rr(den); 
 	uscal = rr(num) - rr(den);
 	if (uscal < (ssize_t)scale)
 		offset = scale - uscal;
 	
-	/* temporary variables for num and den -- because we must modify them */
+	/* temporary storage and storage for normalized den and num */
 	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
 	vf = v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
-	pp = den->number;
+	p = den->number;
 	leb = den->len;
 	temp = arb_malloc((den->len+1) * sizeof(UARBT)); 
 
-	/* get rid of any leading zeros */
-	for (;*pp == 0; pp++, leb--);
+	/* get rid of any leading zeros on the denominator */
+	for (;*p == 0; p++, leb--);
 
-	/* normalization is fused with copy down to temp */
-	norm = (b / (pp[0] + 1));
-	u[0] = 0;
-	arb_mul_core(num->number, num->len, &norm, 1, u, b); /* populate the numerator */
-	leb = arb_mul_core(pp, leb, &norm, 1, v, b); 
-	if (*v == 0) { /* deal with leading zeros from arb_mul_core */
-		v++;
-	}
+	/* normalization is fused with copy down to temporary storage */
+	norm = (b / (p[0] + 1));
+	arb_mul_core(num->number, num->len, &norm, 1, u, b);
+	arb_mul_core(p, leb, &norm, 1, v, b);
+	if (*v == 0) { v++; }/* deal with leading zeros from arb_mul_core */
 	
 	/* compute the scales for the final solution */
 	if (leb > lea+scale) 

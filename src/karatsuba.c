@@ -14,30 +14,26 @@ static fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 
 	size_t m = (MIN(a->len, b->len)+1) / 2;
 	
-	/* these variables all get their memory from the calling functions */
+	/* all but z5 get their memory from the calling functions */
 	fxdpnt *z1, *z2, *z3, *z4, *z6, *z7, *z8;
 	z1 = z2 = z3 = z4 = z6 = z7 = z8 = NULL;
-
 	fxdpnt *z5 = arb_expand(NULL, 0);
+
 	/* stack variables as/with pointers to valid fxdpnts */
-	
 	fxdpnt x1[1] = { 0 };
 	x1->number = a->number;
 	x1->lp = x1->len = a->len - m;
-
 	fxdpnt y1[1] = { 0 };
 	y1->number = b->number;
 	y1->lp = y1->len = b->len - m;
-
 	fxdpnt x0[1] = { 0 };
 	x0->number = a->number + a->len - m;
 	x0->lp = x0->len = m;
-
 	fxdpnt y0[1] = { 0 };
 	y0->number = b->number + b->len - m;
 	y0->lp = y0->len = m;
 
-
+	/* the recursions, adds and subs (the actual function) */
 	z1 = karatsuba(x1, y1, z1, base);
 	z4 = karatsuba(x0, y0, z4, base);
 	
