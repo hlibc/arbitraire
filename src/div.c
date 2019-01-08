@@ -85,8 +85,9 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	UARBT *u = NULL;
 	UARBT *v = NULL;
 	UARBT *vf = NULL;
-	UARBT qg = 0;
 	UARBT *temp = NULL;
+	UARBT *pp = NULL;
+	UARBT qg = 0;
 	UARBT norm = 0;
 	ssize_t uscal = 0;
 	int out_of_scale = 0;
@@ -96,55 +97,57 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	size_t leb = 0;
 	size_t i = 0;
 	size_t j = 0;
-	UARBT *pp = NULL;
-	UARBT *tt = NULL;
 
 	if (iszero(den) == 0)
 		arb_error("divide by zero\n");
-	
-	lea = rl(num) + rr(den);
 
+	/* set up the difficult offsets for division */
+	lea = rl(num) + rr(den); 
 	uscal = rr(num) - rr(den);
 	if (uscal < (ssize_t)scale)
 		offset = scale - uscal;
-
 	
 	/* temporary variables for num and den -- because we must modify them */
 	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
 	vf = v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
 	pp = den->number;
 	leb = den->len;
-	tt = temp = arb_malloc((den->len+1) * sizeof(UARBT)); 
+	temp = arb_malloc((den->len+1) * sizeof(UARBT)); 
 
+	/* get rid of any leading zeros */
 	for (;*pp == 0; pp++, leb--);
-
-	if (leb > lea+scale) 
-		out_of_scale = 1; 
-	else
-		if (!(leb>lea))
-			quodig = lea-leb+scale+1;
-
-	q->lp = quodig-scale;
-	q->len = q->lp + scale;
-
-	if (out_of_scale)
-		goto end;
 
 	/* normalization is fused with copy down to temp */
 	norm = (b / (pp[0] + 1));
 	u[0] = 0;
 	arb_mul_core(num->number, num->len, &norm, 1, u, b); /* populate the numerator */
-	leb = arb_mul_core(pp, leb, &norm, 1, v, b); /* watch this carefully, leb could be getting too large */
+	leb = arb_mul_core(pp, leb, &norm, 1, v, b); 
 	if (*v == 0) { /* deal with leading zeros from arb_mul_core */
 		v++;
 	}
 	
+	/* compute the scales for the final solution */
+	if (leb > lea+scale) 
+		out_of_scale = 1; 
+	else
+		if (!(leb>lea))
+			quodig = lea - leb + scale + 1;
+
+	/* assign the scales for the final solution */
+	q->lp = quodig - scale;
+	q->len = q->lp + scale;
+
+	/* begin the division operation */
+	if (out_of_scale)
+		goto end;
+
 	if (leb > lea)
 		j = (leb-lea);
 	
 	for (qg = b-1;i <= lea+scale-leb; ++i, ++j, qg = b-1) {
 		if (v[0] != u[i])
 			qg = (u[i]*b + u[i+1]) / v[0];
+		/* early guesses */
 		if (v[1] * qg > (u[i] * b + u[i+1] - v[0] * qg) * b + u[i+2]) {
 			qg = qg - 1;
 			if (v[1] * qg > (u[i] * b + u[i+1] - v[0] * qg) * b + u[i+2])
@@ -164,8 +167,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	}
 	end:
 	q = remove_leading_zeros(q);
-	//free(temp);
-	free(tt);
+	free(temp);
 	free(u);
 	free(vf);
 	return q;
