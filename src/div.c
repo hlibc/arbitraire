@@ -96,6 +96,8 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	size_t leb = 0;
 	size_t i = 0;
 	size_t j = 0;
+	UARBT *pp = NULL;
+	UARBT *tt = NULL;
 
 	if (iszero(den) == 0)
 		arb_error("divide by zero\n");
@@ -106,18 +108,15 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	if (uscal < (ssize_t)scale)
 		offset = scale - uscal;
 
+	
 	/* temporary variables for num and den -- because we must modify them */
 	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
-
 	vf = v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
-	UARBT * tt = NULL;
-	
-	_arb_copy_core(v, den->number, (den->len));
+	pp = den->number;
 	leb = den->len;
-
 	tt = temp = arb_malloc((den->len+1) * sizeof(UARBT)); 
 
-	for (;*v == 0; v++, leb--);
+	for (;*pp == 0; pp++, leb--);
 
 	if (leb > lea+scale) 
 		out_of_scale = 1; 
@@ -131,16 +130,12 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	if (out_of_scale)
 		goto end;
 
-	/* normalization is partially fused with copy down to temp */
-	norm = (b / (v[0] + 1));
+	/* normalization is fused with copy down to temp */
+	norm = (b / (pp[0] + 1));
 	u[0] = 0;
-	arb_mul_core(num->number, num->len, &norm, 1, u, b); /* populate the numerator */ 
-	_arb_copy_core(temp, v, leb); 
-	
-	leb = arb_mul_core(temp, leb, &norm, 1, v, b);
-
-	/* deal with leading zeros from arb_mul_core */
-	if (*v == 0) {
+	arb_mul_core(num->number, num->len, &norm, 1, u, b); /* populate the numerator */
+	leb = arb_mul_core(pp, leb, &norm, 1, v, b); /* watch this carefully, leb could be getting too large */
+	if (*v == 0) { /* deal with leading zeros from arb_mul_core */
 		v++;
 	}
 	
