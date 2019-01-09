@@ -87,7 +87,6 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	UARBT *p = NULL;
 	UARBT qg = 0;
 	UARBT norm = 0;
-	uint8_t out_of_scale = 0;
 	size_t lea = 0;
 	size_t leb = 0;
 	size_t i = 0;
@@ -115,19 +114,16 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	
 	/* compute the scales for the final solution */
 	lea = rl(num) + rr(den);
-	q->lp = 1;
+	q->len = q->lp = 1;
 	if (leb > lea+scale) {
-		out_of_scale = 1; 
-	} else {
-		if (!(leb>lea))
-			q->lp = lea - leb + 1;
+		//q->len = q->lp + scale;
+		goto end;
+	} else if (!(leb>lea)) {
+		q->lp = lea - leb + 1;
 	}
 	q->len = q->lp + scale;
 
 	/* begin the division operation */
-	if (out_of_scale)
-		goto end;
-
 	if (leb > lea)
 		j = (leb-lea);
 
