@@ -81,8 +81,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	UARBT *p = NULL;
 	UARBT qg = 0;
 	UARBT norm = 0;
-	ssize_t uscal = 0;
-	int out_of_scale = 0;
+	uint8_t out_of_scale = 0;
 	size_t quodig = scale + 1;
 	size_t offset = 0;
 	size_t lea = 0;
@@ -95,10 +94,12 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 
 	/* set up the offsets for division */
 	lea = rl(num) + rr(den); 
-	uscal = rr(num) - rr(den);
-	if (uscal < (ssize_t)scale)
-		offset = scale - uscal;
-	
+	if (rr(num) >= rr(den)) {
+		if (rr(num) - rr(den) < scale)
+			offset = scale - (rr(num) - rr(den));
+	} else if (rr(den) > rr(num))
+		offset = scale + (rr(den) - rr(num));
+
 	/* temporary storage and storage for normalized den and num */
 	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
 	vf = v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
@@ -113,7 +114,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	norm = (b / (p[0] + 1));
 	arb_mul_core(num->number, num->len, &norm, 1, u, b);
 	arb_mul_core(p, leb, &norm, 1, v, b);
-	 /* deal with a possible zero from arb_mul_core */
+	/* deal with a possible zero from arb_mul_core */
 	if (*v == 0)
 		v++;
 	
