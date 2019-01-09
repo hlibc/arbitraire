@@ -82,27 +82,20 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	UARBT qg = 0;
 	UARBT norm = 0;
 	uint8_t out_of_scale = 0;
-	size_t quodig = scale + 1;
-	size_t offset = 0;
+	size_t quodig = 1;
 	size_t lea = 0;
 	size_t leb = 0;
 	size_t i = 0;
 	size_t j = 0;
 
 	if (iszero(den) == 0)
-		arb_error("divide by zero\n");
+		arb_error("divide by zero\n"); 
 
-	/* set up the offsets for division */
-	lea = rl(num) + rr(den); 
-	if (rr(num) >= rr(den)) {
-		if (rr(num) - rr(den) < scale)
-			offset = scale - (rr(num) - rr(den));
-	} else if (rr(den) > rr(num))
-		offset = scale + (rr(den) - rr(num));
+	lea = rl(num) + rr(den);
 
 	/* temporary storage and storage for normalized den and num */
-	u = arb_calloc(1, (num->len + offset + 3) * sizeof(UARBT));
-	vf = v = arb_calloc(1, (den->len + offset + 3) * sizeof(UARBT));
+	u = arb_calloc(1, (num->len + rr(den) + 3 + scale) * sizeof(UARBT));
+	vf = v = arb_calloc(1, (den->len + rr(num) + 3 + scale) * sizeof(UARBT));
 	p = den->number;
 	leb = den->len;
 	temp = arb_malloc((den->len+1) * sizeof(UARBT)); 
@@ -123,10 +116,10 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 		out_of_scale = 1; 
 	else
 		if (!(leb>lea))
-			quodig = lea - leb + scale + 1;
+			quodig = lea - leb + 1;
 
 	/* assign the scales for the final solution */
-	q->lp = quodig - scale;
+	q->lp = quodig;
 	q->len = q->lp + scale;
 
 	/* begin the division operation */
@@ -135,7 +128,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 
 	if (leb > lea)
 		j = (leb-lea);
-	
+
 	for (qg = b-1;i <= lea+scale-leb; ++i, ++j, qg = b-1) {
 		if (v[0] != u[i])
 			qg = (u[i]*b + u[i+1]) / v[0];
