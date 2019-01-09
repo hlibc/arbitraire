@@ -8,7 +8,7 @@ fxdpnt *arb_newtonian_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, int scale)
 	fxdpnt *hold = arb_expand(NULL, apx); 
 	_arb_memset(g->number, 0, apx); 
 	g->number[apx -1] = 1; 
-
+	g->lp = 0;
 	for (;;)
 	{ 
 		hold = arb_mul(b, g, hold, base, scale);
@@ -19,7 +19,7 @@ fxdpnt *arb_newtonian_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, int scale)
 		{
 			break;
 		}
-		arb_copy(g, g1);
+		g = arb_copy(g, g1);
 	} 
 	c = arb_mul(g, a, c, base, scale); 
 	/* this is just to truncate the scale */

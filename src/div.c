@@ -39,6 +39,9 @@
 		modulus(a) = a - (b * (a / b))
 	
 	see src/modulo.c for this operation.
+
+	This algorithm deviates from the standard method for algorithm D by
+	fusing the normalization and temporary variable copy downs.
 */
 
 int _long_sum(UARBT *u, size_t i, UARBT *v, size_t k, int b, uint8_t lever)
@@ -103,14 +106,16 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	leb = den->len;
 	temp = arb_malloc((den->len+1) * sizeof(UARBT)); 
 
-	/* get rid of any leading zeros on the denominator */
-	for (;*p == 0; p++, leb--);
+	/* find the first real value for normalization (strip zeros) */
+	for (;!*p; p++, leb--);
 
 	/* normalization is fused with copy down to temporary storage */
 	norm = (b / (p[0] + 1));
 	arb_mul_core(num->number, num->len, &norm, 1, u, b);
 	arb_mul_core(p, leb, &norm, 1, v, b);
-	if (*v == 0) { v++; }/* deal with a possible zero from arb_mul_core */
+	 /* deal with a possible zero from arb_mul_core */
+	if (*v == 0)
+		v++;
 	
 	/* compute the scales for the final solution */
 	if (leb > lea+scale) 

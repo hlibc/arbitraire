@@ -29,12 +29,14 @@
 
 size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int base)
 {
-	UARBT prod = 0, carry = 0;
+	UARBT prod = 0;
+	UARBT carry = 0;
 	size_t i = 0;
 	size_t j = 0;
 	size_t k = 0;
 	size_t last = 0;
 	size_t ret = 0;
+
 	c[0] = 0;
 	c[alen+blen-1] = 0;
 
@@ -45,6 +47,7 @@ size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int 
 	for (;blen > 3 && ! b[blen-1]; ++ret) {
 		c[alen + --blen -1] = 0;
 	}
+
 	/* outer loop -- first operand */
 	for (i = alen; i > 0 ; i--){
 		last = k;
@@ -80,17 +83,12 @@ fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 
 fxdpnt *arb_mul2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 { 
-        fxdpnt *c2 = c;
-        if (a == c || b == c) {
-                c2 = arb_expand(NULL, a->len + b->len);
-        } else
-                c2 = arb_expand(c2, a->len + b->len);
+	fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
         arb_setsign(a, b, c2);
         arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
         c2->lp = rl(a) + rl(b);
         c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
-        if (a == c || b == c)
-                arb_free(c);
+        arb_free(c);
         return c2;
 }
 
