@@ -1,8 +1,5 @@
 #include "internal.h"
 
-// TODO: don't exit on zero
-// TODO: strip trailing zeros from the denominator
-
 /*
 	This is an implementation of Donald Knuth's Algorithm D
 
@@ -12,21 +9,24 @@
 	Algorithm D has a few steps that separate it from typical 
 	school-book long division. 
 		* A normalization step is provided
-			This step is of the form such that a new numerator
-			and denominator are derived via:
+			This step is of the form such that a new numerator and 
+			denominator are derived via:
 				n = base / D[0] + 1
 				N * n = (new_numerator)
 				D * n = (new_denominator)
 				N/D = new_numerator/new_denominator
 			The effect of dividing the new numerator and
-			denominator is identical to that of the original
+			denominator is identical to that of the original.
+			Similar to how (123 / 10) = ((123 * 2) / (10 * 2)) where
+			we are unreducing a fraction.
 
 		* 2 guesses are made early in the guessing stategem
-		* Finally, the answer is derived from a long multiplication
-		  followed by a long subtraction and a long addition.
+		* Finally, the complete guess is derived from a long 
+		  multiplication followed by a long subtraction and a long 
+		  addition.
 		  
 	Care was taken to reproduce Knuth's original algorithm which was
-	written in MIX theoretical assembly. Wherever possible, I tried to
+	written in MIX theoretical assembly`. Wherever possible, I tried to
 	use Knuth's variable naming conventios and duplicate his usage of
 	goto statements in order to produce an educationally oriented
 	interpretation that emphasizes his methods.
@@ -49,6 +49,9 @@
 	auditing. It may be necessary to regress to an earlier version --
 	if so, any time before about Dec 2018 would be fine.
 */
+
+// TODO: don't exit on zero
+// TODO: strip trailing zeros from the denominator
 
 int _long_sum(UARBT *u, size_t i, UARBT *v, size_t k, int b, uint8_t lever)
 {
