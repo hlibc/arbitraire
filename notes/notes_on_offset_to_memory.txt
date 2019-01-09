@@ -99,7 +99,7 @@ and the entire routine could be handled with a memcpy alone.
 
 It's prudent to consider that the lifetime of a variable inside of arbitraire's
 core code is not terribly long anyway. Generally, with every operation that
-original vector is replaced with a new one despite their being code to allow
+original vector is replaced with a new one despite there being code to allow
 their true reuse/
 
 
