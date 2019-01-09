@@ -116,7 +116,6 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	lea = rl(num) + rr(den);
 	q->len = q->lp = 1;
 	if (leb > lea+scale) {
-		//q->len = q->lp + scale;
 		goto end;
 	} else if (!(leb>lea)) {
 		q->lp = lea - leb + 1;
