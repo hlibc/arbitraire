@@ -14,10 +14,9 @@
 		* A normalization step is provided
 			This step is of the form such that a new numerator
 			and denominator are derived via:
-				n = base / N[0] + 1
+				n = base / D[0] + 1
 				N * n = (new_numerator)
-				d = base / D[0] + 1
-				D * d = (new_denominator)
+				D * n = (new_denominator)
 				N/D = new_numerator/new_denominator
 			The effect of dividing the new numerator and
 			denominator is identical to that of the original
