@@ -42,6 +42,12 @@
 
 	This algorithm deviates from the standard method for algorithm D by
 	fusing the normalization and temporary variable copy downs.
+
+	The previous version of arb_div_inter was much more careful with
+	memory allocation. In its current state arb_div_inter has been
+	hugely simplified. mostly for the sake of readability and security
+	auditing. It may be necessary to regress to an earlier version --
+	if so, any time before about Dec 2018 would be fine.
 */
 
 int _long_sum(UARBT *u, size_t i, UARBT *v, size_t k, int b, uint8_t lever)
@@ -82,7 +88,6 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	UARBT qg = 0;
 	UARBT norm = 0;
 	uint8_t out_of_scale = 0;
-	size_t quodig = 1;
 	size_t lea = 0;
 	size_t leb = 0;
 	size_t i = 0;
@@ -91,14 +96,12 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	if (iszero(den) == 0)
 		arb_error("divide by zero\n"); 
 
-	lea = rl(num) + rr(den);
-
 	/* temporary storage and storage for normalized den and num */
 	u = arb_calloc(1, (num->len + rr(den) + 3 + scale) * sizeof(UARBT));
 	vf = v = arb_calloc(1, (den->len + rr(num) + 3 + scale) * sizeof(UARBT));
+	temp = arb_malloc((den->len+1) * sizeof(UARBT)); 
 	p = den->number;
 	leb = den->len;
-	temp = arb_malloc((den->len+1) * sizeof(UARBT)); 
 
 	/* find the first real value for normalization (strip zeros) */
 	for (;!*p; p++, leb--);
@@ -107,19 +110,18 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	norm = (b / (p[0] + 1));
 	arb_mul_core(num->number, num->len, &norm, 1, u, b);
 	arb_mul_core(p, leb, &norm, 1, v, b);
-	/* deal with a possible zero from arb_mul_core */
-	if (*v == 0)
+	if (!*v) /* deal with a possible zero from arb_mul_core */
 		v++;
 	
 	/* compute the scales for the final solution */
-	if (leb > lea+scale) 
+	lea = rl(num) + rr(den);
+	q->lp = 1;
+	if (leb > lea+scale) {
 		out_of_scale = 1; 
-	else
+	} else {
 		if (!(leb>lea))
-			quodig = lea - leb + 1;
-
-	/* assign the scales for the final solution */
-	q->lp = quodig;
+			q->lp = lea - leb + 1;
+	}
 	q->len = q->lp + scale;
 
 	/* begin the division operation */
