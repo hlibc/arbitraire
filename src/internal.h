@@ -5,7 +5,6 @@
 #define _ARB_DEBUG 0
 #endif
 
-
 #ifndef _ARB_TIME
 #define _ARB_TIME 0
 #endif
@@ -68,8 +67,8 @@
 	2^31-1 is 2147483647, we therefore need a 2^63-1 at 922337203685477580
 
 	Notice that even if you remove "c" and "d" from a * b + c + d
-	That the number produced is still large enough to exhaust the data
-	type of the next size up. 
+	that the number produced is still large enough to exhaust the data
+	type of the next hardware size up. 
 
 	Theory:
 
@@ -87,6 +86,7 @@
 	Similar principles can be constructed from the above two rules
 	That work for higher bases
 */
+
 #define ARBT	int16_t
 #define UARBT	uint8_t
 
@@ -95,12 +95,12 @@
 #define MIN(a,b) ((a)>(b)?(b):(a))
 
 /* structures */
-typedef struct {		// fxdpnt fixed point type
-	UARBT *number;		// The actual number
-	char sign;		// Sign
-	size_t lp;		// Length left of radix
-	size_t len;		// Length of number (count of digits / limbs)
-	size_t allocated;	// Length of allocated memory
+typedef struct {		/* fxdpnt fixed point type */
+	UARBT *number;		/* The actual number */
+	char sign;		/* Sign */
+	size_t lp;		/* Length left of radix */
+	size_t len;		/* Length of number (count of digits / limbs) */
+	size_t allocated;	/* Length of allocated memory */
 } fxdpnt;
 
 /* globals */
@@ -110,18 +110,7 @@ extern fxdpnt *one;
 extern fxdpnt *two;
 extern fxdpnt *three;
 extern fxdpnt *ten;
-
 extern long _arb_time;
-
-#define _arb_time_start \
-if (_ARB_TIME) \
-_arb_time = clock()
-
-#define _arb_time_end \
-if (_ARB_TIME)  {\
-_arb_time = clock() - _arb_time; \
-fprintf(stderr, "time = %ld\n", _arb_time); }
-
 
 /* function prototypes */
 /* arithmetic */
@@ -137,8 +126,6 @@ fxdpnt *arb_sub2(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_add2(fxdpnt *, fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_newtonian_div(fxdpnt *, fxdpnt *, fxdpnt *, int, int);
 fxdpnt *arb_div(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-int _long_sub(UARBT *, size_t, UARBT *, size_t, int);
-int _long_add(UARBT *, size_t, UARBT *, size_t, int);
 /* modulus */
 fxdpnt *arb_mod(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 /* logical shift */
@@ -203,15 +190,24 @@ void mul2(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
 void divv(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
 /* oddity */
 int oddity(size_t);
-/* */
+/* memset */
 void *_arb_memset(void *, int, size_t);
-
-/* transcendental */
+/* transcendental functions */
 fxdpnt* arb_sin(fxdpnt *, int, size_t);
 fxdpnt *arb_cos(fxdpnt *, int, size_t);
 fxdpnt *arb_cosh(fxdpnt *, int, size_t);
 fxdpnt *arb_sinh(fxdpnt *, int, size_t);
 fxdpnt *arb_exp_trans(fxdpnt *, int, size_t);
+
+/* some macros to make debugging and timing less intrusive */
+#define _arb_time_start \
+if (_ARB_TIME) \
+_arb_time = clock()
+
+#define _arb_time_end \
+if (_ARB_TIME)  {\
+_arb_time = clock() - _arb_time; \
+fprintf(stderr, "time = %ld\n", _arb_time); }
 
 #define _internal_debug if (_ARB_DEBUG && m) { \
 fprintf(stderr, __func__); \
