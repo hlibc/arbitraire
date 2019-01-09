@@ -42,37 +42,33 @@
 	see src/modulo.c for this operation.
 */
 
-int _long_sub(UARBT *u, size_t i, UARBT *v, size_t k, int b)
-{ 
-	uint8_t borrow = 0;
+int _long_sum(UARBT *u, size_t i, UARBT *v, size_t k, int b, uint8_t lever)
+{
+	uint8_t carrborr = 0;
 	ARBT val = 0;
 	for (;k+1 > 0; i--, k--) {
-		val = u[i] - v[k] - borrow; 
-		borrow = 0;
-		if (val < 0) {
-			val += b;
-			borrow = 1;
-		}
-		u[i] = val;
-	} 
-	return borrow;
-}
-
-int _long_add(UARBT *u, size_t i, UARBT *v, size_t k, int b)
-{
-	uint8_t carry = 0;
-	ARBT val = 0;
-	for (;k+1 > 0; i--, k--) { 
-		val = u[i] + v[k] + carry;
-		carry = 0;
-		if (val >= b) {
-			val -= b;
-			carry = 1;
+		/* addition */
+		if (lever == 0) {
+			val = u[i] + v[k] + carrborr;
+			carrborr = 0;
+			if (val >= b) {
+				val -= b;
+				carrborr = 1;
+			}
+		/* subtraction */
+		}else {
+			val = u[i] - v[k] - carrborr; 
+			carrborr = 0;
+			if (val < 0) {
+				val += b;
+				carrborr = 1;
+			}
 		}
 		u[i] = val;
 	}
-	return carry;
+	return carrborr;
 }
+
 
 fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 {
@@ -115,7 +111,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	norm = (b / (p[0] + 1));
 	arb_mul_core(num->number, num->len, &norm, 1, u, b);
 	arb_mul_core(p, leb, &norm, 1, v, b);
-	if (*v == 0) { v++; }/* deal with leading zeros from arb_mul_core */
+	if (*v == 0) { v++; }/* deal with a possible zero from arb_mul_core */
 	
 	/* compute the scales for the final solution */
 	if (leb > lea+scale) 
@@ -147,10 +143,10 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 		/* D4. [Multiply and Subtract] */
 		if (qg != 0) {
 			arb_mul_core(v, leb, &qg, 1, temp, b);
-			if (!(_long_sub(u+leb, i, temp, leb, b)))
+			if (!(_long_sum(u+leb, i, temp, leb, b, 1)))
 				goto D7;
 			qg = qg - 1;
-			if (_long_add(u+leb, i, v, leb-1, b))
+			if (_long_sum(u+leb, i, v, leb-1, b, 0))
 				u[0] = 0; 
 		}
 		D7: /* D7 */
