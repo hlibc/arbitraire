@@ -36,11 +36,10 @@ Arbitraire
 
 	Division:
 		Knuth's algorithm D is used for division. Faster division
-	algorithms do exist, but in general Knuth's algorithm D is one of 
-	the fastest division algorithms and suffices for production grade
-	arbitrary precision methods. Care was taken to follow Knuth's TAOCP
-	methods as closely as possible. In this way, arbitraire's division 
-	algorithm is not merely a typical long division algorithm.
+	algorithms do exist, but in general Knuth's algorithm D suffices for 
+	production grade arbitrary precision methods. Care was taken to follow 
+	Knuth's TAOCP methods as closely as possible.
+	
 
 	Subtraction and addition:
 		Subtractions that cross the zero threshold have a special 
@@ -64,8 +63,7 @@ Arbitraire
 	have been discovered, namely Fast Fourier Transformation multiplication
 	and Toom-3. To this day (2018), the issue of the fastest possible
 	multiplication algorithm is an open problem in computing. Arbitraire
-	continues research into these faster algorithms so make sure to check
-	back from time to time and see what we've done.
+	continues research into these faster algorithms.
 
 	Square root:
 		Newton's method is used for square root. Our square root
@@ -92,15 +90,13 @@ Arbitraire
 	Arbitraire strictly follows POSIX and the C99/C11 standards, ergo, it is
 	portable to any POSIX compliant system and works with all of the
 	architectures offered by linux. mac, netbsd, freebsd, openbsd and
-	indeed many other systems. Our sponsors have supplied access to nearly
-	endless amounts of hardware and operating systems with which to verify
-	this.
+	indeed many other systems.
 
 	Arbitraire's "fxdpnt" number system allows for efficient, POSIX 
 	compliant implementations of POSIX bc. It is a "pen and paper" style of
 	number system yet with POSIX `bc' 'scale=' and printing semantics. For
 	these semantics the 'base' field has to be set to 10. However, the 
-	ability to operate natively in any base is left as a decision to the 
+	ability to operate natively in other bases is left as a decision to the
 	caller of the functions.
 
 	Arbitraire is an original work authored by CM Graff.
