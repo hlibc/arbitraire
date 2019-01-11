@@ -3,10 +3,10 @@
 /*
 	arb_mul_core:
 
-	A "partial carry" variation on the traditional "school book" long
-	multiplication algorithm. Arrays are accessed via n-1 to allow unsigned
-	types to be used therefore allowing the largest possible unsigned data
-	type for indexable arrays.
+	Comba multiplication is a partial carry variation on the traditional 
+	school-book long multiplication algorithm. In this version, arrays are 
+	accessed via n-1 to allow unsigned types to be used therefore allowing 
+	the largest possible unsigned data type for indexable arrays.
 
 	I've devised what appears to be a somewhat novel method for making the
 	partial carry long multiplication algorithm zelf zeroing. Many of these
