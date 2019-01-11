@@ -39,30 +39,17 @@ Arbitraire
 	elegant and has a much smaller code footprint than typical methods.
 
 	Multiplication:
-
-		Base case:
-
-		Comba multiplication is used for the base case. This is a type
-		"long-multiplication" similar to the classic school-book method,
-		however it is modified with a partial carry system.
-
-		Karatsuba multiplication:
-
-		Arbitraire uses Karatsuba multiplication for numbers that are
-		over 1000 digits.
-
-		Kolmogrov was giving a lecture in 1960 postulating that the 
-		fundamental multiplication algorithm, long multiplication, 
-		could not be reduced. The young Karatsuba responded to this by 
-		inventing an algorithm where greater speeds were achieved by 
-		breaking the numbers apart and operating on them recursively. 
-		Since then, many faster variants of multiplication have been 
-		discovered, namely Fast Fourier Transformation multiplication 
-		and Toom-3. To this day (2019), the issue of the fastest 
-		possible multiplication algorithm is an open problem in 
-		computing. Arbitraire continues research into these faster 
-		algorithms.  
-
+		Arbitraire uses Karatsuba multiplication for larger numbers and
+	traditional schoolbook multiplication for numbers under 1000 digits.
+	Kolmogrov was giving a lecture in 1960 postulating that the fundamental
+	multiplication algorithm, long multiplication, could not be reduced. The
+	young Karatsuba responded to this by inventing an algorithm where
+	greater speeds were achieved by breaking the numbers apart and operating
+	on them recursively. Since then, many faster variants of multiplication
+	have been discovered, namely Fast Fourier Transformation multiplication
+	and Toom-3. To this day (2019), the issue of the fastest possible
+	multiplication algorithm is an open problem in computing. Arbitraire
+	continues research into these faster algorithms.
 
 	Square root:
 		Newton's method is used for square root. Our square root
