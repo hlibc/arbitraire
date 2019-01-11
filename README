@@ -10,11 +10,9 @@ Arbitraire
 	speed with other arbitrary precision implementations 
 
 	Arbitraire represents continued research into numerical properties and
-	numeracy in general. There are no plans for it to ever be truly done as
-	the study offers a nearly endless amount of tradeoffs, new algorithms
-	and challenges. An opaque API is provided which ensures that as
-	arbitraire changes and improves that there will be a stable API contract
-	for those using the library.
+	algorithms. There are no plans for it to ever be truly done as the study 
+	offers a nearly endless amount of tradeoffs, new algorithms and 
+	challenges.
 	
 	Special care was taken to never compromise by shifting numbers around 
 	in such a way as to force correct results. In effect, I believe 
@@ -24,22 +22,10 @@ Arbitraire
 	you see is what you get, and the numerical requests you make are the 
 	ones used internally. 
 
-	As of the time of this writing, arbitraire is only about 1400 lines of 
-	code, with a few hundred more representing some ongoing experiments. 
-	Along the way, a special lesson was learned -- one showing that 
-	mathematics implementations work best when they are massively simplified
-	and allowed to take a natural form. As optimization strategies are 
-	implemented and layered over arbitraire these properties will no longer 
-	be evident, but do take note that we found the current path by valuing 
-	beauty and simplicity and the memory safety that often comes with it 
-	until the correct properties emerged.
-
 	Division:
 		Knuth's algorithm D is used for division. Faster division
 	algorithms do exist, but in general Knuth's algorithm D suffices for 
-	production grade arbitrary precision methods. Care was taken to follow 
-	Knuth's TAOCP methods as closely as possible.
-	
+	production grade arbitrary precision methods.
 
 	Subtraction and addition:
 		Subtractions that cross the zero threshold have a special 
@@ -61,7 +47,7 @@ Arbitraire
 	greater speeds were achieved by breaking the numbers apart and operating
 	on them recursively. Since then, many faster variants of multiplication
 	have been discovered, namely Fast Fourier Transformation multiplication
-	and Toom-3. To this day (2018), the issue of the fastest possible
+	and Toom-3. To this day (2019), the issue of the fastest possible
 	multiplication algorithm is an open problem in computing. Arbitraire
 	continues research into these faster algorithms.
 
@@ -75,29 +61,17 @@ Arbitraire
 	historical algorithm.
 
 
-	Arbitraire continues research into other mathematics operations, These 
-	algorithms are under construction but should not be used at this time. 
-	They are as follows:
-
-		long hand square root
-		school book long division
-		Newton's method for division
-		Newton's method for Nth root
-		Fast Fourier transformation multiplication
-		Taylor series sin, cos, tan, tanh and exp
-
-
 	Arbitraire strictly follows POSIX and the C99/C11 standards, ergo, it is
 	portable to any POSIX compliant system and works with all of the
-	architectures offered by linux. mac, netbsd, freebsd, openbsd and
-	indeed many other systems.
+	architectures offered by linux. mac, netbsd, freebsd, openbsd and indeed 
+	many other systems.
 
-	Arbitraire's "fxdpnt" number system allows for efficient, POSIX 
+	Arbitraire's "fxdpnt" number system allows for efficient POSIX 
 	compliant implementations of POSIX bc. It is a "pen and paper" style of
-	number system yet with POSIX `bc' 'scale=' and printing semantics. For
-	these semantics the 'base' field has to be set to 10. However, the 
-	ability to operate natively in other bases is left as a decision to the
-	caller of the functions.
+	number system yet with POSIX bc scale and printing semantics. For these 
+	semantics the 'base' field has to be set to 10. However, the ability to 
+	operate natively in other bases is left as a decision to the caller of 
+	the functions.
 
 	Arbitraire is an original work authored by CM Graff.
 
