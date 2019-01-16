@@ -1,6 +1,6 @@
 #include "internal.h"
 
-int iszero(fxdpnt *a)
+int iszero(const fxdpnt *a)
 {
 	size_t i = 0;
 	for (i=0; i < a->len; ++i) {

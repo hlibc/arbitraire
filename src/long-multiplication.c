@@ -27,7 +27,7 @@
 
 */
 
-size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int base)
+size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
 {
 	UARBT prod = 0;
 	UARBT carry = 0;
@@ -68,7 +68,7 @@ size_t arb_mul_core(UARBT *a, size_t alen, UARBT *b, size_t blen, UARBT *c, int 
 	return ret;
 }
 
-fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+fxdpnt *arb_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
 	_arb_time_start;
 	/* use karatsuba multiplication if either operand is over 1000 digits */
@@ -81,7 +81,7 @@ fxdpnt *arb_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	return c;
 }
 
-fxdpnt *arb_mul2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+fxdpnt *arb_mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 { 
 	fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
         arb_setsign(a, b, c2);
@@ -92,14 +92,14 @@ fxdpnt *arb_mul2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
         return c2;
 }
 
-void mul(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
+void mul(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
 {
 	_internal_debug;
 	*c = arb_mul(a, b, *c, base, scale);
 	_internal_debug_end;
 }
 
-void mul2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
+void mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
 {
 	_internal_debug;
 	*c = arb_mul2(a, b, *c, base, scale);

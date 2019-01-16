@@ -46,25 +46,25 @@ extern long _arb_time;
 
 /* function prototypes */
 /* arithmetic */
-fxdpnt *arb_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-fxdpnt *arb_mul2(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-size_t arb_mul_core(UARBT *, size_t, UARBT *, size_t, UARBT *, int);
-fxdpnt *arb_karatsuba_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-fxdpnt *arb_add_inter(fxdpnt *, fxdpnt *, fxdpnt *, int);
-fxdpnt *arb_sub_inter(fxdpnt *, fxdpnt *, fxdpnt *, int);
-fxdpnt *arb_sub(fxdpnt *, fxdpnt *, fxdpnt *, int);
-fxdpnt *arb_add(fxdpnt *, fxdpnt *, fxdpnt *, int);
-fxdpnt *arb_sub2(fxdpnt *, fxdpnt *, fxdpnt *, int);
-fxdpnt *arb_add2(fxdpnt *, fxdpnt *, fxdpnt *, int);
+fxdpnt *arb_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_mul2(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
+size_t arb_mul_core(const UARBT *, size_t, const UARBT *, size_t, UARBT *, int);
+fxdpnt *arb_karatsuba_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_add_inter(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
+fxdpnt *arb_sub_inter(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
+fxdpnt *arb_sub(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
+fxdpnt *arb_add(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
+fxdpnt *arb_sub2(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
+fxdpnt *arb_add2(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_newtonian_div(fxdpnt *, fxdpnt *, fxdpnt *, int, int);
-fxdpnt *arb_div(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_div(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 /* modulus */
 fxdpnt *arb_mod(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 /* logical shift */
 fxdpnt *arb_leftshift(fxdpnt *, size_t);
 /* general */
 void arb_flipsign(fxdpnt *);
-void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);
+void arb_setsign(const fxdpnt *, const fxdpnt *, fxdpnt *);
 /* io */
 void arb_print(fxdpnt *);
 void arb_debug(fxdpnt *, char *);
@@ -98,7 +98,7 @@ size_t fxd2sizet(fxdpnt *, int);
 fxdpnt *remove_leading_zeros(fxdpnt *);
 size_t rr(const fxdpnt*);
 size_t rl(const fxdpnt*);
-int iszero(fxdpnt*);
+int iszero(const fxdpnt*);
 /* exp */
 fxdpnt *arb_exp(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 /* novelties */
@@ -113,13 +113,13 @@ char *make_bignum(size_t, int, int);
 /* function wrappers for simpler math handling */
 void incr(fxdpnt **, int, char *);
 void decr(fxdpnt **, int, char *);
-void sub(fxdpnt *, fxdpnt *, fxdpnt **, int, char *);
-void add(fxdpnt *, fxdpnt *, fxdpnt **, int, char *);
-void sub2(fxdpnt *, fxdpnt *, fxdpnt **, int, char *);
-void add2(fxdpnt *, fxdpnt *, fxdpnt **, int, char *);
-void mul(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
-void mul2(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
-void divv(fxdpnt *, fxdpnt *, fxdpnt **, int, size_t, char *);
+void sub(const fxdpnt *, const fxdpnt *, fxdpnt **, int, char *);
+void add(const fxdpnt *, const fxdpnt *, fxdpnt **, int, char *);
+void sub2(const fxdpnt *, const fxdpnt *, fxdpnt **, int, char *);
+void add2(const fxdpnt *, const fxdpnt *, fxdpnt **, int, char *);
+void mul(const fxdpnt *, const fxdpnt *, fxdpnt **, int, size_t, char *);
+void mul2(const fxdpnt *, const fxdpnt *, fxdpnt **, int, size_t, char *);
+void divv(const fxdpnt *, const fxdpnt *, fxdpnt **, int, size_t, char *);
 /* oddity */
 int oddity(size_t);
 /* memset */

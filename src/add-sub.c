@@ -24,7 +24,7 @@
 /* _pl() draws from an imaginary array of zeros and allows add and sub to work
    on numbers with varying magnitudes in a concise manner
 */
-UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
+UARBT _pl(const fxdpnt *a, const fxdpnt *b, size_t *cnt, size_t r)
 {
 	UARBT temp = 0;
 	if ((rr(a)) < (rr(b)))
@@ -39,7 +39,7 @@ UARBT _pl(fxdpnt *a, fxdpnt *b, size_t *cnt, size_t r)
 }
 
 /* the actual addition */
-fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+fxdpnt *arb_add_inter(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0;
 	size_t j = 0;
@@ -71,7 +71,7 @@ fxdpnt *arb_add_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 }
 
 /* the actual subtraction */
-fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+fxdpnt *arb_sub_inter(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0;
 	size_t j = 0;
@@ -118,28 +118,28 @@ fxdpnt *arb_sub_inter(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 }
 
 /* wrappers and identity redirection for add and sub */
-fxdpnt *arb_add(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+fxdpnt *arb_add(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	c = arb_add2(a, b, c, base);
 	c = remove_leading_zeros(c);
 	return c;
 }
 
-fxdpnt *arb_sub(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+fxdpnt *arb_sub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	c = arb_sub2(a, b, c, base);
 	c = remove_leading_zeros(c);
 	return c;
 }
 
-void sub(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
+void sub(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, char *m)
 { 
 	_internal_debug; 
 	*c = arb_sub(a, b, *c, base);
 	_internal_debug_end;
 }
 
-void add(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
+void add(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, char *m)
 {
 	_internal_debug; 
 	*c = arb_add(a, b, *c, base);
@@ -160,7 +160,7 @@ void incr(fxdpnt **c, int base, char *m)
 	_internal_debug_end;
 }
 
-fxdpnt *arb_add2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
 	c2->lp = MAX(rl(a), rl(b));
@@ -179,7 +179,7 @@ fxdpnt *arb_add2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	return c2;
 }
 
-fxdpnt *arb_sub2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
 	c2->lp = MAX(rl(a), rl(b));
@@ -201,14 +201,14 @@ fxdpnt *arb_sub2(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	return c2;
 }
 
-void sub2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
+void sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, char *m)
 { 
 	_internal_debug; 
 	*c = arb_sub2(a, b, *c, base);
 	_internal_debug_end;
 }
 
-void add2(fxdpnt *a, fxdpnt *b, fxdpnt **c, int base, char *m)
+void add2(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, char *m)
 {
 	_internal_debug; 
 	*c = arb_add2(a, b, *c, base);

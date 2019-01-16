@@ -78,7 +78,7 @@ int _long_sum(UARBT *u, size_t i, UARBT *v, size_t k, int b, uint8_t lever)
 }
 
 
-fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
+fxdpnt *arb_div_inter(const fxdpnt *num, const fxdpnt *den, fxdpnt *q, int b, size_t scale)
 {
 	UARBT *u = NULL;
 	UARBT *v = NULL;
@@ -112,7 +112,9 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	arb_mul_core(p, leb, &norm, 1, v, b);
 	if (!*v) /* deal with a possible zero from arb_mul_core */
 		v++;
-	
+
+	/* zeros */
+
 	/* compute the scales for the final solution */
 	lea = rl(num) + rr(den);
 	q->lp = 1;
@@ -123,6 +125,8 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 			q->lp = lea - leb + 1;
 	}
 	q->len = q->lp + scale;
+
+
 
 	/* begin the division operation */
 	if (out_of_scale)
@@ -160,7 +164,7 @@ fxdpnt *arb_div_inter(fxdpnt *num, fxdpnt *den, fxdpnt *q, int b, size_t scale)
 	return q;
 }
 
-fxdpnt *arb_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+fxdpnt *arb_div(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
 	fxdpnt *c2 = arb_expand(NULL, a->len + b->len + scale);
 	arb_init(c2);
@@ -170,7 +174,7 @@ fxdpnt *arb_div(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
 	return c2;
 }
 
-void divv(fxdpnt *num, fxdpnt *den, fxdpnt **c, int b, size_t scale, char *m)
+void divv(const fxdpnt *num, const fxdpnt *den, fxdpnt **c, int b, size_t scale, char *m)
 {
 	_internal_debug;
 	*c = arb_div(num, den, *c, b, scale);

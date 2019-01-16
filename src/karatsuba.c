@@ -6,7 +6,7 @@
 	arb_add2 and arb_sub2 are simply variants which do not strip zeros.
 */
 
-static fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
+static fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	if (b->len < 100 || a->len < 100) {
 		return arb_mul2(b, a, c, base, 10);
@@ -60,7 +60,7 @@ static fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base)
 	return c;
 }
 
-fxdpnt *arb_karatsuba_mul(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+fxdpnt *arb_karatsuba_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 { 
 	/* karatsuba is described as taking an extra bit/limb, hence the +3 */
 	fxdpnt *c2 = arb_expand(NULL, a->len + b->len + 3);
