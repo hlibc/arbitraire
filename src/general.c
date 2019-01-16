@@ -69,7 +69,7 @@ void *arb_realloc(void *ptr, size_t len)
 	return ret;
 }
 
-void arb_cleanup(void)
+static void arb_cleanup(void)
 {
 	/* this function is called by atexit() and should never be
 	   invoked manually */
