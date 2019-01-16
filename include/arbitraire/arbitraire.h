@@ -20,19 +20,19 @@ typedef struct fxdpnt fxdpnt;
 
 /* function prototypes */
 /* arithmetic */
-fxdpnt *arb_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-fxdpnt *arb_karatsuba_mul(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
-fxdpnt *arb_sub(fxdpnt *, fxdpnt *, fxdpnt *, int);
-fxdpnt *arb_add(fxdpnt *, fxdpnt *, fxdpnt *, int);
+fxdpnt *arb_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_karatsuba_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_sub(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
+fxdpnt *arb_add(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_newtonian_div(fxdpnt *, fxdpnt *, fxdpnt *, int, int);
-fxdpnt *arb_div(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_div(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 /* modulus */
-fxdpnt *arb_mod(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_mod(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 /* logical shift */
 fxdpnt *arb_leftshift(fxdpnt *, size_t);
 /* general */
 void arb_flipsign(fxdpnt *);
-void arb_setsign(fxdpnt *, fxdpnt *, fxdpnt *);
+void arb_setsign(const fxdpnt *, const fxdpnt *, fxdpnt *);
 /* io */
 void arb_print(fxdpnt *);
 fxdpnt *arb_str2fxdpnt(const char *);
@@ -74,9 +74,7 @@ char *make_bignum(size_t, int, int);
 int oddity(size_t);
 /* new */
 fxdpnt *nthroot(fxdpnt *a, int base, size_t scale);
-void split_test(fxdpnt *a, fxdpnt *b);
-size_t split(fxdpnt *a, fxdpnt *b, fxdpnt **aa, fxdpnt **bb, fxdpnt **cc, fxdpnt **dd);
-fxdpnt *karatsuba(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale);
+fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale);
 void arb_attrs(fxdpnt *, char *);
 /* transcendental */
 fxdpnt* arb_sin(fxdpnt *, int, size_t);
