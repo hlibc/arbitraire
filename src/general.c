@@ -13,12 +13,12 @@ void arb_error(char *message)
 }
 
 /* wrappers to expose the length of the number on either side of the radix */
-size_t rl(fxdpnt *a)
+size_t rl(const fxdpnt *a)
 {
 	return a->lp;
 }
 
-size_t rr(fxdpnt *a)
+size_t rr(const fxdpnt *a)
 {
 	return a->len - a->lp;
 }
