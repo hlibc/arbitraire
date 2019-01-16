@@ -59,7 +59,7 @@ fxdpnt *arb_add2(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_newtonian_div(fxdpnt *, fxdpnt *, fxdpnt *, int, int);
 fxdpnt *arb_div(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 /* modulus */
-fxdpnt *arb_mod(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_mod(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 /* logical shift */
 fxdpnt *arb_leftshift(fxdpnt *, size_t);
 /* general */

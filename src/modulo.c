@@ -6,7 +6,7 @@
 */
 
 
-fxdpnt *arb_mod(fxdpnt *a, fxdpnt *b, fxdpnt *c, int base, size_t scale)
+fxdpnt *arb_mod(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
 	size_t newscale = MAX(a->len, b->len + scale);
 	fxdpnt *tmp = arb_expand(NULL, newscale);
