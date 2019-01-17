@@ -1,7 +1,11 @@
 #include "internal.h"
+/*
+TODO: This compare function is not const. one option is
+	to use temporary pointers and variables for all of the values in each
+	struct and then increment/decrement them accordingly
+*/
 
-// check whether trailing digits from idx to a->len are 0s
-// return 1 if these digits are zeros, return 0 if not
+
 static int is_trailing_zeros(fxdpnt *a, size_t idx)
 {
 	while (idx < a->len) {
