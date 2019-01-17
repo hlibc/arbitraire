@@ -87,7 +87,6 @@ fxdpnt *arb_div_inter(const fxdpnt *num, const fxdpnt *den, fxdpnt *q, int b, si
 	UARBT *p = NULL;
 	UARBT qg = 0;
 	UARBT norm = 0;
-	uint8_t out_of_scale = 0;
 	size_t lea = 0;
 	size_t leb = 0;
 	size_t i = 0;
@@ -115,24 +114,18 @@ fxdpnt *arb_div_inter(const fxdpnt *num, const fxdpnt *den, fxdpnt *q, int b, si
 	if (!*v) /* deal with a possible zero from arb_mul_core */
 		v++;
 
-	/* zeros */
-
 	/* compute the scales for the final solution */
 	lea = rl(num) + rr(den);
 	q->lp = 1;
 	if (leb > lea+scale) {
-		out_of_scale = 1; 
+		q->len = q->lp + scale;	
+		goto end;
 	} else {
 		if (!(leb>lea))
 			q->lp = lea - leb + 1;
 	}
 	q->len = q->lp + scale;
-
-
-
 	/* begin the division operation */
-	if (out_of_scale)
-		goto end;
 
 	if (leb > lea)
 		j = (leb-lea);
@@ -153,7 +146,7 @@ fxdpnt *arb_div_inter(const fxdpnt *num, const fxdpnt *den, fxdpnt *q, int b, si
 				goto D7;
 			qg = qg - 1;
 			if (_long_sum(u+leb, i, v, leb-1, b, 0))
-				u[0] = 0; 
+				u[0] = 0;
 		}
 		D7: /* D7 */
 		q->number[j] = qg;
