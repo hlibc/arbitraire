@@ -18,7 +18,7 @@ int arb_highbase(int a)
 		return a;
 }
 
-void _print_core(FILE *fp, UARBT *number, size_t len, size_t radix, size_t sign)
+void _print_core(FILE *fp, const UARBT *number, size_t len, size_t radix, size_t sign)
 {
 	size_t i = 0;
 	size_t k = sign; /* set to 1 or 0 -- to account for the sign */
@@ -47,7 +47,7 @@ void _print_core(FILE *fp, UARBT *number, size_t len, size_t radix, size_t sign)
 	fflush(fp);
 }
 
-void arb_fprint(FILE *fp, fxdpnt *flt)
+void arb_fprint(FILE *fp, const fxdpnt *flt)
 {
 	if (flt == NULL) {
 		fputs("number was (null)\n", fp);
@@ -69,17 +69,17 @@ void arb_fprint(FILE *fp, fxdpnt *flt)
 	fflush(fp);
 }
 
-void arb_print(fxdpnt *flt)
+void arb_print(const fxdpnt *flt)
 { 
 	arb_fprint(stdout, flt);
 }
 
-void arb_printerr(fxdpnt *flt)
+void arb_printerr(const fxdpnt *flt)
 {
 	arb_fprint(stderr, flt);
 }
 
-void arb_printtrue(fxdpnt *flt)
+void arb_printtrue(const fxdpnt *flt)
 {
 	size_t k = 0;
 	if (flt->sign == '-') {
