@@ -8,12 +8,12 @@
 
 static fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
-	if (b->len < 100 || a->len < 100) {
+	if (b->len <= 100 || a->len <= 100) {
 		return arb_mul2(b, a, c, base, 10);
 	}
 
 	size_t m = (MIN(a->len, b->len)+1) / 2;
-	
+
 	/* all but z5 get their memory from the calling functions */
 	fxdpnt *z1, *z2, *z3, *z4, *z6, *z7, *z8;
 	z1 = z2 = z3 = z4 = z6 = z7 = z8 = NULL;

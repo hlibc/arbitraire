@@ -50,7 +50,7 @@
 	if so, any time before about Dec 2018 would be fine.
 */
 
-int _long_sum(UARBT *u, size_t i, UARBT *v, size_t k, int b, uint8_t lever)
+int _long_sum(UARBT *u, size_t i, const UARBT *v, size_t k, int b, uint8_t lever)
 {
 	uint8_t carrborr = 0;
 	ARBT val = 0;

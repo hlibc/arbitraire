@@ -27,6 +27,48 @@
 
 */
 
+
+size_t arb_mul_basic(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
+{
+	UARBT prod = 0;
+	UARBT carry = 0;
+	size_t i = 0;
+	size_t j = 0;
+	size_t k = 0;
+	size_t last = 0;
+	size_t ret = 0;
+
+	c[0] = 0;
+	c[alen+blen-1] = 0;
+
+	/* move zeros onto the solution and reduce the mag of the operands */
+	for (;alen > 3 && ! a[alen-1]; ++ret) {
+		c[--alen + blen -1] = 0;
+	}
+	for (;blen > 3 && ! b[blen-1]; ++ret) {
+		c[alen + --blen -1] = 0;
+	}
+
+	/* outer loop -- first operand */
+	for (i = alen; i > 0 ; i--){
+		last = k;
+		/* inner loop, second operand */
+		for (j = blen, k = i + j, carry = 0; j > 0 ; j--, k--){
+			prod = a[i-1] * b[j-1] + c[k-1] + carry;
+			carry = prod / base;
+			c[k-1] = prod % base;
+		}
+		/* self zeroing */
+		if (k != last) { 
+			++ret;
+			c[k-1] = 0;
+		}
+		c[k-1] += carry;
+	}
+
+	return ret;
+}
+
 size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
 {
 	UARBT prod = 0;
