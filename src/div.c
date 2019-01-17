@@ -93,8 +93,10 @@ fxdpnt *arb_div_inter(const fxdpnt *num, const fxdpnt *den, fxdpnt *q, int b, si
 	size_t i = 0;
 	size_t j = 0;
 
-	if (iszero(den) == 0)
-		arb_error("divide by zero\n"); 
+	if (iszero(den) == 0) {
+		fputs("Divide by zero\n", stderr);
+		return NULL;
+	}
 
 	/* temporary storage and storage for normalized den and num */
 	u = arb_calloc(1, (num->len + rr(den) + 3 + scale) * sizeof(UARBT));
