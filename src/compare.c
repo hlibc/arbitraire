@@ -3,6 +3,8 @@
 TODO: This compare function is not const. one option is
 	to use temporary pointers and variables for all of the values in each
 	struct and then increment/decrement them accordingly
+
+	Copyright Bao Hexing 2018
 */
 
 
