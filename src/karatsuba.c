@@ -4,6 +4,8 @@
 	Karatsuba multiplication
 
 	arb_add2 and arb_sub2 are simply variants which do not strip zeros.
+
+	Copyright Hexingb and CM Graff 2018-2019
 */
 
 static fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
