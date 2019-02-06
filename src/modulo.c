@@ -2,7 +2,7 @@
 
 /*
 	This is a basic modulus operation which naturally handles fractional
-	arguments using the formula: modulus(a) = a - (b * (a / b))
+	arguments using the formula: modulus(a, b) = a - (b * (a / b))
 */
 
 
