@@ -24,6 +24,83 @@
 /* _pl() draws from an imaginary array of zeros and allows add and sub to work
    on numbers with varying magnitudes in a concise manner
 */
+
+/*
+	todo: alternate add and sub impls
+
+	most implementations are using compare() beforehand for subtractions
+
+	using this technique it is probably not required to do the comparison
+	for addition itself
+*/
+fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
+{
+	/* 
+	this is a new experimental add() function that should be a little
+	faster than our current one.
+
+	there are still bugs to be worked out. it works for most inputs but
+	not all.
+	*/
+	size_t i = 0;
+	size_t j = MAX(a->len, b->len);
+	size_t len = 0;
+	int sum = 0;
+	int carry = 0;
+	size_t k = 0;
+	size_t z = a->len;
+	size_t y = b->len;
+	size_t hold = j;
+
+	/* take care of differing tails to the right of the radix */
+	if (rr(a) > rr(b))
+	{
+		len = rr(a) - rr(b);
+		for (i=0;i<len;i++, j--)
+		{
+			c->number[j] = a->number[z--];
+		}
+	}
+	
+	else if (rr(b) > rr(a))
+	{
+		len = rr(b) - rr(a);
+		for (k=0;k<len;k++, j--)
+		{
+			c->number[j] = b->number[y--];
+		}
+	}
+	/* numbers are now compatible for a straight-forward add */
+	for (;i<=a->len || k <= b->len;i++, j--, k++)
+	{
+		if (i < le(a) && k < le(b))
+			sum = a->number[z--] + b->number[y--] + carry;
+		else if (i < le(a))
+			sum = a->number[z--] + carry;
+		else if (k < le(b))
+			sum = b->number[y--] + carry;
+			
+		carry = 0;
+		if (sum >= base)
+		{
+			sum -= base;
+			carry = 1;
+		}
+		c->number[j] = sum;
+	}
+	
+	c->len = hold;
+	if (carry) {
+		for(i = c->len+1;i > 0; i--)
+			c->number[i] = c->number[i-1];
+		c->number[0] = 1;
+		c->len++;
+		c->lp++;
+	}
+
+	return c;
+}
+
 UARBT _pl(const fxdpnt *a, const fxdpnt *b, size_t *cnt, size_t r)
 {
 	UARBT temp = 0;
@@ -168,6 +245,7 @@ fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	if (a->sign == '-' && b->sign == '-') {
 		arb_flipsign(c2);
 		c2 = arb_add_inter(a, b, c2, base);
+		//c2 = newadd(a, b, c2, base);
 	}
 	else if (a->sign == '-')
 		c2 = arb_sub_inter(b, a, c2, base);
@@ -175,6 +253,7 @@ fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		c2 = arb_sub_inter(a, b, c2, base);
 	else
 		c2 = arb_add_inter(a, b, c2, base);
+		//c2 = newadd(a, b, c2, base);
 	arb_free(c);
 	return c2;
 }
@@ -192,9 +271,11 @@ fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	else if (a->sign == '-'){
 		arb_flipsign(c2);
 		c2 = arb_add_inter(a, b, c2, base);
+		//c2 = newadd(a, b, c2, base);
 	}
 	else if (b->sign == '-' || a->sign == '-')
 		c2 = arb_add_inter(a, b, c2, base);
+		//c2 = newadd(a, b, c2, base);
 	else
 		c2 = arb_sub_inter(a, b, c2, base);
 	arb_free(c);
@@ -213,4 +294,4 @@ void add2(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, char *m)
 	_internal_debug; 
 	*c = arb_add2(a, b, *c, base);
 	_internal_debug_end;
-} 
+}
