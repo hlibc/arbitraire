@@ -23,6 +23,11 @@ size_t rr(const fxdpnt *a)
 	return a->len - a->lp;
 }
 
+size_t le(const fxdpnt *a)
+{
+	return a->len;
+}
+
 /* memory management and bignum creation routines */
 void arb_free(fxdpnt *flt)
 {

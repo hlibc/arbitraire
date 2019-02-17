@@ -98,6 +98,7 @@ size_t fxd2sizet(fxdpnt *, int);
 fxdpnt *remove_leading_zeros(fxdpnt *);
 size_t rr(const fxdpnt*);
 size_t rl(const fxdpnt*);
+size_t le(const fxdpnt *);
 int iszero(const fxdpnt*);
 /* exp */
 fxdpnt *arb_exp(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
