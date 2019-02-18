@@ -33,6 +33,31 @@
 	using this technique it is probably not required to do the comparison
 	for addition itself
 */
+fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
+{
+	(void)a;
+	(void)b;
+	(void)c;
+	(void)base;
+	/* experimental subtraction function  -- under construction -- */
+	/*
+	         123.123
+	  -  1234567.891234
+		--> this would normally be resolved by moving the large number to the top
+		    however, we can also resolve it by using the base-1-N mirror technique
+
+		an important thing to consider is that conditionals should be removed.
+		so the more digits that can be hamdled with a single test the better.
+
+		The rearrangement of the operands after compare() is tangential and even
+		perhaps a red-herring issue compared to the effectiveness of removing
+		conditionals 
+
+		newsub is basically the subtraction variant of the "newadd" algorithm
+		below.
+	*/
+}
+
 fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	/* 
@@ -43,7 +68,7 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	not all.
 	*/
 	size_t i = 0;
-	size_t j = MAX(a->len, b->len);
+	size_t j = MAX(a->len, b->len) -1;
 	size_t len = 0;
 	int sum = 0;
 	int carry = 0;
@@ -56,8 +81,7 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	if (rr(a) > rr(b))
 	{
 		len = rr(a) - rr(b);
-		for (i=0;i<len;i++, j--)
-		{
+		for (i=0;i<len;i++, j--) {
 			c->number[j] = a->number[z--];
 		}
 	}
@@ -65,20 +89,25 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	else if (rr(b) > rr(a))
 	{
 		len = rr(b) - rr(a);
-		for (k=0;k<len;k++, j--)
-		{
+		for (k=0;k<len;k++, j--) {
 			c->number[j] = b->number[y--];
 		}
 	}
 	/* numbers are now compatible for a straight-forward add */
-	for (;i<=a->len || k <= b->len;i++, j--, k++)
+	for (;i<=a->len || k <= b->len && j > 0;i++, j--, k++)
 	{
-		if (i < le(a) && k < le(b))
+		if (i <= le(a) && k <= le(b)) {
 			sum = a->number[z--] + b->number[y--] + carry;
-		else if (i < le(a))
+			
+		}
+		else if (i <= le(a)) {
 			sum = a->number[z--] + carry;
-		else if (k < le(b))
+		
+		}
+		else if (k <= le(b)) {
 			sum = b->number[y--] + carry;
+	
+		}
 			
 		carry = 0;
 		if (sum >= base)
@@ -89,7 +118,8 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		c->number[j] = sum;
 	}
 	
-	c->len = hold;
+	c->len = hold + 1;
+
 	if (carry) {
 		for(i = c->len+1;i > 0; i--)
 			c->number[i] = c->number[i-1];
@@ -239,7 +269,7 @@ void incr(fxdpnt **c, int base, char *m)
 
 fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
-	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 100);
 	c2->lp = MAX(rl(a), rl(b));
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-') {
@@ -260,7 +290,7 @@ fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 
 fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
-	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 100);
 	c2->lp = MAX(rl(a), rl(b));
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-')
