@@ -1,62 +1,51 @@
 #include "internal.h"
 /*
-TODO: This compare function is not const. one option is
-	to use temporary pointers and variables for all of the values in each
-	struct and then increment/decrement them accordingly
-
 	Copyright Bao Hexing 2018
 */
 
-
-static int is_trailing_zeros(fxdpnt *a, size_t idx)
-{
+static int is_trailing_zeros(const fxdpnt *a, size_t idx) {
 	while (idx < a->len) {
-		if (a->number[idx] != 0) {
-			return 0;
-		}
+		if (a->number[idx] != 0) return 0;
 		++idx;
 	}
 	return 1;
 }
 
-int arb_compare(fxdpnt *a, fxdpnt *b, int base)
-{
-	size_t i;
+int arb_compare(const fxdpnt *a, const fxdpnt *b, int base) {
+	size_t a_pos = 0;
+	size_t b_pos = 0;
 	int result = 0;
-	if (a->sign == '-' && b->sign == '+')
-		return -1;
-	if (a->sign == '+' && b->sign == '-')
-		return 1;
 
-	a = remove_leading_zeros(a);
-	b = remove_leading_zeros(b);
+	if (a->sign == '-' && b->sign == '+') return -1;
+	if (a->sign == '+' && b->sign == '-') return 1;
 
-	if (a->lp > b->lp) {
+	for (a_pos = 0; a_pos < a->lp && a->number[a_pos] == 0; ++a_pos)
+		;
+	for (b_pos = 0; b_pos < b->lp && b->number[b_pos] == 0; ++b_pos)
+		;
+
+	if (a->lp - a_pos > b->lp - b_pos)
 		result = 1;
-	} else if (a->lp < b->lp) {
+	else if (a->lp - a_pos < b->lp - b_pos)
 		result = -1;
-	} else {
-		for (i = 0; i < a->len && i < b->len; ++i) {
-			if (a->number[i] > b->number[i]) {
-				result = 1;
-				break;
-			} else if (a->number[i] < b->number[i]) {
-				result = -1;
-				break;
-			}
-		}
+	else {
+		for (; a_pos < a->len && b_pos < b->len &&
+			   a->number[a_pos] == b->number[b_pos];
+			 a_pos++, b_pos++)
+			;
 
-		// a->lp == b->lp, so fractional parts have different length
-		if (i == a->len && i < b->len && !is_trailing_zeros(b, a->len)) {
+		if (a_pos == a->len && b_pos < b->len && !is_trailing_zeros(b, b_pos))
 			result = -1;
-		}
-
-		if (i == b->len && i < a->len && !is_trailing_zeros(a, b->len)) {
+		else if (b_pos == b->len && b_pos < a->len &&
+				 !is_trailing_zeros(a, a_pos))
 			result = 1;
-		}
+		else if (a_pos == a->len && b_pos == b->len)
+			result = 0;
+		else
+			result = a->number[a_pos] - b->number[b_pos];
 	}
 
-	if (a->sign == '-') { // and also b->sign == '-'
+	if (a->sign == '-') {  // and also b->sign == '-'
 		result = 0 - result;
 	}
 
