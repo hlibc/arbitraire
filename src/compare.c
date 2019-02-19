@@ -39,6 +39,8 @@ int arb_compare(const fxdpnt *a, const fxdpnt *b, int base) {
 		else if (b_pos == b->len && b_pos < a->len &&
 				 !is_trailing_zeros(a, a_pos))
 			result = 1;
+		else if (a_pos == a->len && b_pos == b->len)
+			result = 0;
 		else
 			result = a->number[a_pos] - b->number[b_pos];
 	}
