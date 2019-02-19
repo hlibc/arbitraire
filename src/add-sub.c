@@ -101,7 +101,7 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	return c;
 }
 
-UARBT _pl(const fxdpnt *a, const fxdpnt *b, size_t *cnt, size_t r)
+static UARBT _pl(const fxdpnt *a, const fxdpnt *b, size_t *cnt, size_t r)
 {
 	UARBT temp = 0;
 	if ((rr(a)) < (rr(b)))
