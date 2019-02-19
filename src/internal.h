@@ -9,30 +9,30 @@
 #define _ARB_TIME 0
 #endif
 
-#include <limits.h>
-#include <math.h>
-#include <stdarg.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <unistd.h>
+#include <string.h>
+#include <limits.h>
+#include <stdint.h>
+#include <math.h>
+#include <time.h>
+#include <stdarg.h>
 
-#define ARBT int16_t
-#define UARBT uint8_t
+#define ARBT	int16_t
+#define UARBT	uint8_t
 
 /* basic defines */
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define MIN(a, b) ((a) > (b) ? (b) : (a))
+#define MAX(a,b) ((a)>(b)?(a):(b))
+#define MIN(a,b) ((a)>(b)?(b):(a))
 
 /* structures */
-typedef struct {	  /* fxdpnt fixed point type */
-	UARBT *number;	/* The actual number */
-	char sign;		  /* Sign */
-	size_t lp;		  /* Length left of radix */
-	size_t len;		  /* Length of number (count of digits / limbs) */
-	size_t allocated; /* Length of allocated memory */
+typedef struct {		/* fxdpnt fixed point type */
+	UARBT *number;		/* The actual number */
+	char sign;		/* Sign */
+	size_t lp;		/* Length left of radix */
+	size_t len;		/* Length of number (count of digits / limbs) */
+	size_t allocated;	/* Length of allocated memory */
 } fxdpnt;
 
 /* globals */
@@ -49,8 +49,7 @@ extern long _arb_time;
 fxdpnt *arb_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 fxdpnt *arb_mul2(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 size_t arb_mul_core(const UARBT *, size_t, const UARBT *, size_t, UARBT *, int);
-fxdpnt *arb_karatsuba_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int,
-						  size_t);
+fxdpnt *arb_karatsuba_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 fxdpnt *arb_add_inter(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_sub_inter(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_sub(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
@@ -75,7 +74,7 @@ fxdpnt *arb_str2fxdpnt(const char *);
 fxdpnt *arb_parse_str(fxdpnt *, const char *);
 int arb_highbase(int);
 /* comparison */
-int arb_compare(const fxdpnt *, const fxdpnt *, int);
+int arb_compare(fxdpnt *, fxdpnt *, int);
 /* copying */
 void _arb_copy_core(UARBT *, UARBT *, size_t);
 void *arb_copy(fxdpnt *, fxdpnt *);
@@ -97,10 +96,10 @@ fxdpnt *hrdware2arb(size_t);
 size_t fxd2sizet(fxdpnt *, int);
 /* general */
 fxdpnt *remove_leading_zeros(fxdpnt *);
-size_t rr(const fxdpnt *);
-size_t rl(const fxdpnt *);
+size_t rr(const fxdpnt*);
+size_t rl(const fxdpnt*);
 size_t le(const fxdpnt *);
-int iszero(const fxdpnt *);
+int iszero(const fxdpnt*);
 /* exp */
 fxdpnt *arb_exp(fxdpnt *, fxdpnt *, fxdpnt *, int, size_t);
 /* novelties */
@@ -127,7 +126,7 @@ int oddity(size_t);
 /* memset */
 void *_arb_memset(void *, int, size_t);
 /* transcendental functions */
-fxdpnt *arb_sin(fxdpnt *, int, size_t);
+fxdpnt* arb_sin(fxdpnt *, int, size_t);
 fxdpnt *arb_cos(fxdpnt *, int, size_t);
 fxdpnt *arb_cosh(fxdpnt *, int, size_t);
 fxdpnt *arb_sinh(fxdpnt *, int, size_t);
@@ -135,20 +134,20 @@ fxdpnt *arb_exp_trans(fxdpnt *, int, size_t);
 
 /* some macros to make debugging and timing less intrusive */
 #define _arb_time_start \
-	if (_ARB_TIME) _arb_time = clock()
+if (_ARB_TIME) \
+_arb_time = clock()
 
-#define _arb_time_end                               \
-	if (_ARB_TIME) {                                \
-		_arb_time = clock() - _arb_time;            \
-		fprintf(stderr, "time = %ld\n", _arb_time); \
-	}
+#define _arb_time_end \
+if (_ARB_TIME)  {\
+_arb_time = clock() - _arb_time; \
+fprintf(stderr, "time = %ld\n", _arb_time); }
 
-#define _internal_debug               \
-	if (_ARB_DEBUG && m) {            \
-		fprintf(stderr, __func__);    \
-		fprintf(stderr, "()  %s", m); \
-	}
-#define _internal_debug_end \
-	if (_ARB_DEBUG && m) arb_printtrue(*c);
+#define _internal_debug if (_ARB_DEBUG && m) { \
+fprintf(stderr, __func__); \
+fprintf(stderr, "()  %s", m); \
+}
+#define _internal_debug_end if (_ARB_DEBUG && m) \
+arb_printtrue(*c);
 
 #endif
+
