@@ -43,7 +43,7 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	not all.
 	*/
 	size_t i = 0;
-	size_t j = MAX(a->len, b->len);
+	size_t j = MAX(rr(a), rr(b)) + MAX(rl(a), rl(b));
 	size_t len = 0;
 	int sum = 0;
 	int carry = 0;
@@ -56,28 +56,28 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	if (rr(a) > rr(b))
 	{
 		len = rr(a) - rr(b);
-		for (i=0;i<len;i++, j--)
+		for (i=0;i<len;i++, j--, z--)
 		{
-			c->number[j] = a->number[z--];
+			c->number[j] = a->number[z];
 		}
 	}
 	
 	else if (rr(b) > rr(a))
 	{
 		len = rr(b) - rr(a);
-		for (k=0;k<len;k++, j--)
+		for (k=0;k<len;k++, j--, y--)
 		{
-			c->number[j] = b->number[y--];
+			c->number[j] = b->number[y];
 		}
 	}
 	/* numbers are now compatible for a straight-forward add */
 	for (;i<=a->len || k <= b->len;i++, j--, k++)
 	{
-		if (i < le(a) && k < le(b))
+		if (i <= le(a) && k <= le(b))
 			sum = a->number[z--] + b->number[y--] + carry;
-		else if (i < le(a))
+		else if (i <= le(a))
 			sum = a->number[z--] + carry;
-		else if (k < le(b))
+		else if (k <= le(b))
 			sum = b->number[y--] + carry;
 			
 		carry = 0;
@@ -244,16 +244,16 @@ fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-') {
 		arb_flipsign(c2);
-		c2 = arb_add_inter(a, b, c2, base);
-		//c2 = newadd(a, b, c2, base);
+		//c2 = arb_add_inter(a, b, c2, base);
+		c2 = newadd(a, b, c2, base);
 	}
 	else if (a->sign == '-')
 		c2 = arb_sub_inter(b, a, c2, base);
 	else if (b->sign == '-')
 		c2 = arb_sub_inter(a, b, c2, base);
 	else
-		c2 = arb_add_inter(a, b, c2, base);
-		//c2 = newadd(a, b, c2, base);
+		//c2 = arb_add_inter(a, b, c2, base);
+		c2 = newadd(a, b, c2, base);
 	arb_free(c);
 	return c2;
 }
@@ -270,12 +270,12 @@ fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	}
 	else if (a->sign == '-'){
 		arb_flipsign(c2);
-		c2 = arb_add_inter(a, b, c2, base);
-		//c2 = newadd(a, b, c2, base);
+		//c2 = arb_add_inter(a, b, c2, base);
+		c2 = newadd(a, b, c2, base);
 	}
 	else if (b->sign == '-' || a->sign == '-')
-		c2 = arb_add_inter(a, b, c2, base);
-		//c2 = newadd(a, b, c2, base);
+		//c2 = arb_add_inter(a, b, c2, base);
+		c2 = newadd(a, b, c2, base);
 	else
 		c2 = arb_sub_inter(a, b, c2, base);
 	arb_free(c);
