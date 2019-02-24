@@ -6,9 +6,10 @@ int getword(char *word, size_t lim, FILE *fp)
 {
 	int c = 0;
 	char *w = word;
-	while (isspace(c = fgetc(fp)));
-		if (c != EOF)
-			*w++ = c;
+	while (isspace(c = fgetc(fp)))
+		;
+	if (c != EOF)
+		*w++ = c;
 	if (isspace(c))
 	{
 		*w = '\0';
