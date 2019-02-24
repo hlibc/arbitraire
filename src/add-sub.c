@@ -36,11 +36,10 @@
 fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	/* 
-	this is a new experimental add() function that should be a little
-	faster than our current one.
-
-	there are still bugs to be worked out. it works for most inputs but
-	not all.
+	This is a new experimental add() function that should be a little
+	faster than arb_add()
+	The lower while loop needs to have the conditionals moved out
+	in order for the design of newadd to be complete.
 	*/
 	size_t i = 0;
 	size_t j = MAX(rr(a), rr(b)) + MAX(rl(a), rl(b));
