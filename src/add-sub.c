@@ -70,15 +70,9 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		}
 	}
 	/* numbers are now compatible for a straight-forward add */
-	for (;i<=a->len || k <= b->len;i++, j--, k++)
-	{
-		if (i <= le(a) && k <= le(b))
-			sum = a->number[z--] + b->number[y--] + carry;
-		else if (i <= le(a))
-			sum = a->number[z--] + carry;
-		else if (k <= le(b))
-			sum = b->number[y--] + carry;
-			
+	for (;i<=a->len && k <= b->len;i++, j--, k++)
+	{ 
+		sum = a->number[z--] + b->number[y--] + carry; 
 		carry = 0;
 		if (sum >= base)
 		{
@@ -88,6 +82,29 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		c->number[j] = sum;
 	}
 	
+	for (;i<=a->len ;i++, j--)
+	{ 
+		sum = a->number[z--] + carry; 
+		carry = 0;
+		if (sum >= base)
+		{
+			sum -= base;
+			carry = 1;
+		}
+		c->number[j] = sum;
+	}
+
+	for (;k <= b->len; j--, k++)
+	{ 
+		sum = b->number[y--] + carry; 
+		carry = 0;
+		if (sum >= base)
+		{
+			sum -= base;
+			carry = 1;
+		}
+		c->number[j] = sum;
+	}
 	c->len = hold;
 	if (carry) {
 		for(i = c->len+1;i > 0; i--)
