@@ -260,16 +260,16 @@ fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-') {
 		arb_flipsign(c2);
-		//c2 = arb_add_inter(a, b, c2, base);
-		c2 = newadd(a, b, c2, base);
+		c2 = arb_add_inter(a, b, c2, base);
+		//c2 = newadd(a, b, c2, base);
 	}
 	else if (a->sign == '-')
 		c2 = arb_sub_inter(b, a, c2, base);
 	else if (b->sign == '-')
 		c2 = arb_sub_inter(a, b, c2, base);
 	else
-		//c2 = arb_add_inter(a, b, c2, base);
-		c2 = newadd(a, b, c2, base);
+		c2 = arb_add_inter(a, b, c2, base);
+		//c2 = newadd(a, b, c2, base);
 	arb_free(c);
 	return c2;
 }
@@ -286,12 +286,12 @@ fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	}
 	else if (a->sign == '-'){
 		arb_flipsign(c2);
-		//c2 = arb_add_inter(a, b, c2, base);
-		c2 = newadd(a, b, c2, base);
+		c2 = arb_add_inter(a, b, c2, base);
+		//c2 = newadd(a, b, c2, base);
 	}
 	else if (b->sign == '-' || a->sign == '-')
-		//c2 = arb_add_inter(a, b, c2, base);
-		c2 = newadd(a, b, c2, base);
+		c2 = arb_add_inter(a, b, c2, base);
+		//c2 = newadd(a, b, c2, base);
 	else
 		c2 = arb_sub_inter(a, b, c2, base);
 	arb_free(c);
