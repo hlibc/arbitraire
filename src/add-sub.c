@@ -120,8 +120,8 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 static UARBT _pl(const fxdpnt *a, const fxdpnt *b, size_t *cnt, size_t r)
 {
 	UARBT temp = 0;
-	if ((rr(a)) < (rr(b)))
-		if((rr(b)) - (rr(a)) > r)
+	if (rr(a) < rr(b))
+		if(rr(b) - rr(a) > r)
 			return 0;
 
 	if (*cnt < a->len){
