@@ -42,20 +42,20 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	in order for the design of newadd to be complete.
 	*/
 	size_t i = 0;
-	size_t j = MAX(rr(a), rr(b)) + MAX(rl(a), rl(b));
+	size_t j = MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) -1;
 	size_t len = 0;
 	int sum = 0;
 	int carry = 0;
 	size_t k = 0;
-	size_t z = a->len;
-	size_t y = b->len;
+	size_t z = a->len -1;
+	size_t y = b->len -1;
 	size_t hold = j;
 
 	/* take care of differing tails to the right of the radix */
 	if (rr(a) > rr(b))
 	{
 		len = rr(a) - rr(b);
-		for (i=0;i<len;i++, j--, z--)
+		for (i=0;i<len;i++, j--, z--, c->len++)
 		{
 			c->number[j] = a->number[z];
 		}
@@ -64,15 +64,15 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	else if (rr(b) > rr(a))
 	{
 		len = rr(b) - rr(a);
-		for (k=0;k<len;k++, j--, y--)
+		for (k=0;k<len;k++, j--, y--, c->len++)
 		{
 			c->number[j] = b->number[y];
 		}
 	}
 	/* numbers are now compatible for a straight-forward add */
-	for (;i<=a->len && k <= b->len;i++, j--, k++)
-	{ 
-		sum = a->number[z--] + b->number[y--] + carry; 
+	for (;i< a->len && k < b->len;i++, j--, k++, z--, y--, c->len++)
+	{
+		sum = a->number[z] + b->number[y] + carry; 
 		carry = 0;
 		if (sum >= base)
 		{
@@ -82,9 +82,9 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		c->number[j] = sum;
 	}
 	
-	for (;i<=a->len ;i++, j--)
+	for (;i<a->len ;i++, j--, z--, c->len++)
 	{ 
-		sum = a->number[z--] + carry; 
+		sum = a->number[z] + carry; 
 		carry = 0;
 		if (sum >= base)
 		{
@@ -94,9 +94,9 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		c->number[j] = sum;
 	}
 
-	for (;k <= b->len; j--, k++)
+	for (;k < b->len; j--, k++, y--, c->len++)
 	{ 
-		sum = b->number[y--] + carry; 
+		sum = b->number[y] + carry; 
 		carry = 0;
 		if (sum >= base)
 		{
@@ -105,7 +105,7 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		}
 		c->number[j] = sum;
 	}
-	c->len = hold;
+
 	if (carry) {
 		for(i = c->len+1;i > 0; i--)
 			c->number[i] = c->number[i-1];
@@ -260,16 +260,16 @@ fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	arb_init(c2);
 	if (a->sign == '-' && b->sign == '-') {
 		arb_flipsign(c2);
-		c2 = arb_add_inter(a, b, c2, base);
-		//c2 = newadd(a, b, c2, base);
+		//c2 = arb_add_inter(a, b, c2, base);
+		c2 = newadd(a, b, c2, base);
 	}
 	else if (a->sign == '-')
 		c2 = arb_sub_inter(b, a, c2, base);
 	else if (b->sign == '-')
 		c2 = arb_sub_inter(a, b, c2, base);
 	else
-		c2 = arb_add_inter(a, b, c2, base);
-		//c2 = newadd(a, b, c2, base);
+		//c2 = arb_add_inter(a, b, c2, base);
+		c2 = newadd(a, b, c2, base);
 	arb_free(c);
 	return c2;
 }
@@ -286,12 +286,12 @@ fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	}
 	else if (a->sign == '-'){
 		arb_flipsign(c2);
-		c2 = arb_add_inter(a, b, c2, base);
-		//c2 = newadd(a, b, c2, base);
+		//c2 = arb_add_inter(a, b, c2, base);
+		c2 = newadd(a, b, c2, base);
 	}
 	else if (b->sign == '-' || a->sign == '-')
-		c2 = arb_add_inter(a, b, c2, base);
-		//c2 = newadd(a, b, c2, base);
+		//c2 = arb_add_inter(a, b, c2, base);
+		c2 = newadd(a, b, c2, base);
 	else
 		c2 = arb_sub_inter(a, b, c2, base);
 	arb_free(c);
