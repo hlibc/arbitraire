@@ -51,6 +51,7 @@
 static UARBT _pl(const fxdpnt *, const fxdpnt *, size_t *, size_t);
 fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
+	/* work in progress */
 	size_t i = 0;
 	size_t k = 0;	
 	size_t j = 0;
@@ -58,6 +59,7 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	ARBT sum = 0;
 	int8_t borrow = 0;
 	int8_t mborrow = -1; /* mirror borrow must be -1 */
+	//int8_t mborrow = 0;
 	ARBT mir = 0;
 	UARBT *array = NULL;
 	UARBT *tmp = NULL;
@@ -70,7 +72,6 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 
 	size_t y = b->len -1;
 	size_t z = a->len -1;
-	
 
 
 	/* take care of differing tails to the right of the radix */
@@ -87,8 +88,45 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		}
 	}
 
-	for (;i < a->len || k < b->len; j--, c->len++) {
-		hold = _pl(a, b, &i, c->len) - _pl(b, a, &k, c->len);
+	for (;i < a->len && k < b->len; j--, c->len++, i++, k++, z--, y--) {
+		//hold = _pl(a, b, &i, c->len) - _pl(b, a, &k, c->len);
+		hold = a->number[z] - b->number[y]; 
+		sum = hold + borrow;
+		mir = hold + mborrow;
+		borrow = mborrow = 0;
+		if(sum < 0) {
+			borrow = -1;
+			sum += base;
+		}
+		if(mir < 0) {
+			mborrow = -1;
+			mir += base;
+		}
+		c->number[j] = sum;
+		array[j] = (base-1) - mir;
+	}
+
+
+	for (;i < a->len; j--, c->len++, i++, z--) { 
+		hold = a->number[z]; 
+		sum = hold + borrow;
+		mir = hold + mborrow;
+		borrow = mborrow = 0;
+		if(sum < 0) {
+			borrow = -1;
+			sum += base;
+		}
+		if(mir < 0) {
+			mborrow = -1;
+			mir += base;
+		}
+		c->number[j] = sum;
+		array[j] = (base-1) - mir;
+	}
+
+
+	for (;k < b->len; j--, c->len++, k++, y--) {
+		hold = b->number[y]; 
 		sum = hold + borrow;
 		mir = hold + mborrow;
 		borrow = mborrow = 0;
