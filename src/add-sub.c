@@ -1,11 +1,6 @@
 #include "internal.h"
 
 /*
-	These addition and subtraction routines are based on a type of
-	imaginary array of zeros. This imaginary array is called upon
-	to make up for the difference needed in order to perform the
-	operations on numbers of differing magnitude.
-
 	While many subtraction routines require that the numbers first
 	be compared and then rearranged in the case that the zero threshold
 	is crossed, we mitigate this by using a special property of
@@ -19,96 +14,108 @@
 	inverse solution is calculated alongside the normative one and
 	simply discarded in the case it is not needed (when there is no left
 	over carry).
+
+	Addition:
+
+		six_loop_add:
+			
+			This addition function aims to be fully optimized
+			in regards to the number of conditional decisions
+			per loop.
+
+		arb_add_inter:
+
+			arb_add_inter make suse of the _pl function in
+			order to express addition as consisely as possible.
+			This function has the drawback of fitting many
+			conditionals into the same looping code block --
+			some of which may or may not be optimized by the
+			compiler
+	Subtraction:
+
+		arb_sub_inter:
+
+			See arb_add_inter for details about arb_sub_inter
+			as they are nearly identical functions.
+
+		six_loop_sub:
+
+			TODO:
+
+			Not yet implemented. 
+		
+			Note that most implementations are using compare()
+		       	beforehand for subtractions
+
 */
 
-/* _pl() draws from an imaginary array of zeros and allows add and sub to work
-   on numbers with varying magnitudes in a concise manner
-*/
-
-/*
-	todo: alternate add and sub impls
-
-	most implementations are using compare() beforehand for subtractions
-
-	using this technique it is probably not required to do the comparison
-	for addition itself
-*/
-fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
+fxdpnt *six_loop_add(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
-	/* 
-	This is a new experimental add() function that should be a little
-	faster than arb_add()
-	The lower while loop needs to have the conditionals moved out
-	in order for the design of newadd to be complete.
+	/* This addition function is designed to make a small
+	 * number of conditional decisions per loop. Hence, why
+	 * there are so many loops.
 	*/
+
 	size_t i = 0;
+	size_t k = 0;
 	size_t j = MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) -1;
 	size_t len = 0;
 	int sum = 0;
 	int carry = 0;
-	size_t k = 0;
 	size_t z = a->len -1;
 	size_t y = b->len -1;
-	size_t hold = j;
 
 	/* take care of differing tails to the right of the radix */
-	if (rr(a) > rr(b))
-	{
+	if (rr(a) > rr(b)) {
 		len = rr(a) - rr(b);
-		for (i=0;i<len;i++, j--, z--, c->len++)
-		{
+		for (i=0;i < len; i++, j--, z--, c->len++) {
 			c->number[j] = a->number[z];
 		}
 	}
-	
-	else if (rr(b) > rr(a))
-	{
+	else if (rr(b) > rr(a)) {
 		len = rr(b) - rr(a);
-		for (k=0;k<len;k++, j--, y--, c->len++)
-		{
+		for (k=0;k < len; k++, j--, y--, c->len++) {
 			c->number[j] = b->number[y];
 		}
 	}
+
 	/* numbers are now compatible for a straight-forward add */
-	for (;i< a->len && k < b->len;i++, j--, k++, z--, y--, c->len++)
-	{
+	for (;i < a->len && k < b->len; i++, j--, k++, z--, y--, c->len++) {
 		sum = a->number[z] + b->number[y] + carry; 
 		carry = 0;
-		if (sum >= base)
-		{
+		if (sum >= base) {
 			sum -= base;
 			carry = 1;
 		}
 		c->number[j] = sum;
 	}
-	
-	for (;i<a->len ;i++, j--, z--, c->len++)
-	{ 
+
+	/* one number may be longer than the other to the left */
+	for (;i < a->len; i++, j--, z--, c->len++) { 
 		sum = a->number[z] + carry; 
 		carry = 0;
-		if (sum >= base)
-		{
+		if (sum >= base) {
 			sum -= base;
 			carry = 1;
 		}
 		c->number[j] = sum;
 	}
 
-	for (;k < b->len; j--, k++, y--, c->len++)
-	{ 
+	for (;k < b->len; j--, k++, y--, c->len++) { 
 		sum = b->number[y] + carry; 
 		carry = 0;
-		if (sum >= base)
-		{
+		if (sum >= base) {
 			sum -= base;
 			carry = 1;
 		}
 		c->number[j] = sum;
 	}
 
+	/* handle the final left overy carry */
 	if (carry) {
-		for(i = c->len+1;i > 0; i--)
+		for(i = c->len+1;i > 0; i--) {
 			c->number[i] = c->number[i-1];
+		}
 		c->number[0] = 1;
 		c->len++;
 		c->lp++;
@@ -117,6 +124,9 @@ fxdpnt *newadd(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	return c;
 }
 
+/* _pl() draws from an imaginary array of zeros and allows add and sub to work
+ * on numbers with varying magnitudes in a concise manner
+*/
 static UARBT _pl(const fxdpnt *a, const fxdpnt *b, size_t *cnt, size_t r)
 {
 	UARBT temp = 0;
@@ -152,7 +162,8 @@ fxdpnt *arb_add_inter(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		c->number[size] = sum;
 	}
 	/* move the entire number to the right 1 place in the case that
-	   addition has a left over carry, array offsets also work */
+	 * addition has a left over carry, array offsets also work
+	 */
 	if (carry) {
 		for(i = c->len+1;i > 0; i--)
 			c->number[i] = c->number[i-1];
@@ -210,7 +221,54 @@ fxdpnt *arb_sub_inter(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	return c;
 }
 
-/* wrappers and identity redirection for add and sub */
+/* identity redirection for add and sub */
+fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
+{
+	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	c2->lp = MAX(rl(a), rl(b));
+	arb_init(c2);
+	if (a->sign == '-' && b->sign == '-') {
+		arb_flipsign(c2);
+		c2 = six_loop_add(a, b, c2, base);
+	}
+	else if (a->sign == '-') {
+		c2 = arb_sub_inter(b, a, c2, base);
+	}
+	else if (b->sign == '-') {
+		c2 = arb_sub_inter(a, b, c2, base);
+	}
+	else {
+		c2 = six_loop_add(a, b, c2, base);
+	}
+	arb_free(c);
+	return c2;
+}
+
+fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
+{
+	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
+	c2->lp = MAX(rl(a), rl(b));
+	arb_init(c2);
+	if (a->sign == '-' && b->sign == '-')
+	{
+		arb_flipsign(c2);
+		c2 = arb_sub_inter(a, b, c2, base);
+	}
+	else if (a->sign == '-'){
+		arb_flipsign(c2);
+		c2 = six_loop_add(a, b, c2, base);
+	}
+	else if (b->sign == '-' || a->sign == '-') {
+		c2 = six_loop_add(a, b, c2, base);
+	}
+	else {
+		c2 = arb_sub_inter(a, b, c2, base);
+	}
+	arb_free(c);
+	return c2;
+}
+
+/* wrappers for add and sub */
 fxdpnt *arb_add(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	c = arb_add2(a, b, c, base);
@@ -252,52 +310,6 @@ void incr(fxdpnt **c, int base, char *m)
 	*c = arb_add(*c, one, *c, base);
 	_internal_debug_end;
 }
-
-fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
-{
-	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
-	c2->lp = MAX(rl(a), rl(b));
-	arb_init(c2);
-	if (a->sign == '-' && b->sign == '-') {
-		arb_flipsign(c2);
-		//c2 = arb_add_inter(a, b, c2, base);
-		c2 = newadd(a, b, c2, base);
-	}
-	else if (a->sign == '-')
-		c2 = arb_sub_inter(b, a, c2, base);
-	else if (b->sign == '-')
-		c2 = arb_sub_inter(a, b, c2, base);
-	else
-		//c2 = arb_add_inter(a, b, c2, base);
-		c2 = newadd(a, b, c2, base);
-	arb_free(c);
-	return c2;
-}
-
-fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
-{
-	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
-	c2->lp = MAX(rl(a), rl(b));
-	arb_init(c2);
-	if (a->sign == '-' && b->sign == '-')
-	{
-		arb_flipsign(c2);
-		c2 = arb_sub_inter(a, b, c2, base);
-	}
-	else if (a->sign == '-'){
-		arb_flipsign(c2);
-		//c2 = arb_add_inter(a, b, c2, base);
-		c2 = newadd(a, b, c2, base);
-	}
-	else if (b->sign == '-' || a->sign == '-')
-		//c2 = arb_add_inter(a, b, c2, base);
-		c2 = newadd(a, b, c2, base);
-	else
-		c2 = arb_sub_inter(a, b, c2, base);
-	arb_free(c);
-	return c2;
-}
-
 void sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, char *m)
 { 
 	_internal_debug; 
