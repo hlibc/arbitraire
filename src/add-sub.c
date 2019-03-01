@@ -25,7 +25,7 @@
 
 		arb_add_inter:
 
-			arb_add_inter make suse of the _pl function in
+			arb_add_inter makes use of the _pl function in
 			order to express addition as consisely as possible.
 			This function has the drawback of fitting many
 			conditionals into the same looping code block --
@@ -38,20 +38,19 @@
 			See arb_add_inter for details about arb_sub_inter
 			as they are nearly identical functions.
 
-		six_loop_sub:
+		five_loop_sub:
 
-			TODO:
+			Work in progress 
 
-			Not yet implemented. 
-		
+			Correct output
+
 			Note that most implementations are using compare()
 		       	beforehand for subtractions
 
 */
-static UARBT _pl(const fxdpnt *, const fxdpnt *, size_t *, size_t);
+
 fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
-	/* work in progress */
 	size_t i = 0;
 	size_t k = 0;	
 	size_t j = 0;
@@ -59,7 +58,6 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	ARBT sum = 0;
 	int8_t borrow = 0;
 	int8_t mborrow = -1; /* mirror borrow must be -1 */
-	//int8_t mborrow = 0;
 	ARBT mir = 0;
 	UARBT *array = NULL;
 	UARBT *tmp = NULL;
@@ -68,28 +66,53 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	size_t array_allocated = (MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
 
 	array = arb_malloc(array_allocated * sizeof(UARBT));
-	j = MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) - 1;
+	j = MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) -1;
 
-	size_t y = b->len -1;
-	size_t z = a->len -1;
-
+	size_t y = b->len-1;
+	size_t z = a->len-1;
 
 	/* take care of differing tails to the right of the radix */
 	if (rr(a) > rr(b)) {
 		len = rr(a) - rr(b);
 		for (i=0;i < len; i++, j--, z--, c->len++) {
-			c->number[j] = a->number[z];
+			hold = a->number[z] - 0L;
+			sum = hold + borrow;
+			mir = hold + mborrow;
+			borrow = mborrow = 0;
+			if(sum < 0) {
+				borrow = -1;
+				sum += base;
+			}
+			if(mir < 0) {
+				mborrow = -1;
+				mir += base;
+			}
+			c->number[j] = sum;
+			array[j] = (base-1) - mir;
 		}
 	}
+	/* perform subtraction from 0 on the bottom long tail */
 	else if (rr(b) > rr(a)) {
 		len = rr(b) - rr(a);
 		for (k=0;k < len; k++, j--, y--, c->len++) {
-			c->number[j] = b->number[y];
+			hold = 0L - b->number[y];
+			sum = hold + borrow;
+			mir = hold + mborrow;
+			borrow = mborrow = 0;
+			if(sum < 0) {
+				borrow = -1;
+				sum += base;
+			}
+			if(mir < 0) {
+				mborrow = -1;
+				mir += base;
+			}
+			c->number[j] = sum;
+			array[j] = (base-1) - mir;
 		}
 	}
 
-	for (;i < a->len && k < b->len; j--, c->len++, i++, k++, z--, y--) {
-		//hold = _pl(a, b, &i, c->len) - _pl(b, a, &k, c->len);
+	for (;i < a->len && k < b->len; j--, c->len++, i++, k++, z--, y--) { 
 		hold = a->number[z] - b->number[y]; 
 		sum = hold + borrow;
 		mir = hold + mborrow;
@@ -105,7 +128,6 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		c->number[j] = sum;
 		array[j] = (base-1) - mir;
 	}
-
 
 	for (;i < a->len; j--, c->len++, i++, z--) { 
 		hold = a->number[z]; 
@@ -124,9 +146,8 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		array[j] = (base-1) - mir;
 	}
 
-
-	for (;k < b->len; j--, c->len++, k++, y--) {
-		hold = b->number[y]; 
+	for (;k < b->len; j--, c->len++, k++, y--) { 
+		hold = 0L - b->number[y]; 
 		sum = hold + borrow;
 		mir = hold + mborrow;
 		borrow = mborrow = 0;
@@ -141,6 +162,7 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		c->number[j] = sum;
 		array[j] = (base-1) - mir;
 	}
+
 	/* a left over borrow indicates that the zero threshold was crossed */
 	if (borrow == -1) {
 		tmp = c->number;
@@ -216,7 +238,7 @@ fxdpnt *six_loop_add(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 		c->number[j] = sum;
 	}
 
-	/* handle the final left overy carry */
+	/* handle the final left over carry */
 	if (carry) {
 		for(i = c->len+1;i > 0; i--) {
 			c->number[i] = c->number[i-1];
@@ -338,7 +360,7 @@ fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	}
 	else if (a->sign == '-') {
 		c2 = arb_sub_inter(b, a, c2, base);
-		//c2 = newsub(a, b, c2, base);
+		//c2 = newsub(b, a, c2, base);
 	}
 	else if (b->sign == '-') {
 		c2 = arb_sub_inter(a, b, c2, base);
