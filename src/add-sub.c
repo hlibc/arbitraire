@@ -49,7 +49,7 @@
 
 */
 
-fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
+fxdpnt *five_loop_sub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	size_t i = 0;
 	size_t k = 0;	
@@ -75,7 +75,7 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	if (rr(a) > rr(b)) {
 		len = rr(a) - rr(b);
 		for (i=0;i < len; i++, j--, z--, c->len++) {
-			hold = a->number[z] - 0L;
+			hold = a->number[z];
 			sum = hold + borrow;
 			mir = hold + mborrow;
 			borrow = mborrow = 0;
@@ -95,7 +95,7 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	else if (rr(b) > rr(a)) {
 		len = rr(b) - rr(a);
 		for (k=0;k < len; k++, j--, y--, c->len++) {
-			hold = 0L - b->number[y];
+			hold = 0 - b->number[y];
 			sum = hold + borrow;
 			mir = hold + mborrow;
 			borrow = mborrow = 0;
@@ -147,7 +147,7 @@ fxdpnt *newsub(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	}
 
 	for (;k < b->len; j--, c->len++, k++, y--) { 
-		hold = 0L - b->number[y]; 
+		hold = 0 - b->number[y];
 		sum = hold + borrow;
 		mir = hold + mborrow;
 		borrow = mborrow = 0;
@@ -360,11 +360,11 @@ fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	}
 	else if (a->sign == '-') {
 		c2 = arb_sub_inter(b, a, c2, base);
-		//c2 = newsub(b, a, c2, base);
+		//c2 = five_loop_sub(b, a, c2, base);
 	}
 	else if (b->sign == '-') {
 		c2 = arb_sub_inter(a, b, c2, base);
-		//c2 = newsub(a, b, c2, base);
+		//c2 = five_loop_sub(a, b, c2, base);
 	}
 	else {
 		c2 = six_loop_add(a, b, c2, base);
@@ -382,7 +382,7 @@ fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	{
 		arb_flipsign(c2);
 		c2 = arb_sub_inter(a, b, c2, base);
-		//c2 = newsub(a, b, c2, base);
+		//c2 = five_loop_sub(a, b, c2, base);
 	}
 	else if (a->sign == '-'){
 		arb_flipsign(c2);
@@ -393,7 +393,7 @@ fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 	}
 	else {
 		c2 = arb_sub_inter(a, b, c2, base);
-		//c2 = newsub(a, b, c2, base);
+		//c2 = five_loop_sub(a, b, c2, base);
 	}
 	arb_free(c);
 	return c2;
