@@ -9,7 +9,7 @@
 	type for indexable arrays.
 
 	I've devised what appears to be a somewhat novel method for making the
-	partial carry long multiplication algorithm zelf zeroing. Many of these
+	partial carry long multiplication algorithm self zeroing. Many of these
 	algorithms depend on the arrays being zeroed out first, but this
 	extra step alleviates the need for this. In arbitraire this is used
 	for our implementation of Knuth's algorithm D (division) and allows
@@ -70,14 +70,12 @@ size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UA
 
 fxdpnt *arb_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
-	_arb_time_start;
 	/* use karatsuba multiplication if either operand is over 1000 digits */
 	if (MAX(a->len, b->len) > 1000)
 		return arb_karatsuba_mul(a, b, c, base, scale);
 
 	c = arb_mul2(a, b, c, base, scale);
 	c = remove_leading_zeros(c);
-	_arb_time_end;
 	return c;
 }
 

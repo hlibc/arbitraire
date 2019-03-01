@@ -69,18 +69,6 @@ int main(int argc, char *argv[])
 		}
 	}
 	
-	if (strcmp(argv[1], "newtonian-div") == 0) {
-		if (ag) {
-			fprintf(fp, "%s / %s\nquit\n", string1, string2);
-			c = arb_newtonian_div(a, b, c, 10, scale);
-			arb_print(c);
-		} else { 
-			fprintf(fp, "%s / %s\nquit\n", string1, string1);
-			a = arb_newtonian_div(a, a, a, 10, scale);
-			arb_print(a);
-		}
-	}
-	
 	if (strcmp(argv[1], "add") == 0) {
 		if (ag) {
 			fprintf(fp, "%s + %s\nquit\n", string1, string2);
