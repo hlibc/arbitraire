@@ -21,10 +21,11 @@
 	may ultimately help karatsuba multiplication a great deal.
 
 	arb_mul:
-	arb_mul is the actual interface that is intended to be used.
-	arb_mul2 is a wrapper for arb_mul_core which provides access to
-	arb_mul_core using fxdpnts but does not strip zeros.
 
+	arb_mul() is the actual interface that is intended to be used.
+
+	arb_mul2() is a wrapper for arb_mul_core which provides memory
+	allocation but does not strip zeros like arb_mul
 */
 
 size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
