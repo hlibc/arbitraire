@@ -27,12 +27,12 @@
 #define MIN(a, b) ((a) > (b) ? (b) : (a))
 
 /* structures */
-typedef struct {	  /* fxdpnt fixed point type */
+typedef struct {	/* fxdpnt fixed point type */
 	UARBT *number;	/* The actual number */
-	char sign;		  /* Sign */
-	size_t lp;		  /* Length left of radix */
-	size_t len;		  /* Length of number (count of digits / limbs) */
-	size_t allocated; /* Length of allocated memory */
+	char sign;	/* Sign */
+	size_t lp;	/* Length left of radix */
+	size_t len;	/* Length of number (count of digits / limbs) */
+	size_t allocated;/* Length of allocated memory */
 } fxdpnt;
 
 /* globals */
@@ -126,12 +126,6 @@ void divv(const fxdpnt *, const fxdpnt *, fxdpnt **, int, size_t, char *);
 int oddity(size_t);
 /* memset */
 void *_arb_memset(void *, int, size_t);
-/* transcendental functions */
-fxdpnt *arb_sin(fxdpnt *, int, size_t);
-fxdpnt *arb_cos(fxdpnt *, int, size_t);
-fxdpnt *arb_cosh(fxdpnt *, int, size_t);
-fxdpnt *arb_sinh(fxdpnt *, int, size_t);
-fxdpnt *arb_exp_trans(fxdpnt *, int, size_t);
 
 /* some macros to make debugging and timing less intrusive */
 #define _arb_time_start \

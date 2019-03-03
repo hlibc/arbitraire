@@ -73,15 +73,14 @@ char *make_bignum(size_t, int, int);
 /* oddity */
 int oddity(size_t);
 /* new */
-fxdpnt *nthroot(fxdpnt *a, int base, size_t scale);
 fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale);
 void arb_attrs(fxdpnt *, char *);
-/* transcendental */
-fxdpnt* arb_sin(fxdpnt *, int, size_t);
-fxdpnt *arb_cos(fxdpnt *, int, size_t);
-fxdpnt *arb_cosh(fxdpnt *, int, size_t);
-fxdpnt *arb_sinh(fxdpnt *, int, size_t);
-fxdpnt *arb_exp_trans(fxdpnt *, int, size_t);
+
+
+
+
+
+
 
 
 #ifdef __cplusplus
