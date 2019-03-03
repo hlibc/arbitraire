@@ -1,16 +1,11 @@
 #include "internal.h"
 
-// TODO: don't exit on zero
-// TODO: strip trailing zeros from the denominator
 
 /*
-	This is an implementation of Donald Knuth's Algorithm D
+	This is an implementation of Donald Knuth's TAOCP vol 2 Algorithm D 
 
-	Algorithm D is based on long division however it is quite a bit
-	different than the typical school-book algorithm method.
-
-	Algorithm D has a few steps that separate it from typical 
-	school-book long division. 
+	Knuth's TAOCP vol 2 Algorithm D is based on long division however it is
+	quite a bit different than the typical school-book algorithm method.
 		* A normalization step is provided
 			This step is of the form such that a new numerator
 			and denominator are derived via:
@@ -27,7 +22,7 @@
 		  
 	Care was taken to reproduce Knuth's original algorithm which was
 	written in MIX theoretical assembly. Wherever possible, I tried to
-	use Knuth's variable naming conventios and duplicate his usage of
+	use Knuth's variable naming conventions and duplicate his usage of
 	goto statements in order to produce an educationally oriented
 	interpretation that emphasizes his methods.
 
@@ -40,14 +35,13 @@
 	
 	see src/modulo.c for this operation.
 
-	This algorithm deviates from the standard method for algorithm D by
-	fusing the normalization and temporary variable copy downs.
+	This algorithm deviates from Knuth's method by fusing the normalization 
+	and temporary variable copy downs. This does not optimize the case of a 
+	normalization factor of (1) but instead trades it off for a smaller code
+       	footprint.
 
-	The previous version of arb_div_inter was much more careful with
-	memory allocation. In its current state arb_div_inter has been
-	hugely simplified. mostly for the sake of readability and security
-	auditing. It may be necessary to regress to an earlier version --
-	if so, any time before about Dec 2018 would be fine.
+	TODO: don't exit on zero
+	TODO: strip trailing zeros from the denominator
 */
 
 int _long_sum(UARBT *u, size_t i, const UARBT *v, size_t k, int b, uint8_t lever)
@@ -76,7 +70,6 @@ int _long_sum(UARBT *u, size_t i, const UARBT *v, size_t k, int b, uint8_t lever
 	}
 	return carrborr;
 }
-
 
 fxdpnt *arb_div_inter(const fxdpnt *num, const fxdpnt *den, fxdpnt *q, int b, size_t scale)
 {
@@ -125,8 +118,8 @@ fxdpnt *arb_div_inter(const fxdpnt *num, const fxdpnt *den, fxdpnt *q, int b, si
 			q->lp = lea - leb + 1;
 	}
 	q->len = q->lp + scale;
-	/* begin the division operation */
 
+	/* begin the division operation */
 	if (leb > lea)
 		j = (leb-lea);
 
