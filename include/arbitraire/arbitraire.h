@@ -76,13 +76,6 @@ int oddity(size_t);
 fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale);
 void arb_attrs(fxdpnt *, char *);
 
-
-
-
-
-
-
-
 #ifdef __cplusplus
 }
 #endif
