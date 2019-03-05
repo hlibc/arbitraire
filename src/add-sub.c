@@ -180,7 +180,9 @@ fxdpnt *six_loop_add(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	/* This addition function is designed to make a small
 	 * number of conditional decisions per loop. Hence, why
-	 * there are so many loops.
+	 * there are so many loops. Using temporary variables
+	 * doesn't save much space over using additional loops
+	 * (maybe 6 loc?) so we go ahead and use the extra loops.
 	*/
 
 	size_t i = 0;
