@@ -47,7 +47,6 @@ void arb_init(fxdpnt *flt)
 {
 	flt->sign = '+';
 	flt->len = 0;
-	// research setting flt->lp to zero here
 }
 
 void *arb_malloc(size_t len)
