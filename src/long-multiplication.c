@@ -3,17 +3,15 @@
 /*
 	arb_mul_core:
 
-	A "partial carry" variation on the traditional "school book" long
-	multiplication algorithm. Arrays are accessed via n-1 to allow unsigned
-	types to be used therefore allowing the largest possible unsigned data
-	type for indexable arrays.
+	This is a partial carry variation on the traditional "school book" long
+	multiplication algorithm. Arrays are accessed via n-1 to aid in using
+	unsigned types.
 
-	I've devised what appears to be a somewhat novel method for making the
-	partial carry long multiplication algorithm self zeroing. Many of these
-	algorithms depend on the arrays being zeroed out first, but this
-	extra step alleviates the need for this. In arbitraire this is used
-	for our implementation of Knuth's algorithm D (division) and allows
-	arb_mul_core to stand alone.
+	A somewhat novel method for making the partial carry long 
+	multiplication algorithm self zeroing is used. In arbitraire this is 
+	allows arb_mul_core to work with the implementation of Knuth's TAOCP 
+	vol 2 algorithm D (division (src/div.c)) and allows arb_mul_core to 
+	stand alone.
 
 	An optimization is provided which tracks trailing zeros from the
 	operands and moves them onto the answer. It hypothetically increases
