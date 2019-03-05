@@ -157,8 +157,6 @@ size_t arb_left(fxdpnt *a)
 	return a->lp;
 }
 
-#include "internal.h"
-
 void arb_attrs(fxdpnt *a, char *m)
 {
 	printf("%s->len = %zu\n", m, arb_size(a));
