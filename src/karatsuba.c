@@ -64,9 +64,8 @@ static fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 }
 
 fxdpnt *arb_karatsuba_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
-{ 
-	/* karatsuba is described as taking an extra bit/limb, hence the +1 */
-	fxdpnt *c2 = arb_expand(NULL, a->len + b->len + 1);
+{
+	fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
 	c2 = karatsuba(a, b, c2, base);
 	arb_setsign(a, b, c2);
 	c2->lp = a->lp + b->lp;
