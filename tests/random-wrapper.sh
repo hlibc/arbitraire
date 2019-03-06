@@ -59,7 +59,7 @@ do	COUNT="$((COUNT + 1))"
 	else	stdout "Test failed! look inside of '${machinename}' to reveal the failing numbers!" 
 		fatal  "Test failed! look inside of '${machinename}' to reveal the failing numbers!" >> "${machinename}"
 	fi
-	#testcat log3 >> "${machinename}"
+	testcat log3 >> "${machinename}"
 	stdout >> "${machinename}"
 	stdout >> "${machinename}"
 	sleep 1 # we need 1 second in order to get a new random number
