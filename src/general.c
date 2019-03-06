@@ -7,7 +7,6 @@ void arb_error(char *message)
 	   caller. At some future release this should be changed to return the 
 	   error to the caller instead of calling exit().
 	*/
-	fprintf(stderr, "CRITICAL MEMORY FAILURE\n");
 	fprintf(stderr, "%s\n", message);
 	exit(1);
 }
