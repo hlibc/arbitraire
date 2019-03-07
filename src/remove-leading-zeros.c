@@ -1,5 +1,7 @@
 #include "internal.h"
 
+/* Copyright 2017-2019 CM Graff */
+
 fxdpnt *remove_leading_zeros(fxdpnt *c)
 {
 	int effect = 0;
