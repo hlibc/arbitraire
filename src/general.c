@@ -92,12 +92,14 @@ fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
 {
 	static int lever = 0;
 	size_t original = request;
+	size_t align = 64;
 
-	/* align on a multiple of 16 */
-	if (request > 16)
-		request = (((request / 16) + 1) * 16);
+	/* align on a multiple of 'align' */
+	
+	if (request > align)
+		request = (((request / align) + 1) * align);
 	else
-		request = 16;
+		request = align;
 
 	/* allocation (vector creation) */
 	if (o == NULL) { 
