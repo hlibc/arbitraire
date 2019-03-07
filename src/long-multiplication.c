@@ -1,6 +1,6 @@
 #include "internal.h"
-/* Copyright 2017-2019 CM Graff */
 
+/* Copyright 2017-2019 CM Graff */
 
 /*
 	arb_mul_core:
