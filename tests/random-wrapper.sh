@@ -18,10 +18,8 @@ then	[ "$4" = "valgrind" ] && USE_VALGRIND="1"
 fi
 
 COUNT="0"
-VERSION=$(testcat .version)
-
 machinename="$(gcc -dumpmachine)"
-machinename="${VERSION}-${machinename}-tests-passed.txt"
+machinename="${machinename}-tests-passed.txt"
 
 TOTAL=100
 
@@ -29,8 +27,8 @@ if [ $# = "5" ]
 then	TOTAL="$5"
 fi
 
-stdout "This is a set of PRNG tests to ensure that arbitraire ${VERSION} works" >>"${machinename}"
-stdout "properly on the following machine type:" >>"${machinename}"
+stdout "This is a set of PRNG tests to ensure that arbitraire works" >>"${machinename}"
+stdout "properly on the following machine type: ${machinename}" >>"${machinename}"
 stdout >> "${machinename}"
 uname -a >> "${machinename}"
 stdout "${machinename}" >> "${machinename}"
