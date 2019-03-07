@@ -46,6 +46,7 @@ void arb_init(fxdpnt *flt)
 {
 	flt->sign = '+';
 	flt->len = 0;
+	flt->lp = 0;
 }
 
 void *arb_malloc(size_t len)

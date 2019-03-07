@@ -354,8 +354,8 @@ fxdpnt *arb_sub_inter(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
-	c2->lp = MAX(rl(a), rl(b));
 	arb_init(c2);
+	c2->lp = MAX(rl(a), rl(b));
 	if (a->sign == '-' && b->sign == '-') {
 		arb_flipsign(c2);
 		c2 = six_loop_add(a, b, c2, base);
@@ -378,8 +378,8 @@ fxdpnt *arb_add2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 fxdpnt *arb_sub2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 {
 	fxdpnt *c2 = arb_expand(NULL, MAX(rr(a), rr(b)) + MAX(rl(a), rl(b)) + 1);
-	c2->lp = MAX(rl(a), rl(b));
 	arb_init(c2);
+	c2->lp = MAX(rl(a), rl(b));
 	if (a->sign == '-' && b->sign == '-')
 	{
 		arb_flipsign(c2);
