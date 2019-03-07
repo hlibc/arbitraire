@@ -1,5 +1,8 @@
 #include "internal.h"
 
+/* Copyright 2017-2019 CM Graff */
+
+
 void arb_error(char *message)
 {
 	/* arbitraire exits upon memory exhaustion. This is not ideal, but it

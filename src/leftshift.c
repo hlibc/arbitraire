@@ -1,5 +1,7 @@
 #include "internal.h"
 
+/* Copyright 2017-2019 CM Graff */
+
 fxdpnt *arb_leftshift(fxdpnt *a, size_t n)
 {
 	size_t i = 0;

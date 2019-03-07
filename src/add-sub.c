@@ -1,5 +1,8 @@
 #include "internal.h"
 
+/* Copyright 2017-2019 CM Graff */
+
+
 /*
 	While many subtraction routines require that the numbers first
 	be compared and then rearranged in the case that the zero threshold

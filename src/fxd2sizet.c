@@ -1,5 +1,8 @@
 #include "internal.h"
 
+/* Copyright 2017-2019 CM Graff */
+
+
 size_t fxd2sizet(fxdpnt *a, int base)
 {
 	size_t ret = 0;

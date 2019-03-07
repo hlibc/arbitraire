@@ -1,4 +1,6 @@
 #include "internal.h"
+/* Copyright 2017-2019 CM Graff */
+
 
 /*
 	make_bignum() is designed to make bignums that test some of the worst

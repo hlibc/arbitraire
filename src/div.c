@@ -1,5 +1,7 @@
 #include "internal.h"
 
+/* Copyright 2017-2019 CM Graff */
+
 
 /*
 	This is an implementation of Donald Knuth's TAOCP vol 2 Algorithm D 

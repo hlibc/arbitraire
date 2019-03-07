@@ -1,4 +1,7 @@
 #include "internal.h"
+/*
+ * Copyright 2017-2019 CM Graff
+ */
 
 /* Turn a string into a fxdpnt bignum */
 

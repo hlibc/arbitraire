@@ -1,8 +1,11 @@
 #include "internal.h"
 
+/* Copyright 2017-2019 CM Graff */
+
+
 /*
-	This is a basic modulus operation which naturally handles fractional
-	arguments using the formula: modulus(a, b) = a - (b * (a / b))
+ * This is a basic modulus operation which naturally handles fractional
+ * arguments using the formula: modulus(a, b) = a - (b * (a / b))
 */
 
 

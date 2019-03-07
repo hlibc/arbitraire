@@ -1,4 +1,7 @@
 #include "internal.h"
+/*
+ * Copyright 2017-2019 CM Graff
+ */
 
 /*
 	Newton's square root is a typical algorithm which is more or less

@@ -1,5 +1,8 @@
 #include "internal.h"
 
+/* Copyright 2017-2019 CM Graff */
+
+
 int iszero(const fxdpnt *a)
 {
 	size_t i = 0;

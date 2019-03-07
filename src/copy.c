@@ -1,5 +1,8 @@
 #include "internal.h"
 
+/* Copyright 2017-2019 CM Graff */
+
+
 void _arb_copy_core(UARBT *b, UARBT *a, size_t len)
 {
 	memcpy(b, a, len * sizeof(UARBT));
