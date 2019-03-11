@@ -1,11 +1,10 @@
 #include "internal.h"
-/*
- * Copyright 2017-2019 CM Graff
- */
+
+/* Copyright 2017-2019 CM Graff */
 
 /* Various routines for printing a fxdpnt bignum.
-   POSIX `bc' line splitting at 80 columns is used. For a non-split number 
-   use arb_printtrue.
+ * POSIX `bc' line splitting at 80 columns is used. For a non-split number 
+ * use arb_printtrue.
 */
 
 int arb_highbase(int a)
