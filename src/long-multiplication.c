@@ -10,7 +10,7 @@
 	unsigned types.
 
 	A somewhat novel method for making the partial carry long 
-	multiplication algorithm self zeroing is used. In arbitraire this is 
+	multiplication algorithm self-zeroing is used. In arbitraire this
 	allows arb_mul_core to work with the implementation of Knuth's TAOCP 
 	vol 2 algorithm D (division (src/div.c)) and allows arb_mul_core to 
 	stand alone.
@@ -19,6 +19,9 @@
 	operands and moves them onto the answer. It hypothetically increases
 	the speed of the multiplication when trailing zeros are present. Which
 	may ultimately help karatsuba multiplication a great deal.
+
+	The return value of arb_mul_core represents the magnitude of the
+	product.
 
 	arb_mul:
 
