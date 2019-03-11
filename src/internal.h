@@ -70,7 +70,6 @@ void arb_setsign(const fxdpnt *, const fxdpnt *, fxdpnt *);
 void arb_print(const fxdpnt *);
 void arb_debug(const fxdpnt *, char *);
 void arb_printtrue(const fxdpnt *);
-void _print_core(FILE *, const UARBT *, size_t, size_t, size_t);
 fxdpnt *arb_str2fxdpnt(const char *);
 fxdpnt *arb_parse_str(fxdpnt *, const char *);
 int arb_highbase(int);

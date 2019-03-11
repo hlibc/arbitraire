@@ -20,7 +20,7 @@ int arb_highbase(int a)
 		return a;
 }
 
-void _print_core(FILE *fp, const UARBT *number, size_t len, size_t radix, size_t sign)
+static void _print_core(FILE *fp, const UARBT *number, size_t len, size_t radix, size_t sign)
 {
 	size_t i = 0;
 	size_t k = sign; /* set to 1 or 0 -- to account for the sign */
