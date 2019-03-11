@@ -60,7 +60,7 @@
 	regression.
 
 	make_bignum requires 3 arguments, the limit, which in most cases should
-	be between 1000 and 10000, but can be no smaller than 3. The base. And
+	be between 1000 and 10000, (but can be no smaller than 3), the base, and
 	finally an option for *not* trying negative numbers.
 
 	If a limit argument of less than 3 is passed to make_bignum the behavior
