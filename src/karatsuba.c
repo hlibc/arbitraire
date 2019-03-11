@@ -1,12 +1,13 @@
 #include "internal.h"
 
 /*
-	Karatsuba multiplication
-
-	arb_add2 and arb_sub2 are simply variants of arb_add and arb_sub which 
-	do not strip zeros.
-
-	Copyright Bao Hexing and CM Graff 2018-2019
+ * Karatsuba multiplication
+ *
+ * arb_add2 and arb_sub2 are simply variants of arb_add and arb_sub which 
+ * do not strip zeros.
+ *
+ * Copyright Bao Hexing 2018-2019
+ * Copyright CM Graff 2018-2019
 */
 
 static fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
