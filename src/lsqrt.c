@@ -1,6 +1,28 @@
 #include "internal.h"
 /*
 	This function is under construction
+
+	
+	square root of 31.50:
+
+	            _5.612 ..._
+	           /31.50 00 00 00 00 00 00 00
+	           -25
+	           ---
+	             6 50
+	  10_6 * 6 = 6 36
+	             ----
+		       14 00
+	   112_1 * 1 = 11 21
+	               -----
+		        2 79 00
+	   1122_2 * 2 = 2 24 44
+	                -------
+	                  54 56 00
+	    11224_N * N = ...
+
+
+
 */
 
 static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
@@ -103,9 +125,9 @@ fxdpnt *grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get
 	*gotten += digits_to_get;
 	return digi;
 }
+
 fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 {
-	
 	int digits_to_get = 2;
 	size_t gotten = 0;
 	size_t i = 0;
@@ -130,6 +152,7 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	
 
 	/* get the first guess */
+	/* thi code seciton is unique, there is no 'side' guess */
 	digi = grabdigits(digi, a, &gotten, digits_to_get);
 	digits_to_get = 2; 
 	factor2(&fac, digi, base, scale);
@@ -145,20 +168,22 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	digi = guess(&side, g2, base, scale, "side = "); 
 	push(&ans, digi, "ans = "); 
 	mul(side, digi, &g1, base, scale, "g1 = ");
-	
-	
+
 	top:
 	
+	/* always * 2 here to get the unfactored guess */
 	mul(ans, two, &side, base, scale, "side = "); 
 	push(&side, one, "side = ");
 	sub(g2, g1, &g2, base, "g1 = "); 
 	g2 = grabdigits(g2, a, &gotten, digits_to_get); 
 	digi = guess(&side, g2, base, scale, "side = "); 
 	push(&ans, digi, "ans = "); 
-	mul(side, digi, &g1, base, scale, "g1 = "); 
+	mul(side, digi, &g1, base, scale, "g1 = ");
 
-	while (i++ < scale - 1)
+	while (i++ < a->len)
 	goto top;
 	
 	return ans;
 }
+
+
