@@ -51,9 +51,30 @@
 	           -----
 	            1 36 00
 
-	TODO cases for 99, 999 and 9999
 
 
+	square root 99 and 999
+
+	           _9. 9 ... _
+	          /99.00
+	           81
+	           ---
+	           18 00
+	18_9 * 9 = 17 81
+
+
+	         _31. ..._
+	        /999
+	         9
+	         -
+	         099
+	9_1 * 1 = 91
+	         ---
+	          8
+
+	Square root has two different sequences depending on the number of digits
+	to the left of the radix. For instance '99' and '999' produce totally
+	different output, but '9', '999' and '99999' all produce sinilar sequences.
 
 */
 
