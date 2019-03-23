@@ -23,6 +23,7 @@
 
 
 	square root of 3131
+
 	        _55.9 ..._
 	       /31 31.00 00 00 00
 	       -25
@@ -37,6 +38,7 @@
 
 	1118_N*N= 
 
+
 	square root of 283.6
 
 	         _16.8 ..._
@@ -50,7 +52,6 @@
 	32_8*8 =   26 24
 	           -----
 	            1 36 00
-
 
 
 	square root 99 and 999
@@ -72,16 +73,21 @@
 	         ---
 	          8
 
+	TODO:	* add a sequence that forces a "side zero"
+		* test the difference in performance between multiplying
+		  a number by two versus adding it to itself.
+
 	Square root has two different sequences depending on the number of digits
 	to the left of the radix. For instance '99' and '999' produce totally
 	different output, but '9', '999' and '99999' all produce sinilar sequences.
-
+	This behavior appears to arise from B1B2 being chosen for the initial 
+	decomposition as opposed to B1. 
 */
 
 static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 {
 	/* regular factorization. we only need to obtain two
-		digit numbers so the naive algorithm is fine
+	   digit numbers
 	*/
 	fxdpnt *temp = arb_str2fxdpnt("+0.00");
 	arb_copy(temp, a);
@@ -102,7 +108,7 @@ static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	return a;
 }
 
-void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
+static void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 {
 	*a = factor(*a, b, base, scale);
 }
@@ -137,7 +143,7 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 	return side;
 }
 
-void pushon(fxdpnt *c, fxdpnt *b)
+static void pushon(fxdpnt *c, fxdpnt *b)
 {
 	arb_expand(c, c->len + b->len);
 	_arb_copy_core(c->number + c->len, b->number, b->len);
@@ -145,13 +151,15 @@ void pushon(fxdpnt *c, fxdpnt *b)
 	c->lp = c->len;
 	
 }
-void push(fxdpnt **c, fxdpnt *b, char *m)
+
+static void push(fxdpnt **c, fxdpnt *b, char *m)
 {
 	_internal_debug;
 	pushon(*c, b);
 	_internal_debug_end;
 }
-void addfront(fxdpnt *a, fxdpnt *b)
+
+static void addfront(fxdpnt *a, fxdpnt *b)
 {
 	arb_expand(a, b->len);
 	_arb_copy_core(a->number, b->number, b->len);
@@ -164,7 +172,7 @@ static void cap(fxdpnt **c, fxdpnt *b, char *m)
 	_internal_debug_end;
 }
 
-fxdpnt *grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get)
+static fxdpnt *grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits_to_get)
 { 
 	if (*gotten + digits_to_get >= a->len)
 	{
@@ -194,18 +202,11 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	arb_copy(g1, a);
 	arb_copy(g2, a);
 	_arb_memset(g1->number, 0, g1->len);
-	
-	
-	//if (oddity(rl(a))) {
-	//	digits_to_get = 2;
-	//} else
+
 	if (oddity(a->lp)) {
 		digits_to_get = 1;
-	}
-	
-
+	} 
 	/* get the first guess */
-	/* thi code seciton is unique, there is no 'side' guess */
 	digi = grabdigits(digi, a, &gotten, digits_to_get);
 	digits_to_get = 2; 
 	factor2(&fac, digi, base, scale);
@@ -221,22 +222,20 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	digi = guess(&side, g2, base, scale, "side = "); 
 	push(&ans, digi, "ans = "); 
 	mul(side, digi, &g1, base, scale, "g1 = ");
-
+	
+	
 	top:
 	
-	/* always * 2 here to get the unfactored guess */
 	mul(ans, two, &side, base, scale, "side = "); 
 	push(&side, one, "side = ");
 	sub(g2, g1, &g2, base, "g1 = "); 
 	g2 = grabdigits(g2, a, &gotten, digits_to_get); 
 	digi = guess(&side, g2, base, scale, "side = "); 
 	push(&ans, digi, "ans = "); 
-	mul(side, digi, &g1, base, scale, "g1 = ");
+	mul(side, digi, &g1, base, scale, "g1 = "); 
 
-	while (i++ < a->len)
+	while (i++ < scale - 1)
 	goto top;
 	
 	return ans;
 }
-
-
