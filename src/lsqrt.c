@@ -145,11 +145,10 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 
 static void pushon(fxdpnt *c, fxdpnt *b)
 {
-	arb_expand(c, c->len + b->len);
+	c = arb_expand(c, c->len + b->len);
 	_arb_copy_core(c->number + c->len, b->number, b->len);
 	c->len += b->len;
 	c->lp = c->len;
-	
 }
 
 static void push(fxdpnt **c, fxdpnt *b, char *m)
@@ -161,7 +160,7 @@ static void push(fxdpnt **c, fxdpnt *b, char *m)
 
 static void addfront(fxdpnt *a, fxdpnt *b)
 {
-	arb_expand(a, b->len);
+	a = arb_expand(a, b->len);
 	_arb_copy_core(a->number, b->number, b->len);
 }
 
@@ -176,7 +175,7 @@ static fxdpnt *grabdigits(fxdpnt *digi, fxdpnt *a, size_t *gotten, size_t digits
 { 
 	if (*gotten + digits_to_get >= a->len)
 	{
-		arb_expand(digi, digi->len + *gotten + digits_to_get);
+		digi = arb_expand(digi, digi->len + *gotten + digits_to_get);
 		_arb_memset(digi->number + digi->len, 0, digits_to_get);
 	} else {
 		_arb_copy_core(digi->number, a->number + *gotten, digits_to_get);
@@ -199,8 +198,8 @@ fxdpnt *long_sqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *fac = arb_str2fxdpnt("");
 	fxdpnt *side = arb_str2fxdpnt("");
 	fxdpnt *temp = arb_str2fxdpnt("");
-	arb_copy(g1, a);
-	arb_copy(g2, a);
+	g1 = arb_copy(g1, a);
+	g2 = arb_copy(g2, a);
 	_arb_memset(g1->number, 0, g1->len);
 
 	if (oddity(a->lp)) {
