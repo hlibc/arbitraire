@@ -139,18 +139,19 @@ static void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 {
         *a = factor(*a, b, base, scale);
 }
-static void pushon(fxdpnt *c, fxdpnt *b)
+static fxdpnt *pushon(fxdpnt *c, fxdpnt *b)
 {
         c = arb_expand(c, c->len + b->len);
         _arb_copy_core(c->number + c->len, b->number, b->len);
         c->len += b->len;
         c->lp = c->len;
+	return c;
 }
 
 static void push(fxdpnt **c, fxdpnt *b, char *m)
 {
         _internal_debug;
-        pushon(*c, b);
+        *c = pushon(*c, b);
         _internal_debug_end;
 }
 
@@ -251,7 +252,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 			t = guess(&side, g1, base, scale, "side = ");
 			mul(t, side, &g2, base, scale, "g2 =");
 			push(&answer, t, "answer = ");
-
+			arb_free(t);
 			sub(g1, g2, &g1, base, "g1 = ");
 		}
 		
