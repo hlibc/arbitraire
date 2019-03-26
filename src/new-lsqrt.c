@@ -1,7 +1,11 @@
 #include "internal.h"
 /*
 
-	Copyright 2019 CM Graff
+	Copyright 2019 CM Graff. All Rights Reserved
+
+	This function is currently non-free and is not covered by the
+	arbitraire MIT license. This notice will be removed when it is
+	production ready.
 
 	This function is passing basic tests but is still under construction
 
@@ -13,16 +17,16 @@
 	           -25
 	           ---
 	             6 50
-	  10_6 * 6 = 6 36
+	10_6*6=      6 36
 	             ----
 		       14 00
-	   112_1 * 1 = 11 21
+	112_1*1=       11 21
 	               -----
 		        2 79 00
-	   1122_2 * 2 = 2 24 44
+	1122_2*2=       2 24 44
 	                -------
 	                  54 56 00
-	    11224_N * N = ...
+	11224_N*N= ...
 
 
 	
@@ -206,6 +210,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	size_t i = 0;
 	int firstpass = 1;
 	int odd = 0;
+	int lodd = 0;
 	fxdpnt *g1 = arb_expand(NULL, a->len);
 	fxdpnt *t =arb_expand(NULL, a->len);
 	fxdpnt *answer = arb_expand(NULL, a->len + scale);
@@ -215,17 +220,20 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	arb_init(answer);
 	fxdpnt *g2 = NULL;
 
-	
 	fxdpnt *x1 = arb_expand(NULL, a->len);
 	fxdpnt *tmp = x1;
 
 	if (oddity(a->lp)) {
+		fprintf(stderr, "was lp odd\n");
 		dig2get = 1;
+		lodd = 1;
 	}
 
 	if (oddity(rr(a))) {
+		fprintf(stderr, "was rp odd\n");
 		odd = 1;
 	}
+
 	size_t suppl = MAX((scale*2), rr(a));
 	for (;i < a->len + odd + suppl; ) {
 		/* distribute blocks of numbers */
@@ -264,8 +272,8 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 		i += dig2get;
 		dig2get = 2;
 	}
-	// TODO: this is wrong for numbers that terminate
-	answer->lp = a->lp / 2 + 1 - odd;
+
+	answer->lp = a->lp / 2 + lodd;
 	answer->len = answer->lp + MAX(scale, rr(a));
 
 	return answer;
