@@ -3,43 +3,33 @@ Arbitraire
 	An arbitrary precision mathematics library. 
 	
 	Arbitraire supports a pure mathematics number system of continuous and
-	arbitrarily sized fractional datum.
-
-
+	arbitrarily sized fractional datum. The following algorithms are used:
+	
 	Division:
-		Knuth's algorithm D is used for division. Faster division
-	algorithms do exist, but in general Knuth's algorithm D suffices for 
-	production grade arbitrary precision methods.
+		1. Knuth's TAOCP vol 2 Algorithm D
 
 	Subtraction and addition:
-		Subtractions that cross the zero threshold have a special 
-	property which can be identified by a left over 'carry'. Arbitraire 
-	simultaneously maintains a mirror of the subtraction as ((base-1)-N)
-	where N is the typical value and switches to this alternate solution
-	in the case a left over 'carry' is identified at the end of the 
-	computation.
+		1. 5-loop
+		2. compact
 
-	Multiplication:
-		Arbitraire uses Karatsuba multiplication for larger numbers and
-	traditional schoolbook multiplication for numbers under 1000 digits.
+	Multiplication: 
+		1. Karatsuba (>1000 limb)
+		2. Schoolbook (<1000 limb)
 
 	Square root:
-		Newton's method is used for square root. Newton's method is 
-	thought to be identical in most ways to the ancient Babylonian method 
-	for computing square root.
+		1. Newton's method 
+		2. long-hand square root 
 
 
 	Arbitraire strictly follows POSIX and the C99/C11 standards, and so, is
 	portable to any POSIX compliant system and works with all of the
-	architectures offered by linux. mac, netbsd, freebsd, openbsd and indeed 
-	many other systems.
+	architectures offered by linux, mac, BSD and many other systems.
 
 	Arbitraire's "fxdpnt" number system allows for efficient POSIX 
 	compliant implementations of POSIX bc. It is a "pen and paper" style of
 	number system yet with POSIX bc scale and printing semantics. For these 
 	semantics the 'base' field has to be set to 10. However, the ability to 
-	operate natively in other bases is left as a decision to the caller of 
-	the functions.
+	operate natively in other bases is left as a decision to the caller.
 
 	Arbitraire is an original work authored by CM Graff.
 
