@@ -172,6 +172,9 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
                 465n * n < guess
                 return the small guess
                 populate the large number as "c"
+		TODO: reuse the multiplication that this produces in tmul
+		      -- this is a bit hard as we depend on overflowing
+		      so we'd need to use two variables as a kind of cache
         */
         _internal_debug;
         fxdpnt *side = arb_str2fxdpnt("1");
@@ -198,6 +201,7 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 
 fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 {
+	/* this algorithm can not currently handle leading zeross */
 	int dig2get = 2;
 	size_t i = 0;
 	int firstpass = 1;
@@ -205,6 +209,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *g1 = arb_expand(NULL, a->len);
 	fxdpnt *t =arb_expand(NULL, a->len);
 	fxdpnt *answer = arb_expand(NULL, a->len + scale);
+	size_t s1 = MAX(rr(a), scale);
 
 	fxdpnt *side = arb_expand(NULL, a->len + scale);
 	arb_init(answer);
@@ -221,7 +226,8 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	if (oddity(rr(a))) {
 		odd = 1;
 	}
-	for (;i < a->len + odd + (scale*2); ) {
+	size_t suppl = MAX((scale*2), rr(a));
+	for (;i < a->len + odd + suppl; ) {
 		/* distribute blocks of numbers */
 		if (i == a->len -1) {
 			x1 = tmp;
@@ -259,7 +265,9 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 		dig2get = 2;
 	}
 	// TODO: this is wrong for numbers that terminate
-	answer->lp = scale;
+	answer->lp = a->lp / 2 + 1 - odd;
+	answer->len = answer->lp + MAX(scale, rr(a));
+
 	return answer;
 } 
 
