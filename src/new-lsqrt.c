@@ -224,13 +224,11 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *tmp = x1;
 
 	if (oddity(a->lp)) {
-		fprintf(stderr, "was lp odd\n");
 		dig2get = 1;
 		lodd = 1;
 	}
 
 	if (oddity(rr(a))) {
-		fprintf(stderr, "was rp odd\n");
 		odd = 1;
 	}
 
