@@ -1,15 +1,18 @@
-#include "internal.h"
+#include"internal.h"
 /*
 
 	Copyright 2019 CM Graff. All Rights Reserved
 
 	This function is currently non-free and is not covered by the
 	arbitraire MIT license. This notice will be removed when it is
-	production ready.
+	production ready (it's passing basic tests but is still under 
+	construction)
 
-	This function is passing basic tests but is still under construction
+	This is an arbitrary precision implementation of the long-hand square 
+	root algorithm. This algorithm works by partitioning the input into
+	better and better aproximations of the guess.
 
-	
+
 	square root of 31.50:
 
 	            _5.612 ..._
@@ -29,8 +32,6 @@
 	11224_N*N= ...
 
 
-	
-
 	square root of 3131
 
 	        _55.9 ..._
@@ -44,7 +45,7 @@
 	110_9*9=   99 81
 	           -----
 	            6 19 00 
-	1118_N*N= 
+	1118_N*N= ...
 
 
 	square root of 283.6
@@ -64,7 +65,7 @@
 
 	square root 99 and 999
 
-	           _9. 9 ... _
+	           _9. 9 ..._
 	         \/99.00
 	           81
 	           ---
@@ -98,31 +99,13 @@
 	336_4*4=  1 34 56	
 	          --------	
 	             1 44 00	
-	3368_0*0=       0 00   <--??
+	3368_0*0=       0 00   <-- Note that the side guess can be a zero
 	           ---------	
 	             1 44 00 00	
 	33680_4*4=   1 34 72 16	
 	             ----------
 		     ...
 
-	note that all but the last digit of the next multiplication is already
-	known -- therefore the multiplication could hypothetically be optimized.
-
-	TODO:	* test the difference in performance between multiplying
-		  a number by two versus adding it to itself.
-
-	Square root has two different sequences depending on the number of digits
-	to the left of the radix. For instance '99' and '999' produce totally
-	different output, but '9', '999' and '99999' all produce similar sequences.
-	This behavior appears to arise from B1B2 being chosen for the initial 
-	decomposition as opposed to B1. 
-
-	in order to increase the magnitude of a guess it could be multiplied by
-	base^2 and then have the new value added to it, this could be expensive
-	but might get rid of some typical logical shifting errors
-
-	along that same manner, one could use arb_leftshift to shift the value
-	2 places and then proceed with adding the new double digit set
 */
 
 static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
@@ -172,13 +155,15 @@ static void push(fxdpnt **c, fxdpnt *b, char *m)
 
 static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 {
-        /* Handle sqrt factorization guesses of the form
+        /* Handle sqrt factorization guesses of the form:
                 465n * n < guess
                 return the small guess
                 populate the large number as "c"
 		TODO: reuse the multiplication that this produces in tmul
 		      -- this is a bit hard as we depend on overflowing
 		      so we'd need to use two variables as a kind of cache
+		TODO: make a better first guess such as Base/2 and then
+		      work up or down from there
         */
         _internal_debug;
         fxdpnt *side = arb_str2fxdpnt("1");
@@ -205,14 +190,14 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 
 fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 {
-	/* this algorithm can not currently handle leading zeross */
+	/* this function can not currently handle leading zeross */
 	int dig2get = 2;
 	size_t i = 0;
 	int firstpass = 1;
 	int odd = 0;
 	int lodd = 0;
 	fxdpnt *g1 = arb_expand(NULL, a->len);
-	fxdpnt *t =arb_expand(NULL, a->len);
+	fxdpnt *t = arb_expand(NULL, a->len);
 	fxdpnt *answer = arb_expand(NULL, a->len + scale);
 
 	fxdpnt *side = arb_expand(NULL, a->len + scale);
