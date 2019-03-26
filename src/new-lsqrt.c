@@ -1,6 +1,9 @@
 #include "internal.h"
 /*
-	This function is under construction
+
+	Copyright 2019 CM Graff
+
+	This function is passing basic tests but is still under construction
 
 	
 	square root of 31.50:
@@ -36,8 +39,7 @@
 	         1 06 00
 	110_9*9=   99 81
 	           -----
-	            6 19 00
-
+	            6 19 00 
 	1118_N*N= 
 
 
@@ -48,10 +50,10 @@
 	        -1
 	         ----
 	         1 83
-	 2_6*6 = 1 56
+	2_6*6=   1 56
 	         ----
 	           27 60
-	32_8*8 =   26 24
+	32_8*8=    26 24
 	           -----
 	            1 36 00
 
@@ -117,23 +119,8 @@
 
 	along that same manner, one could use arb_leftshift to shift the value
 	2 places and then proceed with adding the new double digit set
-
-	I.
-	1. generate first number
-	2. generate the squared number and subtract it from the original
-	3. logical left shift 2 places or multiply by base^2
-	4. grab 2 digits
-	5. add the two digits onto the temporary guess
-
-	II.
-	1. generate a side-guess of the form 123_N * N
-
-	append double digi to last result
-	mul answer by two in order to make a side group
-	factor side guesses into g2
-
-
 */
+
 static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 {
         /* regular factorization. we only need to obtain two
@@ -223,7 +210,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	arb_init(answer);
 	fxdpnt *g2 = NULL;
 
-	//fxdpnt x1[1] = { 0 };
+	
 	fxdpnt *x1 = arb_expand(NULL, a->len);
 	fxdpnt *tmp = x1;
 
@@ -234,7 +221,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	if (oddity(rr(a))) {
 		odd = 1;
 	}
-	for (;i < a->len + odd + scale; ) {
+	for (;i < a->len + odd + (scale*2); ) {
 		/* distribute blocks of numbers */
 		if (i == a->len -1) {
 			x1 = tmp;
@@ -259,32 +246,21 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 			firstpass = 0;
 		}else {
 			push(&g1, x1, "g1 = ");
-			mul(answer, two, &side, base, scale, "side = ");
 			/* mul by 2, append, and then factor up*/
+			mul(answer, two, &side, base, scale, "side = ");
 			push(&side, one, "side = ");
 			t = guess(&side, g1, base, scale, "side = ");
-			/* once we have the side guess it must be used! */
 			mul(t, side, &g2, base, scale, "g2 =");
 			push(&answer, t, "answer = ");
 			sub(g1, g2, &g1, base, "g1 = ");
 		}
 		
-		
-	
-		//arb_print(x1);
-		//arb_printtrue(x1);
-		//arb_attrs(x1, "x1");
-		
 		i += dig2get;
 		dig2get = 2;
 	}
+	// TODO: this is wrong for numbers that terminate
+	answer->lp = scale;
 	return answer;
 } 
 
 
-/*
-	printf("g1 = ");
-	arb_print(g1);
-	printf("x1 = ");
-	arb_print(x1);
-*/
