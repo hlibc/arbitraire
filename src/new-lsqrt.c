@@ -214,7 +214,6 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *g1 = arb_expand(NULL, a->len);
 	fxdpnt *t =arb_expand(NULL, a->len);
 	fxdpnt *answer = arb_expand(NULL, a->len + scale);
-	size_t s1 = MAX(rr(a), scale);
 
 	fxdpnt *side = arb_expand(NULL, a->len + scale);
 	arb_init(answer);
