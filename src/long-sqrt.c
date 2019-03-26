@@ -131,6 +131,7 @@ static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
                 }
                 incr(&a, base, 0);
         }while (1);
+	arb_free(temp);
         return a;
 }
 
@@ -184,6 +185,7 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
                 incr(&side, base, 0);
                 incr(&*c, base, 0);
         }while(1);
+	arb_free(tmul);
         _internal_debug_end;
         return side;
 }
@@ -196,6 +198,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	int firstpass = 1;
 	int odd = 0;
 	int lodd = 0;
+	size_t suppl = MAX((scale*2), rr(a));
 	fxdpnt *g1 = arb_expand(NULL, a->len);
 	fxdpnt *t = arb_expand(NULL, a->len);
 	fxdpnt *answer = arb_expand(NULL, a->len + scale);
@@ -206,6 +209,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 
 	fxdpnt *x1 = arb_expand(NULL, a->len);
 	fxdpnt *tmp = x1;
+	UARBT *f = tmp->number;
 
 	if (oddity(a->lp)) {
 		dig2get = 1;
@@ -216,7 +220,6 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 		odd = 1;
 	}
 
-	size_t suppl = MAX((scale*2), rr(a));
 	for (;i < a->len + odd + suppl; ) {
 		/* distribute blocks of numbers */
 		if (i == a->len -1) {
@@ -248,6 +251,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 			t = guess(&side, g1, base, scale, "side = ");
 			mul(t, side, &g2, base, scale, "g2 =");
 			push(&answer, t, "answer = ");
+
 			sub(g1, g2, &g1, base, "g1 = ");
 		}
 		
@@ -255,10 +259,15 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 		dig2get = 2;
 	}
 
+	arb_free(g1);
+	arb_free(side);
+	tmp->number = f;
+	arb_free(tmp);
 	answer->lp = a->lp / 2 + lodd;
 	answer->len = answer->lp + MAX(scale, rr(a));
-
+	arb_free(a);
 	return answer;
 } 
+
 
 
