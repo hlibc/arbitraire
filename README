@@ -137,7 +137,8 @@ USING THE API:
 	It does not make much sense to try and pre-define arbitrarily sized
 	transcendental constants such as pi or e. If you need these types of
 	numbers you should generate them to the needed precision or include
-	them,
+	them.
+
 
 	Hardware types can be converted to fxdpnt bignums using hrdware2arb.
 
