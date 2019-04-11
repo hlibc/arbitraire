@@ -3,10 +3,7 @@
 
 	Copyright 2019 CM Graff. All Rights Reserved
 
-	This function is currently non-free and is not covered by the
-	arbitraire MIT license. This notice will be removed when it is
-	production ready (it's passing basic tests but is still under 
-	construction)
+	This algorithm is still under construction ...  
 
 	This is an arbitrary precision implementation of the long-hand square 
 	root algorithm. This algorithm works by partitioning the input into
