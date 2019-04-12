@@ -76,6 +76,7 @@ int oddity(size_t);
 /* new */
 fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale);
 void arb_attrs(fxdpnt *, char *);
+size_t count_leading_fractional_zeros(fxdpnt *);
 
 #ifdef __cplusplus
 }
