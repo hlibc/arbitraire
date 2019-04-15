@@ -6,9 +6,7 @@
 	This algorithm is still under construction ...  
 
 	This is an arbitrary precision implementation of the long-hand square 
-	root algorithm. This algorithm works by partitioning the input into
-	better and better aproximations of the guess.
-
+	root algorithm.
 
 	square root of 31.50:
 
@@ -132,6 +130,8 @@ static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
         return a;
 }
 
+/* factor2() and push() are convenience wrappers */
+
 static void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 {
         *a = factor(*a, b, base, scale);
@@ -198,7 +198,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	int lodd = 0;
 	size_t suppl = MAX((scale*2), rr(a));
 	fxdpnt *g1 = arb_expand(NULL, a->len);
-	fxdpnt *t = arb_expand(NULL, a->len);
+	fxdpnt *t = NULL;
 	fxdpnt *answer = arb_expand(NULL, a->len + scale);
 
 	fxdpnt *side = arb_expand(NULL, a->len + scale);
@@ -243,7 +243,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 			firstpass = 0;
 		}else {
 			push(&g1, x1, "g1 = ");
-			/* mul by 2, append, and then factor up*/
+			/* mul by 2, append, and then factor up */
 			mul(answer, two, &side, base, scale, "side = ");
 			push(&side, one, "side = ");
 			t = guess(&side, g1, base, scale, "side = ");
@@ -258,6 +258,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	}
 
 	arb_free(g1);
+	arb_free(g2);
 	arb_free(side);
 	tmp->number = f;
 	arb_free(tmp);
