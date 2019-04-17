@@ -162,8 +162,16 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 			  -- this is a bit hard as we depend on overflowing
 			  so we'd need to use two variables as a kind of cache
 		TODO: make a better first guess
-			 	1. use a will known factorization algorithm
-			2. or, split number in half logically and work up from that
+			Hypothesis:
+
+			start with base / 2 instead of 1, and work up or down
+			from there, divide repeatedly until the comparisons shift
+			state
+
+			if base / 2 is too large, then halve it again. if it is too
+			small then add base / 4 to it
+
+			once the state shift occurs, then increment or decrement
 	*/
 	_internal_debug;
 	fxdpnt *side = arb_str2fxdpnt("1");
