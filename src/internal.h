@@ -128,7 +128,7 @@ int oddity(size_t);
 void *_arb_memset(void *, int, size_t);
 /* zeros */
 size_t count_leading_fractional_zeros(fxdpnt *);
-
+size_t count_leading_zeros(fxdpnt *);
 /* some macros to make debugging and timing less intrusive */
 #define _arb_time_start \
 	if (_ARB_TIME) _arb_time = clock()

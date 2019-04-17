@@ -188,7 +188,7 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
         return side;
 }
 
-fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
+fxdpnt *nlsqrt(fxdpnt *aa, int base, size_t scale)
 {
 	/* this function can not currently handle leading zeross */
 	int dig2get = 2;
@@ -196,6 +196,8 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	int firstpass = 1;
 	int odd = 0;
 	int lodd = 0;
+	fxdpnt *a = arb_copy(a, aa);
+	a = remove_leading_zeros(a);
 	size_t suppl = MAX((scale*2), rr(a));
 	fxdpnt *g1 = arb_expand(NULL, a->len);
 	fxdpnt *t = NULL;
@@ -208,6 +210,8 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	fxdpnt *x1 = arb_expand(NULL, a->len);
 	fxdpnt *tmp = x1;
 	UARBT *f = tmp->number;
+
+	
 
 	if (oddity(a->lp)) {
 		dig2get = 1;
