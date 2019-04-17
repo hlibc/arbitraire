@@ -215,7 +215,16 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	}
 
 	if (oddity(rr(a))) {
+
 		odd = 1;
+	}
+
+	size_t zeros = count_leading_fractional_zeros(a) ;
+
+	if (zeros) {
+		i = zeros;
+		if (oddity(zeros))
+			dig2get = 1;
 	}
 
 	for (;i < a->len + odd + suppl; ) {
@@ -265,6 +274,7 @@ fxdpnt *nlsqrt(fxdpnt *a, int base, size_t scale)
 	answer->lp = a->lp / 2 + lodd;
 	answer->len = answer->lp + MAX(scale, rr(a));
 	arb_free(a);
+	answer = arb_rightshift(answer, zeros / 2);
 	return answer;
 } 
 
