@@ -125,6 +125,8 @@ void divv(const fxdpnt *, const fxdpnt *, fxdpnt **, int, size_t, char *);
 int oddity(size_t);
 /* memset */
 void *_arb_memset(void *, int, size_t);
+/* zeros */
+size_t count_leading_fractional_zeros(fxdpnt *);
 
 /* some macros to make debugging and timing less intrusive */
 #define _arb_time_start \
