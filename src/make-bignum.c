@@ -91,10 +91,26 @@ char *make_bignum(size_t limit, int base, int tryneg)
 		if (sign == 0)
 			ret[i++] = '-';
 	}
-	for(;i < truelim; i++)
-		ret[i] = arb_highbase((random() % base));
+	/* try fractions only */
+	if (random() % 4 == 2)
+	{
+		size_t zeros = random() % (truelim /2);
+		if (random() % 4 == 2)
+			ret[i++] = '0';
+		ret[i++] = '.';
+		while (zeros--)
+			ret[i++] = '0';
 
-	ret[(random() % truelim)] = '.';
+		for(;i < truelim; i++)
+			ret[i] = arb_highbase((random() % base));
+	/* numbers that will typically have whole-number values */
+	} else {
+		for(;i < truelim; i++)
+			ret[i] = arb_highbase((random() % base));
+		/* 1 out of ten nums with whole-parts will be integers */
+		if (random() % 10 < 8)
+			ret[(random() % truelim)] = '.';
+	}
 	ret[i] = 0;
 	return ret;
 }
