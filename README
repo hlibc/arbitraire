@@ -17,8 +17,7 @@ Arbitraire
 		2. Schoolbook (<1000 limb)
 
 	Square root:
-		1. Newton's method 
-		2. long-hand square root 
+		1. Newton's method
 
 
 	Arbitraire strictly follows POSIX and the C99/C11 standards, and so, is
