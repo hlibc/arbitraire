@@ -108,7 +108,7 @@ static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
         /* regular factorization. we only need to obtain two
            digit numbers
 	   TODO: make this function return the squared number 
-	   so we can save a multipliation later
+	   so we can save a multiplication later
         */
         fxdpnt *temp = arb_str2fxdpnt("+0.00");
         temp = arb_copy(temp, a);
