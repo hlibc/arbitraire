@@ -119,8 +119,7 @@ static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 		comp = arb_compare(temp, b,  10);
 		if (comp == 0) {
 			break;
-		} else if (comp > 0)
-		{
+		} else if (comp > 0) {
 			decr(&a, base, 0);
 			break;
 		}
@@ -130,13 +129,14 @@ static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	return a;
 }
 
-/* factor2() and push() are convenience wrappers */
+/* factor2() and push2() are convenience wrappers */
 
 static void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 {
 	*a = factor(*a, b, base, scale);
 }
-static fxdpnt *pushon(fxdpnt *c, fxdpnt *b)
+
+static fxdpnt *push(fxdpnt *c, fxdpnt *b)
 {
 	c = arb_expand(c, c->len + b->len);
 	_arb_copy_core(c->number + c->len, b->number, b->len);
@@ -145,10 +145,10 @@ static fxdpnt *pushon(fxdpnt *c, fxdpnt *b)
 	return c;
 }
 
-static void push(fxdpnt **c, fxdpnt *b, char *m)
+static void push2(fxdpnt **c, fxdpnt *b, char *m)
 {
 	_internal_debug;
-	*c = pushon(*c, b);
+	*c = push(*c, b);
 	_internal_debug_end;
 }
 
@@ -172,6 +172,9 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 			small then add base / 4 to it
 
 			once the state shift occurs, then increment or decrement
+
+			the method currently used is fine for small bases, but 
+			would be extremely slow for large bases.
 	*/
 	_internal_debug;
 	fxdpnt *side = arb_str2fxdpnt("1");
@@ -183,8 +186,7 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 		comp = arb_compare(tmul, b, 10);
 		if (comp == 0) {
 			break;
-		} else if (comp > 0)
-		{
+		} else if (comp > 0) {
 			decr(&*c, base, 0);
 			decr(&side, base, 0);
 			break;
@@ -208,7 +210,8 @@ fxdpnt *nlsqrt(fxdpnt *aa, int base, size_t scale)
 	int firstpass = 1;
 	int odd = 0;
 	int lodd = 0;
-	fxdpnt *a = arb_copy(a, aa);
+	fxdpnt *a = NULL;
+	a = arb_copy(a, aa);
 	a = remove_leading_zeros(a);
 	size_t suppl = MAX((scale*2), rr(a));
 	fxdpnt *g1 = arb_expand(NULL, a->len);
@@ -229,7 +232,6 @@ fxdpnt *nlsqrt(fxdpnt *aa, int base, size_t scale)
 	}
 
 	if (oddity(rr(a))) {
-
 		odd = 1;
 	}
 
@@ -257,21 +259,21 @@ fxdpnt *nlsqrt(fxdpnt *aa, int base, size_t scale)
 			x1->number = a->number + i;
 			x1->lp = x1->len = dig2get;
 		}
-		
+		// TODO: separate out this conditional
 		if (firstpass) {
 			factor2(&g1, x1, base, scale);
-			push(&answer, g1, "answer = ");
+			push2(&answer, g1, "answer = ");
 			mul(g1, g1, &g1, base, scale, "g1 = ");
 			sub(x1, g1, &g1, base, "g1 = ");
 			firstpass = 0;
 		}else {
-			push(&g1, x1, "g1 = ");
+			push2(&g1, x1, "g1 = ");
 			/* mul by 2, append, and then factor up */
 			mul(answer, two, &side, base, scale, "side = ");
-			push(&side, one, "side = ");
+			push2(&side, one, "side = ");
 			t = guess(&side, g1, base, scale, "side = ");
 			mul(t, side, &g2, base, scale, "g2 =");
-			push(&answer, t, "answer = ");
+			push2(&answer, t, "answer = ");
 			arb_free(t);
 			sub(g1, g2, &g1, base, "g1 = ");
 		}
