@@ -174,7 +174,7 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 			once the state shift occurs, then increment or decrement
 
 			the method currently used is fine for small bases, but 
-			would be extremely slow for large bases.
+			may be slow for large bases.
 	*/
 	_internal_debug;
 	fxdpnt *side = arb_str2fxdpnt("1");
