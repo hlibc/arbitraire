@@ -8,7 +8,7 @@ void _arb_copy_core(UARBT *b, UARBT *a, size_t len)
 	memcpy(b, a, len * sizeof(UARBT));
 }
 
-void *arb_copy(fxdpnt *b, fxdpnt *a)
+void *arb_copy(fxdpnt *b, const fxdpnt *a)
 { 
 	b = arb_expand(b, a->len);
 	b->len = a->len;

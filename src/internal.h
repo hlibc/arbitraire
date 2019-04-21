@@ -78,7 +78,7 @@ int arb_highbase(int);
 int arb_compare(const fxdpnt *, const fxdpnt *, int);
 /* copying */
 void _arb_copy_core(UARBT *, UARBT *, size_t);
-void *arb_copy(fxdpnt *, fxdpnt *);
+void *arb_copy(fxdpnt *, const fxdpnt *);
 /* sqrt */
 fxdpnt *nsqrt(fxdpnt *, int, size_t);
 fxdpnt *long_sqrt(fxdpnt *, int, size_t);

@@ -1,5 +1,6 @@
 #include "internal.h"
 
+/* Copyright CM Graff 2019 */
 
 size_t count_leading_fractional_zeros(fxdpnt *a)
 {
@@ -10,8 +11,7 @@ size_t count_leading_fractional_zeros(fxdpnt *a)
 	else if (a->lp > 0) {
 		return 0;
 	}
-	while (a->number[pos] == 0)
-	{
+	while (a->number[pos] == 0) {
 		pos++;
 		ret++;
 	}

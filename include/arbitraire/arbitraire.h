@@ -41,7 +41,7 @@ void arb_printtrue(fxdpnt *);
 /* comparison */
 int arb_compare(fxdpnt *, fxdpnt *, int);
 /* copying */
-void *arb_copy(fxdpnt *, fxdpnt *);
+void *arb_copy(fxdpnt *, const fxdpnt *);
 /* sqrt */
 fxdpnt *nsqrt(fxdpnt *, int, size_t);
 fxdpnt *long_sqrt(fxdpnt *, int, size_t);
