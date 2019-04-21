@@ -3,7 +3,7 @@ Arbitraire
 	An arbitrary precision mathematics library. 
 	
 	Arbitraire supports a pure mathematics number system of continuous and
-	arbitrarily sized fractional datum. The following algorithms are used:
+	arbitrarily sized fractional data. The following algorithms are used:
 	
 	Division:
 		1. Knuth's TAOCP vol 2 Algorithm D
@@ -18,8 +18,6 @@ Arbitraire
 
 	Square root:
 		1. Newton's method
-		2. long-hand/school-book method
-
 
 	Arbitraire strictly follows POSIX and the C99/C11 standards, and so, is
 	portable to any POSIX compliant system and works with all of the
