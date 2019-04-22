@@ -289,6 +289,7 @@ fxdpnt *lhsqrt(fxdpnt *aa, int base, size_t scale)
 	answer->lp = a->lp / 2 + lodd;
 	answer->len = answer->lp + MAX(scale, rr(a));
 	arb_free(a);
+	arb_free(aa);
 	
 	return answer;
 } 
