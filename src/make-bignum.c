@@ -22,6 +22,18 @@
 		-123
 		-0.123
 		38672384768923746872346.2346782364786234
+		.0000000123012
+
+		Millions of randomly generated number sequences seldom
+		result in the harder tests which generally must be hand-
+		crafted. One of such sequence types is the case of
+		leading fractional zeros like .0000xxxx. For this reason,
+		make_bignum will attempt to make a true fractional sequence
+		with no whole number part and many many leading zeros about
+		20 percent of the time.
+
+		TODO: create numbers with huge expanses of zeros such as
+		123.0000000....0000123
 
 	3> Invalid numbers are also generated. Such as:
 		-.
