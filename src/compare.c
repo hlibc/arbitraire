@@ -19,10 +19,11 @@ int arb_compare(const fxdpnt *a, const fxdpnt *b) {
 	if (a->sign == '-' && b->sign == '+') return -1;
 	if (a->sign == '+' && b->sign == '-') return 1;
 
-	for (a_pos = 0; a_pos < a->lp && a->number[a_pos] == 0; ++a_pos)
-		;
-	for (b_pos = 0; b_pos < b->lp && b->number[b_pos] == 0; ++b_pos)
-		;
+	/* This may be better implemented as a raw for-loop to avoid any extra
+	 * variable and function overhead in count_leading_zeros()
+	 */
+	a_pos = count_leading_zeros(a);
+	b_pos = count_leading_zeros(b);
 
 	if (a->lp - a_pos > b->lp - b_pos)
 		result = 1;

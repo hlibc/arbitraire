@@ -130,7 +130,6 @@ static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 }
 
 /* factor2() and push2() are convenience wrappers */
-
 static void factor2(fxdpnt **a, fxdpnt *b, int base, size_t scale)
 {
 	*a = factor(*a, b, base, scale);
