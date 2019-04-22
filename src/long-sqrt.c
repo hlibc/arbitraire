@@ -3,8 +3,6 @@
 
 	Copyright 2019 CM Graff. All Rights Reserved
 
-	This algorithm is still under construction ...  
-
 	This is an arbitrary precision implementation of the long-hand square 
 	root algorithm.
 
@@ -81,23 +79,23 @@
 	square root of 283.6
 
 	     __1__6.8_4_0_4_..._
-	   \/  2 83.6		
-	       1		
-	       -----		
-	       1 83		
-	2_6*6= 1 56		
-	       ------		
-	         27 60		
-	32_8*8=  26 24		
+	   \/  2 83.6
+	       1
+	       -----
+	       1 83
+	2_6*6= 1 56
+	       ------
+	         27 60
+	32_8*8=  26 24
 	        -------	
-	          1 36 00	
-	336_4*4=  1 34 56	
-	          --------	
-	             1 44 00	
+	          1 36 00
+	336_4*4=  1 34 56
+	          --------
+	             1 44 00
 	3368_0*0=       0 00   <-- Note that the side guess can be a zero
-	           ---------	
-	             1 44 00 00	
-	33680_4*4=   1 34 72 16	
+	           ---------
+	             1 44 00 00
+	33680_4*4=   1 34 72 16
 	             ----------
 		     ...
 
@@ -269,7 +267,8 @@ fxdpnt *lhsqrt(fxdpnt *aa, int base, size_t scale)
 		}else {
 			push2(&g1, x1, "g1 = ");
 			/* mul by 2, append, and then factor up */
-			mul(answer, two, &side, base, scale, "side = ");
+			//mul(answer, two, &side, base, scale, "side = ");
+			add(answer, answer, &side, base, 0);
 			push2(&side, one, "side = ");
 			t = guess(&side, g1, base, scale, "side = ");
 			mul(t, side, &g2, base, scale, "g2 =");
