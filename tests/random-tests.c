@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 		ag = 0;
 	if (strcmp(argv[1], "sqrt") == 0)
 		type = 0;
-	if (strcmp(argv[1], "long-sqrt") == 0)
+	if (strcmp(argv[1], "lhsqrt") == 0)
 		type = 0;
 
 	if (!(fp = fopen("testing.bc", "w+")))
@@ -53,9 +53,9 @@ int main(int argc, char *argv[])
 		return 1;
 
 	
-	if (strcmp(argv[1], "long-sqrt") == 0) {
+	if (strcmp(argv[1], "lhsqrt") == 0) {
 		fprintf(fp, "sqrt(%s)\nquit\n", string1);
-		a = long-sqrt(a, 10, scale);
+		a = lhsqrt(a, 10, scale);
 		arb_print(a);
 	}
 
