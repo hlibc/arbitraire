@@ -75,7 +75,7 @@ fxdpnt *arb_str2fxdpnt(const char *);
 fxdpnt *arb_parse_str(fxdpnt *, const char *);
 int arb_highbase(int);
 /* comparison */
-int arb_compare(const fxdpnt *, const fxdpnt *, int);
+int arb_compare(const fxdpnt *, const fxdpnt *);
 /* copying */
 void _arb_copy_core(UARBT *, UARBT *, size_t);
 void *arb_copy(fxdpnt *, const fxdpnt *);

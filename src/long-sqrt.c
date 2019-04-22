@@ -116,7 +116,7 @@ static fxdpnt *factor(fxdpnt *a, fxdpnt *b, int base, size_t scale)
 	do
 	{
 		mul(a, a, &temp, base, scale, 0);
-		comp = arb_compare(temp, b,  10);
+		comp = arb_compare(temp, b);
 		if (comp == 0) {
 			break;
 		} else if (comp > 0) {
@@ -183,7 +183,7 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 	do
 	{
 		mul(*c, side, &tmul, base, scale, 0);
-		comp = arb_compare(tmul, b, 10);
+		comp = arb_compare(tmul, b);
 		if (comp == 0) {
 			break;
 		} else if (comp > 0) {

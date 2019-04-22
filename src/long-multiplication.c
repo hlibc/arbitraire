@@ -86,14 +86,14 @@ fxdpnt *arb_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t sc
 fxdpnt *arb_mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
 	/* optimize multiplication by one */
-	if (arb_compare(a, one, base) == 0) {
+	if (arb_compare(a, one) == 0) {
 		fxdpnt *c2 = arb_expand(NULL, b->len);
 		c2 = arb_copy(c2, b);
 		arb_free(c);
 		return c2;
 	}
 
-	if (arb_compare(b, one, base) == 0) {
+	if (arb_compare(b, one) == 0) {
 		fxdpnt *c2 = arb_expand(NULL, a->len);
 		c2 = arb_copy(c2, a);
 		arb_free(c);

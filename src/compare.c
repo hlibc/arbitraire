@@ -11,7 +11,7 @@ static int is_trailing_zeros(const fxdpnt *a, size_t idx) {
 	return 1;
 }
 
-int arb_compare(const fxdpnt *a, const fxdpnt *b, int base) {
+int arb_compare(const fxdpnt *a, const fxdpnt *b) {
 	size_t a_pos = 0;
 	size_t b_pos = 0;
 	int result = 0;
@@ -49,6 +49,5 @@ int arb_compare(const fxdpnt *a, const fxdpnt *b, int base) {
 		result = 0 - result;
 	}
 
-	(void)base;
 	return result;
 }
