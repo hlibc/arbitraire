@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	
 	if (strcmp(argv[1], "long-sqrt") == 0) {
 		fprintf(fp, "sqrt(%s)\nquit\n", string1);
-		a = nlsqrt(a, 10, scale);
+		a = long-sqrt(a, 10, scale);
 		arb_print(a);
 	}
 

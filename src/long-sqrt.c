@@ -198,7 +198,7 @@ static fxdpnt *guess(fxdpnt **c, fxdpnt *b, int base, size_t scale, char *m)
 	return side;
 }
 
-fxdpnt *nlsqrt(fxdpnt *aa, int base, size_t scale)
+fxdpnt *long-sqrt(fxdpnt *aa, int base, size_t scale)
 {
 	/* TODO: oddity of the log() of the fractional part is not a valid
 	 * concept. Instead, track the leading fractional zeros.

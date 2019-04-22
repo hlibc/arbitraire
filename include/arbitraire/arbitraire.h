@@ -45,7 +45,7 @@ void *arb_copy(fxdpnt *, const fxdpnt *);
 /* sqrt */
 fxdpnt *nsqrt(fxdpnt *, int, size_t);
 fxdpnt *long_sqrt(fxdpnt *, int, size_t);
-fxdpnt *nlsqrt(fxdpnt *, int, size_t);
+fxdpnt *long-sqrt(fxdpnt *, int, size_t);
 /* general */
 void arb_init(fxdpnt *);
 void arb_error(char *);

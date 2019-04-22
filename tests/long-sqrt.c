@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 	int scale =  strtoll(argv[3], NULL, 10);
 	fxdpnt *a = NULL;
 	a = arb_str2fxdpnt(argv[1]);
-	a = nlsqrt(a, base, scale);
+	a = long-sqrt(a, base, scale);
 	arb_print(a);
 	arb_free(a);
 	return 0;
