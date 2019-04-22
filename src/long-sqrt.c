@@ -267,8 +267,7 @@ fxdpnt *lhsqrt(fxdpnt *aa, int base, size_t scale)
 		}else {
 			push2(&g1, x1, "g1 = ");
 			/* mul by 2, append, and then factor up */
-			//mul(answer, two, &side, base, scale, "side = ");
-			add(answer, answer, &side, base, 0);
+			mul(answer, two, &side, base, scale, "side = ");
 			push2(&side, one, "side = ");
 			t = guess(&side, g1, base, scale, "side = ");
 			mul(t, side, &g2, base, scale, "g2 =");
