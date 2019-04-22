@@ -212,7 +212,8 @@ fxdpnt *lhsqrt(fxdpnt *aa, int base, size_t scale)
 	fxdpnt *a = NULL;
 	a = arb_copy(a, aa);
 	a = remove_leading_zeros(a);
-	size_t suppl = MAX((scale*2), rr(a));
+	size_t suppl = MAX((scale*2), rr(a) * 2);
+	//size_t suppl = MAX(scale, rr(a));
 	fxdpnt *g1 = arb_expand(NULL, a->len);
 	fxdpnt *t = NULL;
 	fxdpnt *answer = arb_expand(NULL, a->len + scale);
@@ -286,10 +287,11 @@ fxdpnt *lhsqrt(fxdpnt *aa, int base, size_t scale)
 	arb_free(side);
 	tmp->number = f;
 	arb_free(tmp);
+	answer = arb_rightshift(answer, zeros / 2);
 	answer->lp = a->lp / 2 + lodd;
 	answer->len = answer->lp + MAX(scale, rr(a));
 	arb_free(a);
-	answer = arb_rightshift(answer, zeros / 2);
+	
 	return answer;
 } 
 
