@@ -18,6 +18,7 @@ Arbitraire
 
 	Square root:
 		1. Newton's method
+		2. Schoolbook / long-hand
 
 	Arbitraire strictly follows POSIX and the C99/C11 standards, and so, is
 	portable to any POSIX compliant system and works with all of the
