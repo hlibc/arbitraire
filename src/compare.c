@@ -1,6 +1,7 @@
 #include "internal.h"
 /*
 	Copyright Bao Hexing 2018
+	Copyright CM Graff 2019
 */
 
 static int is_trailing_zeros(const fxdpnt *a, size_t idx) {
