@@ -40,7 +40,9 @@
 	This algorithm deviates from Knuth's method by fusing the normalization 
 	and temporary variable copy downs. This does not optimize the case of a 
 	normalization factor of (1) but instead trades it off for a smaller code
-       	footprint.
+       	footprint. Multiplication by one in arbitraire is optimized as a call to
+	arb_copy anyway -- so the resulting code is identical to the TAOCP vol
+	2's proposal, only requiring less lines of code.
 
 	TODO: don't exit on zero
 	TODO: strip trailing zeros from the denominator
