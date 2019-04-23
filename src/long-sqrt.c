@@ -200,7 +200,6 @@ fxdpnt *lhsqrt(fxdpnt *aa, int base, size_t scale)
 {
 	/* TODO: oddity of the log() of the fractional part is not a valid
 	 * concept. Instead, track the leading fractional zeros.
-	 * TODO: numbers without fractional parts are failing.
 	 */
 	int dig2get = 2;
 	size_t i = 0;
@@ -210,8 +209,8 @@ fxdpnt *lhsqrt(fxdpnt *aa, int base, size_t scale)
 	fxdpnt *a = NULL;
 	a = arb_copy(a, aa);
 	a = remove_leading_zeros(a);
-	size_t suppl = MAX((scale*2), rr(a) * 2);
-	//size_t suppl = MAX(scale, rr(a));
+	//size_t suppl = MAX((scale*2), rr(a)* 2);
+	size_t suppl = MAX((scale * 2), rr(a));
 	fxdpnt *g1 = arb_expand(NULL, a->len);
 	fxdpnt *t = NULL;
 	fxdpnt *answer = arb_expand(NULL, a->len + scale);
@@ -270,7 +269,7 @@ fxdpnt *lhsqrt(fxdpnt *aa, int base, size_t scale)
 			mul(answer, two, &side, base, scale, "side = ");
 			push2(&side, one, "side = ");
 			t = guess(&side, g1, base, scale, "side = ");
-			mul(t, side, &g2, base, scale, "g2 =");
+			debugmul(t, side, &g2, base, scale, "g2 =");
 			push2(&answer, t, "answer = ");
 			arb_free(t);
 			sub(g1, g2, &g1, base, "g1 = ");

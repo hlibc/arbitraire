@@ -109,3 +109,10 @@ void mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, size_t scale, 
 }
 
 
+
+void debugmul(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
+{
+	_internal_debug;
+	*c = arb_mul(a, b, *c, base, scale);
+	_internal_debug_end;
+}

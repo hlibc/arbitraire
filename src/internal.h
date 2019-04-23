@@ -47,6 +47,7 @@ extern long _arb_time;
 /* function prototypes */
 /* arithmetic */
 fxdpnt *arb_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
+
 fxdpnt *arb_mul2(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 size_t arb_mul_core(const UARBT *, size_t, const UARBT *, size_t, UARBT *, int);
 fxdpnt *arb_karatsuba_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int,
@@ -121,6 +122,7 @@ void sub2(const fxdpnt *, const fxdpnt *, fxdpnt **, int, char *);
 void add2(const fxdpnt *, const fxdpnt *, fxdpnt **, int, char *);
 void mul(const fxdpnt *, const fxdpnt *, fxdpnt **, int, size_t, char *);
 void mul2(const fxdpnt *, const fxdpnt *, fxdpnt **, int, size_t, char *);
+void debugmul(const fxdpnt *, const fxdpnt *, fxdpnt **, int, size_t, char *);
 void divv(const fxdpnt *, const fxdpnt *, fxdpnt **, int, size_t, char *);
 /* oddity */
 int oddity(size_t);

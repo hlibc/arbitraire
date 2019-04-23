@@ -50,8 +50,10 @@ release:
 release_inter:
 	./configure
 	CFLAGS="-O3" $(MAKE) all
-	echo "sqrt tests"
+	echo "newton's method sqrt tests"
 	./tests/random-wrapper.sh sqrt 1000 null valgrind
+	echo "long hand method sqrt tests"
+	./tests/random-wrapper.sh lhsqrt 1000 null valgrind
 	echo "div tests"
 	./tests/random-wrapper.sh div 10000 null valgrind
 	./tests/random-wrapper.sh div 10000 agnostic valgrind
