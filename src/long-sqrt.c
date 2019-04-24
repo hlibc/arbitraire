@@ -6,6 +6,15 @@
 	This is an arbitrary precision implementation of the long-hand square 
 	root algorithm.
 
+	The long hand square root algorithm is originally attributed to
+	Fibonacci in his work Liber Abaci.
+
+	He described that:
+	when a number has 2n or 2n−1 digits, the square root has n digits 
+	(in its integer part). And if 2n−1 digits, the leftmost group 
+	has only one digit.
+
+
 	square root of 31.50:
 
 	            _5.612 ..._
