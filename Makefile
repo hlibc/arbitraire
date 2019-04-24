@@ -46,6 +46,7 @@ install:
 
 release:
 	make clean ; make release_inter ; grep 'no leaks' *tests-passed.txt | wc -l
+	-@echo "the number above should be 1400"
 
 release_inter:
 	./configure
