@@ -66,6 +66,9 @@ release_inter:
 	echo "mul tests"
 	./tests/random-wrapper.sh mul 10000 null valgrind
 	./tests/random-wrapper.sh mul 10000 agnostic valgrind
+	echo "karatsuba only tests"
+	./tests/random-wrapper.sh karatsuba 10000 null valgrind
+	./tests/random-wrapper.sh karatsuba 10000 agnostic valgrind
 	echo "mod tests"
 	./tests/random-wrapper.sh mod 10000 null valgrind
 	./tests/random-wrapper.sh mod 10000 agnostic valgrind

@@ -73,23 +73,46 @@ size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UA
 }
 
 fxdpnt *arb_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
-{
+{ 
 	/* use karatsuba multiplication if either operand is over 1000 digits */
 	if (MAX(a->len, b->len) > 1000)
 		return arb_karatsuba_mul(a, b, c, base, scale);
 
 	c = arb_mul2(a, b, c, base, scale);
+	
 	c = remove_leading_zeros(c);
 	return c;
 }
 
 fxdpnt *arb_mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
-	fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
-        arb_setsign(a, b, c2);
+	fxdpnt *c2 = NULL;
+       
+	/* optimize multiplication by 1 as a copy() */
+	//TODO: arb_copy() should be handling the struct element copies
+	//      so it must have a bug and needs to be fixed.
+	if (arb_compare(a, one) == 0) {
+		c2 = arb_copy(c2, b);
+		arb_setsign(a, b, c2);
+		c2->len = b->len;
+		c2->lp = b->lp;
+		c2->sign = b->sign;
+		goto end;
+	}
+	if (arb_compare(b, one) == 0) {
+		c2 = arb_copy(c2, a);
+		arb_setsign(a, b, c2);	
+		c2->len = a->len;
+		c2->lp = a->lp;
+		c2->sign = a->sign;
+		goto end;
+	}
+	c2 = arb_expand(NULL, a->len + b->len);
+	arb_setsign(a, b, c2);
         arb_mul_core(a->number, a->len, b->number, b->len, c2->number, base);
         c2->lp = rl(a) + rl(b);
         c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
+	end:
         arb_free(c);
         return c2;
 }
@@ -107,8 +130,6 @@ void mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, size_t scale, 
 	*c = arb_mul2(a, b, *c, base, scale);
 	_internal_debug_end;
 }
-
-
 
 void debugmul(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, size_t scale, char *m)
 {

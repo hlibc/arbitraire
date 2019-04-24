@@ -95,10 +95,10 @@ fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
 	size_t align = 16;
 
 	/* align on a multiple of 'align' */
-	//if (request >= align)
-	//	request = (((request / align) + 1) * align);
-	//else
-	//	request = align;
+	if (request >= align)
+		request = (((request / align) + 1) * align);
+	else
+		request = align;
 
 	/* allocation (vector creation) */
 	if (o == NULL) { 
