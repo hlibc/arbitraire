@@ -46,6 +46,11 @@
 
 	TODO: don't exit on zero
 	TODO: strip trailing zeros from the denominator
+
+
+	History:
+	The modern method of long division is attributed to Henry Briggs circa 
+	1600
 */
 
 int _long_sum(UARBT *u, size_t i, const UARBT *v, size_t k, int b, uint8_t lever)
