@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 	a = arb_str2fxdpnt(argv[1]);
 	a = nsqrt(a, base, scale);
 	arb_print(a);
+	arb_free(a);
 	return 0;
 }
 
