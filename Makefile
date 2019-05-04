@@ -64,6 +64,8 @@ release_inter:
 	echo "sub tests"
 	./tests/random-wrapper.sh sub 10000 null valgrind
 	./tests/random-wrapper.sh sub 10000 agnostic valgrind
+	#TODO: force these to be long multiplication tests. They are currently just Karatsuba tests
+	# at 10000 digits
 	echo "mul tests"
 	./tests/random-wrapper.sh mul 10000 null valgrind
 	./tests/random-wrapper.sh mul 10000 agnostic valgrind
