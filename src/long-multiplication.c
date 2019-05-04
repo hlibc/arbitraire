@@ -72,8 +72,32 @@ size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UA
 	return ret;
 }
 
+fxdpnt *arb_mul_by_one(const fxdpnt *a, const fxdpnt *b, fxdpnt *c)
+{
+	if (arb_compare(a, one) == 0) {
+		fxdpnt *c2 = arb_expand(NULL, a->len);
+		c2 = arb_copy(c2, b);
+	        arb_free(c);
+		c2 = remove_leading_zeros(c2);
+	        return c2;
+
+	} else if (arb_compare(b, one) == 0) {
+		fxdpnt *c2 = arb_expand(NULL, b->len);
+		c2 = arb_copy(c2, a);
+	        arb_free(c);
+		c2 = remove_leading_zeros(c2);
+	        return c2;
+	}
+	else
+		return NULL;
+}
+
+
 fxdpnt *arb_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 { 
+	
+	if ((c = arb_mul_by_one(a, b, c)) != NULL)
+		return c;
 	/* use karatsuba multiplication if either operand is over 1000 digits */
 	if (MAX(a->len, b->len) > 1000)
 		return arb_karatsuba_mul(a, b, c, base, scale);
@@ -115,3 +139,5 @@ void debugmul(const fxdpnt *a, const fxdpnt *b, fxdpnt **c, int base, size_t sca
 	*c = arb_mul(a, b, *c, base, scale);
 	_internal_debug_end;
 }
+
+
