@@ -9,16 +9,16 @@ Arbitraire
 		1. Knuth's TAOCP vol 2 Algorithm D
 
 	Subtraction and addition:
-		1. 5-loop
-		2. compact
+		1. 5-loop (limited conditionals)
+		2. compact (intensive conditionals)
 
-	Multiplication: 
-		1. Karatsuba (>1000 limb)
-		2. Schoolbook (<1000 limb)
+	Multiplication:
+		1. Karatsuba method (>1000 limb)
+		2. Henry Briggs' method (<1000 limb)
 
 	Square root:
 		1. Newton's method
-		2. Schoolbook / long-hand
+		2. Fibonacci's method
 
 	Arbitraire strictly follows POSIX and the C99/C11 standards, and so, is
 	portable to any POSIX compliant system and works with all of the
