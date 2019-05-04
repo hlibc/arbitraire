@@ -44,6 +44,38 @@ install:
 # reported as "1100"
 
 
+quick_release:
+	make clean ; make quick_release_inter ; grep 'no leaks' *tests-passed.txt | wc -l
+	-@echo "the number above should be 70"
+
+quick_release_inter:
+	./configure
+	CFLAGS="-O3" $(MAKE) all
+	echo "newton's method sqrt tests"
+	./tests/random-wrapper.sh sqrt 1000 null valgrind 5
+	echo "long hand method sqrt tests"
+	./tests/random-wrapper.sh lhsqrt 1000 null valgrind 5
+	echo "div tests"
+	./tests/random-wrapper.sh div 10000 null valgrind 5
+	./tests/random-wrapper.sh div 10000 agnostic valgrind 5
+	echo "add tests"
+	./tests/random-wrapper.sh add 10000 null valgrind 5
+	./tests/random-wrapper.sh add 10000 agnostic valgrind 5
+	echo "sub tests"
+	./tests/random-wrapper.sh sub 10000 null valgrind 5
+	./tests/random-wrapper.sh sub 10000 agnostic valgrind 5
+	#TODO: force these to be long multiplication tests. They are currently just Karatsuba tests
+	# at 10000 digits
+	echo "mul tests"
+	./tests/random-wrapper.sh mul 10000 null valgrind 5
+	./tests/random-wrapper.sh mul 10000 agnostic valgrind 5
+	echo "karatsuba only tests"
+	./tests/random-wrapper.sh karatsuba 10000 null valgrind 5
+	./tests/random-wrapper.sh karatsuba 10000 agnostic valgrind 5
+	echo "mod tests"
+	./tests/random-wrapper.sh mod 10000 null valgrind 5
+	./tests/random-wrapper.sh mod 10000 agnostic valgrind 5
+
 release:
 	make clean ; make release_inter ; grep 'no leaks' *tests-passed.txt | wc -l
 	-@echo "the number above should be 1400"
