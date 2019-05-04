@@ -18,7 +18,7 @@ static fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 
 	size_t m = (MIN(a->len, b->len)+1) / 2;
 
-	/* all but z5 get their memory from the calling functions */
+	/* all but z5 (the final recursion) get their memory from the calling functions */
 	fxdpnt *z1, *z2, *z3, *z4, *z6, *z7, *z8;
 	z1 = z2 = z3 = z4 = z6 = z7 = z8 = NULL;
 	fxdpnt *z5 = arb_expand(NULL, 0);
