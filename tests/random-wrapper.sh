@@ -11,11 +11,11 @@ fi
 USE_VALGRIND="0"
 USE_STRACE="0"
 USE_TIME="0"
-if [ $# = "4" ]
-then	[ "$4" = "valgrind" ] && USE_VALGRIND="1"
-	[ "$4" = "strace" ] && USE_STRACE="1"
-	[ "$4" = "time" ] && USE_TIME="1"
-fi
+
+[ "$4" = "valgrind" ] && USE_VALGRIND="1"
+[ "$4" = "strace" ] && USE_STRACE="1"
+[ "$4" = "time" ] && USE_TIME="1"
+
 
 machinename="$(uname -m)"
 machinename="${machinename}-tests-passed.txt"
