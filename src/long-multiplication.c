@@ -96,8 +96,8 @@ fxdpnt *arb_mul_by_one(const fxdpnt *a, const fxdpnt *b, fxdpnt *c)
 fxdpnt *arb_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 { 
 	
-	if ((c = arb_mul_by_one(a, b, c)) != NULL)
-		return c;
+	//if ((c = arb_mul_by_one(a, b, c)) != NULL)
+	//	return c;
 	/* use karatsuba multiplication if either operand is over 1000 digits */
 	if (MAX(a->len, b->len) > 1000)
 		return arb_karatsuba_mul(a, b, c, base, scale);
