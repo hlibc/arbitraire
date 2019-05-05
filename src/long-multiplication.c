@@ -79,7 +79,8 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 			  product / base is what typically is used to turn something like 39 into 3 using
 			  unsigned arithmetic. many implementations must instead be using bit manipulation
 			  to get this extra value, but i have a hard time seeing how that works in "any-base"
-			  scenarios
+			  scenarios. I suppose one could use the bit manipulation, but would need some type
+			  of multiplier i guess.
 
 			  then product % base is being used to pick off the second digit which then remains
 			  in place
@@ -96,11 +97,13 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 
 
 		}
+
 		printf("\n");
 		/* now print the row again and see if we got it right */
 		for(i = 0;i<rowlen;++i) {
 			printf("%u ", rows[z][i]);
 		}
+		/* now sum the row into a running total */
 		printf("\n");
 
 	}
