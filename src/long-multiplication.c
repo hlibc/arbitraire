@@ -34,6 +34,14 @@
 
 size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
 {
+	/* notes:
+	    arranging the smaller operand and larger operand differently affects the number of rows
+	    but in the inital experiments it does not affect what the rows sum out to be
+
+	TODO: perform some tests on the unsigned k-1 incrementor convention and make sure that
+		it is not creating extra leading zeros that must be stripped
+		-- this applies to normal long multiplication too!
+	 */
 	/* Comba multiplication. This algorithm is still under construction */
 	UARBT prod = 0;
 	UARBT carry = 0;
@@ -49,27 +57,19 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 	UARBT **rows = arb_malloc(10000);
 	size_t rowc = 0; 
 
-	for (i = alen; i > 0 ; i--){
-
-		rows[rowc] = arb_malloc(1000);
-		printf("top\n");
-		for (j = blen, k = i + j, carry = 0; j > 0 ; j--, k--){
-			printf("inner\n");
+	for (i = alen; i > 0 ; i--) {
+		rows[rowc] = arb_malloc(1000); 
+		for (j = blen, k = i + j, carry = 0; j > 0 ; j--, k--){ 
 			rows[rowc][k-1] = a[i-1] * b[j-1];
 		} 
-		++rowc;
-		printf("bottom\n");
+		++rowc; 
 	}
 	size_t z = 0;
-	for(;z<rowc;++z)
-	{
-		printf("top  print\n");
+	for(;z<rowc;++z) { 
 		size_t i = 0;
-		for(;i<rowlen;++i)  {
+		for(;i<rowlen;++i) {
 			printf("%u ", rows[z][i]);
 		}
-
-		printf("\nbottom  print\n");
 	}
 	return ret;
 }
