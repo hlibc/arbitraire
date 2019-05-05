@@ -49,6 +49,7 @@ extern long _arb_time;
 fxdpnt *arb_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 
 fxdpnt *arb_mul2(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
+fxdpnt *arb_comba(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 size_t arb_mul_core(const UARBT *, size_t, const UARBT *, size_t, UARBT *, int);
 fxdpnt *arb_karatsuba_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int,
 						  size_t);

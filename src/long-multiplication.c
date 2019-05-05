@@ -31,6 +31,47 @@
 	allocation but does not strip zeros like arb_mul
 */
 
+
+size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
+{
+	/* Comba multiplication. This algorithm is still under construction */
+	UARBT prod = 0;
+	UARBT carry = 0;
+	size_t i = 0;
+	size_t j = 0;
+	size_t k = 0;
+	size_t ret = 0;
+
+	size_t numrows = MAX(alen, blen);
+
+	UARBT **rows = arb_malloc(10000);
+	size_t rowc = 0; 
+
+	for (i = alen; i > 0 ; i--){
+
+		rows[rowc] = arb_malloc(1000);
+		printf("top\n");
+		for (j = blen, k = i + j, carry = 0; j > 0 ; j--, k--){
+			printf("inner\n");
+			rows[rowc][k-1] = a[i-1] * b[j-1];
+		} 
+		++rowc;
+		printf("bottom\n");
+	}
+	size_t z = 0;
+	for(;z<rowc;++z)
+	{
+		printf("top  print\n");
+		size_t i = 0;
+		for(;i<numrows;++i) { 
+			printf("%u ", rows[z][i]);
+		}
+
+		printf("\nbottom  print\n");
+	}
+	return ret;
+}
+
 size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
 {
 	UARBT prod = 0;
@@ -108,6 +149,17 @@ fxdpnt *arb_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t sc
 	return c;
 }
 
+
+fxdpnt *arb_comba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
+{
+	fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
+	arb_setsign(a, b, c2);
+        arb_mul_comba_core(a->number, a->len, b->number, b->len, c2->number, base);
+        c2->lp = rl(a) + rl(b);
+        c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
+        arb_free(c);
+        return c2;
+}
 fxdpnt *arb_mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
 {
 	fxdpnt *c2 = arb_expand(NULL, a->len + b->len);
