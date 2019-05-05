@@ -68,8 +68,41 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 	for(;z<rowc;++z) { 
 		size_t i = 0;
 		for(;i<rowlen;++i) {
+			/* perform carries across a row and then add that row into a running total 
+			   this will need to be performed backwards in a right to left order
+			   if the number is greater than 9, then deposit its remainder and carry
+			   the rest of the number. so 29 would end up being 9 and the 20 would be carried
+			   as a 2. 30 would end up being zero and 3 would be added to the next column
+
+			  (mod base) probably works, but it might also be possible to simply use subtraction
+
+			  product / base is what typically is used to turn something like 39 into 3 using
+			  unsigned arithmetic. many implementations must instead be using bit manipulation
+			  to get this extra value, but i have a hard time seeing how that works in "any-base"
+			  scenarios
+
+			  then product % base is being used to pick off the second digit which then remains
+			  in place
+			 */
+			printf("%u ", rows[z][i]);
+			
+			size_t j = rowlen;
+			for (;j>0; j--){
+				carry = rows[z][i] / base;
+				prod = rows[z][i];
+				rows[z][i - 1] += carry;
+				rows[z][i] = prod % base;
+			}
+
+
+		}
+		printf("\n");
+		/* now print the row again and see if we got it right */
+		for(i = 0;i<rowlen;++i) {
 			printf("%u ", rows[z][i]);
 		}
+		printf("\n");
+
 	}
 	return ret;
 }
