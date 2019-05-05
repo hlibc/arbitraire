@@ -42,7 +42,9 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 	size_t k = 0;
 	size_t ret = 0;
 
+	/* number of rows and the length of rows are the same -- plus extra zeros */
 	size_t numrows = MAX(alen, blen);
+	size_t rowlen = numrows + numrows;
 
 	UARBT **rows = arb_malloc(10000);
 	size_t rowc = 0; 
@@ -63,7 +65,7 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 	{
 		printf("top  print\n");
 		size_t i = 0;
-		for(;i<numrows + 4;++i)  {
+		for(;i<rowlen;++i)  {
 			printf("%u ", rows[z][i]);
 		}
 
