@@ -29,20 +29,26 @@
 
 	arb_mul2() is a wrapper for arb_mul_core which provides memory
 	allocation but does not strip zeros like arb_mul
+
+	arb_mul_comba_core is a function that operates on the fundamental datum
+	using comba multiplication. it is memory heavy but may produce a speedup
+	by moving the carrying to a final step.
 */
 
 
 size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
 {
-	/* notes:
-	    arranging the smaller operand and larger operand differently affects the number of rows
-	    but in the inital experiments it does not affect what the rows sum out to be
-
-	TODO: perform some tests on the unsigned k-1 incrementor convention and make sure that
-		it is not creating extra leading zeros that must be stripped
-		-- this applies to normal long multiplication too!
-	 */
 	/* Comba multiplication. This algorithm is still under construction */
+
+	/* TODO: perform some tests on the unsigned k-1 incrementor convention and make sure that
+		it is not creating extra leading zeros that must be stripped
+		-- this applies to normal long multiplication too!  
+
+		operand arrangement affects the number of rows -- explore arranging operands
+		to conserve memory.
+	 */
+
+	
 	UARBT prod = 0;
 	UARBT carry = 0;
 	size_t i = 0;
@@ -54,13 +60,13 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 	size_t numrows = MAX(alen, blen);
 	size_t rowlen = numrows + numrows;
 
-	UARBT **rows = arb_malloc(10000);
-	UARBT *total = arb_calloc(1, alen + blen + 1000);
+	UARBT **rows = arb_malloc(numrows * 10);
+	memset(c, 0, alen +blen);
 	
 	size_t rowc = 0; 
 
 	for (i = alen; i > 0 ; i--) {
-		rows[rowc] = arb_malloc(1000); 
+		rows[rowc] = arb_malloc(rowlen * 10 );
 		for (j = blen, k = i + j, carry = 0; j > 0 ; j--, k--){ 
 			rows[rowc][k-1] = a[i-1] * b[j-1];
 		} 
@@ -70,26 +76,7 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 	size_t endlen = rowlen;
 	for(;z<rowc;++z) { 
 		size_t i = 0;
-		for(;i<rowlen;++i) {
-			/* perform carries across a row and then add that row into a running total 
-			   this will need to be performed backwards in a right to left order
-			   if the number is greater than 9, then deposit its remainder and carry
-			   the rest of the number. so 29 would end up being 9 and the 20 would be carried
-			   as a 2. 30 would end up being zero and 3 would be added to the next column
-
-			  (mod base) probably works, but it might also be possible to simply use subtraction
-
-			  product / base is what typically is used to turn something like 39 into 3 using
-			  unsigned arithmetic. many implementations must instead be using bit manipulation
-			  to get this extra value, but i have a hard time seeing how that works in "any-base"
-			  scenarios. I suppose one could use the bit manipulation, but would need some type
-			  of multiplier i guess.
-
-			  then product % base is being used to pick off the second digit which then remains
-			  in place
-			 */
-			printf("%u ", rows[z][i]);
-			
+		for(;i<rowlen;++i) { 
 			size_t j = rowlen;
 			for (;j>0; j--){
 				carry = rows[z][i] / base;
@@ -97,47 +84,28 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 				rows[z][i - 1] += carry;
 				rows[z][i] = prod % base;
 			}
-
-
-		}
-
-		printf("\n");
-		/* now print the row again and see if we got it right */
-		for(i = 0;i<rowlen;++i) {
-			printf("%u ", rows[z][i]);
-		}
-		/* now sum the row into a running total */
-		printf("\n");
-		/* addition works backwards so as to supply the carry mechanism */
-		/* we have a lot of numbers to add, and we are going to need alen + blen
-		 worth of space to hold the total multiplication */
-		/* add the row to a running total */
+		} 
 		int sum = 0;
 		int acarry = 0;
 		for (i=rowlen; i>0;--i)
-		{
-			sum = total[i] + rows[z][i] + acarry;
+		{ 
+			sum = c[i] + rows[z][i] + acarry;
 			acarry = 0;
 			if(sum >= base) {
 				acarry = 1;
 				sum -= base;
 			}
-			total[i] = sum;
+			c[i] = sum;
 		}
 		if (acarry)
 		{
 			for (i = rowlen + 1; i > 0; i--) {
-				total[i] = total[i-1];
+				c[i] = c[i-1];
 			}
-			total[0] = 1;
+			c[0] = 1;
 			endlen += 1;
 		} 
-	}
-	for(i = 0; i < endlen;++i)
-	{
-		printf("%u_", total[i]);
-	}
-	printf("\n");
+	} 
 	return ret;
 }
 
@@ -227,6 +195,7 @@ fxdpnt *arb_comba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t 
         c2->lp = rl(a) + rl(b);
         c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
         arb_free(c);
+	c2 = remove_leading_zeros(c2);
         return c2;
 }
 fxdpnt *arb_mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t scale)
@@ -237,6 +206,7 @@ fxdpnt *arb_mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t s
         c2->lp = rl(a) + rl(b);
         c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
         arb_free(c);
+	
         return c2;
 }
 
