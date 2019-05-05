@@ -116,7 +116,7 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 		int acarry = 0;
 		for (i=rowlen; i>0;--i)
 		{
-			sum = total[i] + rows[z][i];
+			sum = total[i] + rows[z][i] + acarry;
 			acarry = 0;
 			if(sum >= base) {
 				acarry = 1;
