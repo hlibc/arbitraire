@@ -46,11 +46,24 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 
 		operand arrangement affects the number of rows -- explore arranging operands
 		to conserve memory.
+
+		Comba can have the carries done per row (comba), or have all of the rows 
+		summated and then the carries performed (fast comba).
+
+		Fast comba can only be used for smaller inputs or it will lead to
+		type overflow.
+
+		Ideally, comba rows would stary at index 1 so that the carries can
+		be performed without reallocation or copying memory. This would have
+		the expense of a leading zero, but in this case, that leading zero
+		may be naturally discarded for the rows and probably will only result
+		in a simgle leading zero for the total/
 	 */
 
 	
 	UARBT prod = 0;
 	UARBT carry = 0;
+	UARBT sum = 0;
 	size_t i = 0;
 	size_t j = 0;
 	size_t k = 0;
@@ -60,51 +73,59 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 	size_t numrows = MAX(alen, blen);
 	size_t rowlen = numrows + numrows;
 
-	UARBT **rows = arb_malloc(numrows * 10);
+	UARBT **rows = arb_malloc((numrows * 10) * sizeof(UARBT));
 	memset(c, 0, alen +blen);
 	
 	size_t rowc = 0; 
-
+	size_t last = 0;
 	for (i = alen; i > 0 ; i--) {
-		rows[rowc] = arb_malloc(rowlen * 10 );
-		for (j = blen, k = i + j, carry = 0; j > 0 ; j--, k--){ 
+		rows[rowc] = arb_calloc(1,( rowlen * 10) * sizeof(UARBT) ); 
+		for (j = blen, k = i + j; j > 0 ; j--, k--){ 
 			rows[rowc][k-1] = a[i-1] * b[j-1];
 		} 
 		++rowc; 
 	}
+	fprintf(stderr, "addition stage\n");
+
 	size_t z = 0;
 	size_t endlen = rowlen;
-	for(;z<rowc;++z) { 
-		size_t i = 0;
-		for(;i<rowlen;++i) { 
-			size_t j = rowlen;
-			for (;j>0; j--){
-				carry = rows[z][i] / base;
-				prod = rows[z][i];
-				rows[z][i - 1] += carry;
-				rows[z][i] = prod % base;
+	/* pass over all rows */
+	for(;z<rowc;++z) {
+		
+		/* pass over all digits in a row */
+		for (j=rowlen;j>0; j--){
+			carry = 0;
+			carry = rows[z][j] / base;
+			prod = rows[z][j];
+			rows[z][j - 1] += carry;
+			rows[z][j] = prod % base;
+		}
+		/* this carry is probbaly not correct, as this is a mul carry */
+		/*
+		if (carry) { 
+			for (i = rowlen + 1; i > 0; i--) {
+				rows[z][i] = rows[z][i-1];
 			}
-		} 
-		int sum = 0;
-		int acarry = 0;
-		for (i=rowlen; i>0;--i)
-		{ 
-			sum = c[i] + rows[z][i] + acarry;
-			acarry = 0;
+			rows[z][0] = 1;
+		}
+		*/
+		/* summate the current row into the total 'c' */
+		for (carry=0, i=rowlen; i>0;--i) { 
+			sum = c[i] + rows[z][i] + carry;
+			carry = 0;
 			if(sum >= base) {
-				acarry = 1;
+				carry = 1;
 				sum -= base;
 			}
 			c[i] = sum;
 		}
-		if (acarry)
-		{
+		if (carry) {
 			for (i = rowlen + 1; i > 0; i--) {
 				c[i] = c[i-1];
 			}
 			c[0] = 1;
 			endlen += 1;
-		} 
+		}
 	} 
 	return ret;
 }
