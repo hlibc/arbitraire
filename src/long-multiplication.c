@@ -105,6 +105,27 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 		}
 		/* now sum the row into a running total */
 		printf("\n");
+		/*
+		for (;i < a->len || j < b->len; size--, c->len++) {
+                sum = _pl(a, b, &i, c->len) + _pl(b, a, &j, c->len) + carry;
+                carry = 0;
+                if(sum >= base) {
+                        carry = 1;
+                        sum -= base;
+                }
+                c->number[size] = sum;
+	        }
+     
+      
+       
+	        if (carry) {
+                	for(i = c->len+1;i > 0; i--)
+	       	                 c->number[i] = c->number[i-1];
+	                c->number[0] = 1;
+	                c->len++;
+	                c->lp++;
+	        }
+		*/
 
 	}
 	return ret;
