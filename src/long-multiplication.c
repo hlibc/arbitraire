@@ -53,7 +53,7 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 		printf("top\n");
 		for (j = blen, k = i + j, carry = 0; j > 0 ; j--, k--){
 			printf("inner\n");
-			rows[rowc][k-1] = a[i-1] * b[j-1];
+			rows[rowc][k] = a[i-1] * b[j-1];
 		} 
 		++rowc;
 		printf("bottom\n");
@@ -63,7 +63,7 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 	{
 		printf("top  print\n");
 		size_t i = 0;
-		for(;i<numrows;++i) { 
+		for(;i<numrows + 4;++i)  {
 			printf("%u ", rows[z][i]);
 		}
 
