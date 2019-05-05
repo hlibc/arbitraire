@@ -55,6 +55,8 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 	size_t rowlen = numrows + numrows;
 
 	UARBT **rows = arb_malloc(10000);
+	UARBT *total = arb_calloc(1, alen + blen + 1000);
+	
 	size_t rowc = 0; 
 
 	for (i = alen; i > 0 ; i--) {
@@ -65,6 +67,7 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 		++rowc; 
 	}
 	size_t z = 0;
+	size_t endlen = rowlen;
 	for(;z<rowc;++z) { 
 		size_t i = 0;
 		for(;i<rowlen;++i) {
@@ -105,29 +108,36 @@ size_t arb_mul_comba_core(const UARBT *a, size_t alen, const UARBT *b, size_t bl
 		}
 		/* now sum the row into a running total */
 		printf("\n");
-		/*
-		for (;i < a->len || j < b->len; size--, c->len++) {
-                sum = _pl(a, b, &i, c->len) + _pl(b, a, &j, c->len) + carry;
-                carry = 0;
-                if(sum >= base) {
-                        carry = 1;
-                        sum -= base;
-                }
-                c->number[size] = sum;
-	        }
-     
-      
-       
-	        if (carry) {
-                	for(i = c->len+1;i > 0; i--)
-	       	                 c->number[i] = c->number[i-1];
-	                c->number[0] = 1;
-	                c->len++;
-	                c->lp++;
-	        }
-		*/
-
+		/* addition works backwards so as to supply the carry mechanism */
+		/* we have a lot of numbers to add, and we are going to need alen + blen
+		 worth of space to hold the total multiplication */
+		/* add the row to a running total */
+		int sum = 0;
+		int acarry = 0;
+		for (i=rowlen; i>0;--i)
+		{
+			sum = total[i] + rows[z][i];
+			acarry = 0;
+			if(sum >= base) {
+				acarry = 1;
+				sum -= base;
+			}
+			total[i] = sum;
+		}
+		if (acarry)
+		{
+			for (i = rowlen + 1; i > 0; i--) {
+				total[i] = total[i-1];
+			}
+			total[0] = 1;
+			endlen += 1;
+		} 
 	}
+	for(i = 0; i < endlen;++i)
+	{
+		printf("%u_", total[i]);
+	}
+	printf("\n");
 	return ret;
 }
 
