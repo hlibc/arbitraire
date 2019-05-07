@@ -88,7 +88,7 @@ static void arb_cleanup(void)
 	arb_free(ten);
 }
 
-fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
+fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t lp, int set)
 {
 	static int lever = 0;
 	size_t original = request;
@@ -127,8 +127,9 @@ fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
 	}
 
 	/* allow specific radix positioning requests */
-	if (left) {
-		o->lp = left;
+
+	if (set) {
+		o->lp = lp;
 		o->len = original;
 	}
 
@@ -137,7 +138,7 @@ fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t left)
 
 fxdpnt *arb_expand(fxdpnt *o, size_t request)
 {
-	return arb_expand_inter(o, request, 0);
+	return arb_expand_inter(o, request, 0, 0);
 }
 
 /* simple opacity wrappers so that the caller can display debug attributes */
