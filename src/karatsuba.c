@@ -47,8 +47,8 @@ static fxdpnt *karatsuba(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base)
 
 	z6 = arb_sub2(z5, z1, z6, base);
 	z7 = arb_sub2(z6, z4, z7, base);
-	z7 = arb_expand_inter(z7, z7->len + m, z7->len + m, 1);
-	z1 = arb_expand_inter(z1, z1->len + 2 * m, z1->len + 2 * m, 1);
+	z7 = arb_expand_inter(z7, z7->len + m, z7->len + m);
+	z1 = arb_expand_inter(z1, z1->len + 2 * m, z1->len + 2 * m);
 	z8 = arb_add2(z1, z7, z8, base);
 	c = arb_add2(z8, z4, c, base);
 
