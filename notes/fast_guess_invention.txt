@@ -1,0 +1,40 @@
+
+
+Copyright 2019 Chris Graff
+
+This method is intended to be a part of a patent application process and is not
+covered by any free software license. Arbitraire can be distrubted with it, and this
+method can be deleted from arbitraire, but it can not be reproduced for any other means
+and is solely the property of Christoper Graff.
+
+
+This is a proposal for a mathematics invention
+
+the invention consists of guessing mechanism and a state machine 
+
+From here on out it will be referred to as 'fastguess'
+
+
+Fastguess partitions numbers so as to arrive at a fast guess of the target number. It
+can be used in division and square root algorithms
+
+
+In long-hand square root, as is attributed to Fibonacci there are guesses of the form
+
+XXXn * n, where XXX is a known value and 'n' would generally start at zero and be incremented
+toward the correct solution
+
+fastguess instead partitions the value of 'n' against the working base and for base 10 would
+work as follows
+	'n' starts off as Base/2, which would be 5 for base 10, it is tested to see if it is
+	greater than or less than the target solution. if it is less than the target solution
+	base/2 + base/4 is tried, which with unsigned mathematics base/4 would be 2 and base/2
+	would be 5 and the result be a guess of 7.
+
+	In order to expand on these properties we must introduce a state machine which shows
+	whether or not the solution has been passed up. in the case that base/2+base/4 or 7
+	is greater than the tagrt solution and base/2 has been tried and shown to be less, the
+	state machine is activated to "ON" and this "ON" would indicate that it is time to start
+	narrowing in on the solution using from the last guess that was below the target solution
+	so, if that last guess was Base/2 and Base/2 + Base/4 exceeds the solution we would know
+	to either work up form Base/2 or down from Base/2+Base/4
