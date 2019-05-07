@@ -24,7 +24,7 @@ fxdpnt *arb_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 fxdpnt *arb_karatsuba_mul(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 fxdpnt *arb_sub(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
 fxdpnt *arb_add(const fxdpnt *, const fxdpnt *, fxdpnt *, int);
-fxdpnt *arb_newtonian_div(fxdpnt *, fxdpnt *, fxdpnt *, int, int);
+fxdpnt *arb_newtonian_div(fxdpnt *, fxdpnt *, fxdpnt *, int, int, fxdpnt *);
 fxdpnt *arb_div(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
 /* modulus */
 fxdpnt *arb_mod(const fxdpnt *, const fxdpnt *, fxdpnt *, int, size_t);
