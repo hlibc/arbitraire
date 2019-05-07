@@ -1,0 +1,7 @@
+Cameron rich implemented an impressive series of bignum routines.
+
+Sadly, they are not very compatible with arbitraire and I;ve not been able to use them
+as drop in replacements.
+
+This note is here to help myself and other implementors to remember to seek out Cameron Rich's
+work for inspiration!
