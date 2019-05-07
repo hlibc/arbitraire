@@ -26,6 +26,7 @@ toward the correct solution
 
 fastguess instead partitions the value of 'n' against the working base and for base 10 would
 work as follows
+
 	'n' starts off as Base/2, which would be 5 for base 10, it is tested to see if it is
 	greater than or less than the target solution. if it is less than the target solution
 	base/2 + base/4 is tried, which with unsigned mathematics base/4 would be 2 and base/2
@@ -38,3 +39,21 @@ work as follows
 	narrowing in on the solution using from the last guess that was below the target solution
 	so, if that last guess was Base/2 and Base/2 + Base/4 exceeds the solution we would know
 	to either work up form Base/2 or down from Base/2+Base/4
+
+	fastguess can also be used for division in order to partition the from an initial guess
+	based on the natural logarithms of the inputs such as log(denominator) - log(numerator) =
+	log(solution). Then if log(solution) is 4 then the first guess is aproximated as 1000
+	. Fastguess is then applied to quickly partition the difference between the denominator
+	and 1000 so for instance if the denominator was 50000 and and the initial guess was 1000
+	we would be working at paritioning 49000. And it would proceed identically to what was
+	described before in the example for square root. 49000/2 would be added to 1000, tested
+	and if was too low 49000/2 + 49000/4 would be tried and do on.
+
+	If the initial guessing of x/2 is too high, then instead x/2 - x/4 would be tried and
+	the state machine would be activated for the inverse circumstance.
+
+	This method relies on the state machine to know when start reversing the order of the
+	trial guesses. If possible, one should avoid incrementing until all but the final digit
+	of the guess is correct and then would be finalizes once more as Base/2 + Base/4 and so
+	on until the state has crossed the solution and then incrementing would be applied to
+	granulate the guess to the target solution
