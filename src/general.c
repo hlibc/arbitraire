@@ -129,7 +129,7 @@ fxdpnt *arb_expand_inter(fxdpnt *o, size_t request, size_t lp, int set)
 	/* allow specific radix positioning requests */
 
 	if (set) {
-		o->lp = left;
+		o->lp = lp;
 		o->len = original;
 	}
 
