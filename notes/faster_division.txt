@@ -1,0 +1,8 @@
+For large inputs one must us ea divide and conquer division algorithm based on the work of:
+ Moenck and Borodin, Jebelean, and Burnikel and Ziegler 
+
+
+ https://wenku.baidu.com/view/72e8bad8ad51f01dc281f195.html
+
+
+https://math.stackexchange.com/questions/1619098/recursive-division-by-burnikel-and-ziegler-explaining-the-breaking-down-of-larg
