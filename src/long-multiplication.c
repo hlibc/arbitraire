@@ -23,6 +23,13 @@
 
 	arb_mul2() is a wrapper for arb_mul_core which provides memory
 	allocation but does not strip zeros like arb_mul
+
+
+	The way this algorithm works is to continually put all of the
+	multiplication's rows onto a single line and summate and carry them
+	as each new row is made
+
+
 */
 
 size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
@@ -51,19 +58,13 @@ size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UA
 
 	/* outer loop -- first operand */
 	for (i = alen; i > 0 ; i--){
-		last = k;
 		/* inner loop, second operand */
-		for (j = blen, k = i + j, carry = 0; j > 0 ; j--, k--){
+		for (j = blen, k = i + blen, carry = 0; j > 0 ; j--, k--){
 			prod = a[i-1] * b[j-1] + c[k-1] + carry;
 			carry = prod / base;
 			c[k-1] = prod % base;
 		}
-		/* self zeroing */
-		if (k != last) { 
-			++ret;
-			c[k-1] = 0;
-		}
-		c[k-1] += carry;
+		c[k-1] = carry;
 	}
 
 	return ret;
