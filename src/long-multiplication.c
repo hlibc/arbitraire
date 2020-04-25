@@ -9,12 +9,6 @@
 	multiplication algorithm. Arrays are accessed via n-1 to aid in using
 	unsigned types.
 
-	A somewhat novel method for making the partial carry long 
-	multiplication algorithm self-zeroing is used. In arbitraire this
-	allows arb_mul_core to work with the implementation of Knuth's TAOCP 
-	vol 2 algorithm D (division (src/div.c)) and allows arb_mul_core to 
-	stand alone.
-
 	An optimization is provided which tracks trailing zeros from the
 	operands and moves them onto the answer. It hypothetically increases
 	the speed of the multiplication when trailing zeros are present. Which
