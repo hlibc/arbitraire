@@ -3,40 +3,23 @@
 /* Copyright 2017-2019 CM Graff */
 
 /*
-	arb_mul_core:
+	arb_mul_core() is a base case "long multiplication" algorithm
+	This algorithm differs from typical school book long
+	multiplication in the sense that only a single "row" is
+	used and the carries and summations are done as it goes
+	along.
 
-	This is a partial carry variation on the traditional "school book" long
-	multiplication algorithm. Arrays are accessed via n-1 to aid in using
-	unsigned types.
-
-	An optimization is provided which tracks trailing zeros from the
-	operands and moves them onto the answer. It hypothetically increases
-	the speed of the multiplication when trailing zeros are present. Which
-	may ultimately help karatsuba multiplication a great deal.
-
-	The return value of arb_mul_core represents the magnitude of the
-	product.
-
-	arb_mul:
-
-	arb_mul() is the actual interface that is intended to be used.
+	arb_mul() is the actual interface that is intended to be used
+	as an externa API as it transparently provides access to all
+	of the currently implemented algorithms.
 
 	arb_mul2() is a wrapper for arb_mul_core which provides memory
-	allocation but does not strip zeros like arb_mul
-
-
-	The way this algorithm works is to continually put all of the
-	multiplication's rows onto a single line and summate and carry them
-	as each new row is made
-
-
+	allocation but does not strip zeros like arb_mul. arb_mul2()
+	only calls the base case long multiplication algorithm.
 */
 
 size_t arb_mul_core(const UARBT *a, size_t alen, const UARBT *b, size_t blen, UARBT *c, int base)
 {
-	/* TODO: a memset is probably faster than the embedded conditional
-	 * so the assembly code needs to be examined and some timing tests performed
-	 */
 	UARBT prod = 0;
 	UARBT carry = 0;
 	size_t i = 0;
@@ -77,7 +60,6 @@ fxdpnt *arb_mul(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t sc
 		return arb_karatsuba_mul(a, b, c, base, scale);
 
 	c = arb_mul2(a, b, c, base, scale);
-	
 	c = remove_leading_zeros(c);
 	return c;
 }
@@ -90,7 +72,6 @@ fxdpnt *arb_mul2(const fxdpnt *a, const fxdpnt *b, fxdpnt *c, int base, size_t s
         c2->lp = rl(a) + rl(b);
         c2->len = MIN(rr(a) + rr(b), MAX(scale, MAX(rr(a), rr(b)))) + c2->lp;
         arb_free(c);
-	
         return c2;
 }
 
