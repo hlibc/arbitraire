@@ -14,7 +14,7 @@ Arbitraire
 
 	Multiplication:
 		1. Karatsuba method (>1000 limb)
-		2. schoolbook/long hand method (<1000 limb)
+		2. long-multiplication method (<1000 limb)
 
 	Square root:
 		1. Newton's method
